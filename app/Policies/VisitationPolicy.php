@@ -29,7 +29,7 @@ class VisitationPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return in_array($user->role, ['parent', 'co-parent']);
     }
 
     /**
@@ -37,7 +37,7 @@ class VisitationPolicy
      */
     public function update(User $user, Visitation $visitation): bool
     {
-        return $user->id === $visitation->parent_id || $user->id === $visitation->child->user_id;
+        return in_array($user->role, ['parent', 'co-parent']) && ($user->id === $visitation->parent_id || $user->id === $visitation->child->user_id);
     }
 
     /**
@@ -45,7 +45,7 @@ class VisitationPolicy
      */
     public function delete(User $user, Visitation $visitation): bool
     {
-        return $user->id === $visitation->parent_id || $user->id === $visitation->child->user_id;
+        return in_array($user->role, ['parent', 'co-parent']) && ($user->id === $visitation->parent_id || $user->id === $visitation->child->user_id);
     }
 
     /**

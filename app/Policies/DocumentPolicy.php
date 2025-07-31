@@ -29,7 +29,7 @@ class DocumentPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return in_array($user->role, ['parent', 'co-parent']);
     }
 
     /**
@@ -37,7 +37,7 @@ class DocumentPolicy
      */
     public function update(User $user, Document $document): bool
     {
-        return $user->id === $document->uploaded_by || $user->id === $document->child->user_id;
+        return in_array($user->role, ['parent', 'co-parent']) && ($user->id === $document->uploaded_by || $user->id === $document->child->user_id);
     }
 
     /**
@@ -45,7 +45,7 @@ class DocumentPolicy
      */
     public function delete(User $user, Document $document): bool
     {
-        return $user->id === $document->uploaded_by || $user->id === $document->child->user_id;
+        return in_array($user->role, ['parent', 'co-parent']) && ($user->id === $document->uploaded_by || $user->id === $document->child->user_id);
     }
 
     /**
