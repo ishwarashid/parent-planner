@@ -16,7 +16,7 @@ Route::get('/', function () {
 
 Route::get('/pricing', [SubscriptionController::class, 'pricing'])->name('pricing');
 
-Route::middleware(['auth', 'verified', 'subscribed'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('visitations/api', [VisitationController::class, 'apiIndex'])->name('visitations.api');
     Route::resource('children', ChildController::class);

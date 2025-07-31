@@ -12,9 +12,18 @@ class Child extends Model
     protected $fillable = [
         'name',
         'dob',
+        'gender',
+        'blood_type',
         'allergies',
-        'school_info',
-        'profile_photo',
+        'primary_residence',
+        'school_name',
+        'school_grade',
+        'profile_photo_path',
+        'extracurricular_activities',
+        'doctor_info',
+        'emergency_contact_info',
+        'special_needs',
+        'other_info',
     ];
 
     public function user()

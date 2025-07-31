@@ -33,14 +33,23 @@ class ChildController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'dob' => 'required|date',
-            'allergies' => 'nullable|string',
-            'school_info' => 'nullable|string|max:255',
+            'gender' => 'required|string|max:255',
+            'blood_type' => 'required|string|max:255',
+            'allergies' => 'required|string',
+            'primary_residence' => 'nullable|string|max:255',
+            'school_name' => 'required|string|max:255',
+            'school_grade' => 'nullable|string|max:255',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'extracurricular_activities' => 'nullable|string',
+            'doctor_info' => 'nullable|string',
+            'emergency_contact_info' => 'nullable|string',
+            'special_needs' => 'nullable|string',
+            'other_info' => 'nullable|string',
         ]);
 
         if ($request->hasFile('profile_photo')) {
             $path = $request->file('profile_photo')->store('profile_photos', 'public');
-            $validatedData['profile_photo'] = $path;
+            $validatedData['profile_photo_path'] = $path;
         }
 
         $request->user()->children()->create($validatedData);
@@ -76,18 +85,27 @@ class ChildController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'dob' => 'required|date',
-            'allergies' => 'nullable|string',
-            'school_info' => 'nullable|string|max:255',
+            'gender' => 'required|string|max:255',
+            'blood_type' => 'required|string|max:255',
+            'allergies' => 'required|string',
+            'primary_residence' => 'nullable|string|max:255',
+            'school_name' => 'required|string|max:255',
+            'school_grade' => 'nullable|string|max:255',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'extracurricular_activities' => 'nullable|string',
+            'doctor_info' => 'nullable|string',
+            'emergency_contact_info' => 'nullable|string',
+            'special_needs' => 'nullable|string',
+            'other_info' => 'nullable|string',
         ]);
 
         if ($request->hasFile('profile_photo')) {
             // Delete old photo if it exists
-            if ($child->profile_photo) {
-                Storage::disk('public')->delete($child->profile_photo);
+            if ($child->profile_photo_path) {
+                Storage::disk('public')->delete($child->profile_photo_path);
             }
             $path = $request->file('profile_photo')->store('profile_photos', 'public');
-            $validatedData['profile_photo'] = $path;
+            $validatedData['profile_photo_path'] = $path;
         }
 
         $child->update($validatedData);
