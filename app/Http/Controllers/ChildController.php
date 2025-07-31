@@ -13,7 +13,9 @@ class ChildController extends Controller
      */
     public function index()
     {
-        $children = auth()->user()->children;
+        $user = auth()->user()->load('invitedUsers');
+        $familyMemberIds = $user->getFamilyMemberIds();
+        $children = Child::whereIn('user_id', $familyMemberIds)->get();
         return view('children.index', compact('children'));
     }
 

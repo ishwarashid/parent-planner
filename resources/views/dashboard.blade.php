@@ -24,6 +24,7 @@
                         @endif
                     </div>
 
+                    @can('create', App\Models\Expense::class)
                     <!-- Pending Expenses Card -->
                     <div class="bg-yellow-100 p-4 rounded-lg shadow">
                         <h4 class="font-semibold text-yellow-800">Pending Expenses</h4>
@@ -36,7 +37,9 @@
                             <a href="{{ route('expenses.create') }}" class="text-yellow-600 hover:text-yellow-800 text-sm mt-2 block">Add an Expense</a>
                         @endif
                     </div>
+                    @endcan
 
+                    @can('create', App\Models\Child::class)
                     <!-- Upcoming Birthdays Card -->
                     <div class="bg-purple-100 p-4 rounded-lg shadow">
                         <h4 class="font-semibold text-purple-800">Upcoming Birthdays</h4>
@@ -51,6 +54,7 @@
                             <p class="text-gray-600">No upcoming birthdays.</p>
                         @endif
                     </div>
+                    @endcan
                 </div>
 
                 <!-- Recent Activity (Optional - can be added later) -->

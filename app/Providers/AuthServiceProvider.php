@@ -9,6 +9,7 @@ use App\Models\Expense;
 use App\Models\Visitation;
 use App\Policies\DocumentPolicy;
 use App\Policies\ExpensePolicy;
+use App\Policies\InvitationPolicy;
 use App\Policies\VisitationPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -24,6 +25,7 @@ class AuthServiceProvider extends ServiceProvider
         Visitation::class => VisitationPolicy::class,
         Document::class => DocumentPolicy::class,
         Expense::class => ExpensePolicy::class,
+        Invitation::class => InvitationPolicy::class,
     ];
 
     /**

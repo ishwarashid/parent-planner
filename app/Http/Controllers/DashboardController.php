@@ -12,22 +12,25 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
+        $user = auth()->user()->load('invitedUsers');
+        $familyMemberIds = $user->getFamilyMemberIds();
+
+        $children = Child::whereIn('user_id', $familyMemberIds)->get();
 
         // Upcoming Visitations (e.g., next 7 days)
-        $upcomingVisitations = Visitation::whereIn('child_id', $user->children->pluck('id'))
+        $upcomingVisitations = Visitation::whereIn('child_id', $children->pluck('id'))
                                         ->where('date_start', '>=', Carbon::now())
                                         ->where('date_start', '<=', Carbon::now()->addDays(7))
                                         ->orderBy('date_start')
                                         ->get();
 
         // Pending Expenses
-        $pendingExpenses = Expense::whereIn('child_id', $user->children->pluck('id'))
+        $pendingExpenses = Expense::whereIn('child_id', $children->pluck('id'))
                                 ->where('status', 'pending')
                                 ->get();
 
         // Children with upcoming birthdays (next 30 days)
-        $childrenWithUpcomingBirthdays = $user->children->filter(function ($child) {
+        $childrenWithUpcomingBirthdays = $children->filter(function ($child) {
             $dob = Carbon::parse($child->dob);
             $now = Carbon::now();
             $nextBirthday = $dob->copy()->year($now->year);
@@ -49,7 +52,7 @@ class DashboardController extends Controller
         });
 
         // Next visit countdown
-        $nextVisit = Visitation::whereIn('child_id', $user->children->pluck('id'))
+        $nextVisit = Visitation::whereIn('child_id', $children->pluck('id'))
                                 ->where('date_start', '>=', Carbon::now())
                                 ->orderBy('date_start')
                                 ->first();

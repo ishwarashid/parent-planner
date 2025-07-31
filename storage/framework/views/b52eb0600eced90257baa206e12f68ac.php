@@ -646,4 +646,4 @@ License: https://freebootstrap.net/license
     <script src="assets/js/send_email.js"></script>
     <!-- End JavaScripts-->
   </body>
-</html><?php /**PATH C:\laragon\www\parent-planner-v2\resources\views/landing2.blade.php ENDPATH**/ ?>
+</html><?php /**PATH /home/azan/Desktop/parent-planner-master/resources/views/landing2.blade.php ENDPATH**/ ?>
