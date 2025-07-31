@@ -18,6 +18,29 @@ Parent Planner is a web application designed to help co-parents manage the compl
 *   **Reporting:** Generate reports for visitations and expenses, useful for financial planning or legal documentation.
 *   **Notifications:** Receive timely reminders for upcoming visitations and pending expenses.
 *   **Subscription Management:** Manage user subscriptions and access to premium features.
+*   **User Roles & Access Control:** A role-based system to manage permissions for different user types.
+
+## User Roles & Access Control
+
+Parent Planner supports the following user roles with specific access levels:
+
+*   **Parent (Primary Account Holder):**
+    *   Full access to all features, including creating and managing children, visitations, expenses, and documents.
+    *   Responsible for the subscription.
+    *   Can invite other users to the account.
+
+*   **Co-parent:**
+    *   Full access to all features, same as the Parent.
+    *   Does not manage the subscription.
+
+*   **Nanny, Grandparent, and Guardian:**
+    *   **Limited Access:** These roles have "Calendar view only" access.
+    *   They can view the visitation calendar but cannot create, edit, or delete any information (visitations, expenses, documents, or children).
+
+### Key Access Rules:
+
+*   **Subscription:** Only the `Parent` (the primary account holder) is required to have an active subscription.
+*   **Invitations:** All users must have their own login. The `Parent` can invite others via email.
 
 ## Technology Stack
 
