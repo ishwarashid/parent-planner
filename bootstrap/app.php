@@ -15,6 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'subscribed' => \App\Http\Middleware\Subscribed::class,
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'professional' => \App\Http\Middleware\ProfessionalMiddleware::class,
+            'parent' => \App\Http\Middleware\ParentMiddleware::class,
+            'dashboard.access' => \App\Http\Middleware\DashboardAccessMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

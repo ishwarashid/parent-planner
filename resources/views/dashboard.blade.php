@@ -20,7 +20,9 @@
                             <a href="{{ route('visitations.show', $nextVisit) }}" class="text-blue-600 hover:text-blue-800 text-sm mt-2 block">View Details</a>
                         @else
                             <p class="text-gray-600">No upcoming visitations.</p>
+                            @can('create', App\Models\Visitation::class)
                             <a href="{{ route('visitations.create') }}" class="text-blue-600 hover:text-blue-800 text-sm mt-2 block">Add a Visitation</a>
+                            @endcan
                         @endif
                     </div>
 

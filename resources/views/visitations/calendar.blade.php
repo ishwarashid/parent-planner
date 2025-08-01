@@ -24,9 +24,11 @@
                                     @endforeach
                                 </select>
                             </div>
+                            @can('create', App\Models\Visitation::class)
                             <button x-data @click="$dispatch('open-modal', { name: 'visitation-form' })" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                 Add New Visitation
                             </button>
+                            @endcan
                         </div>
                     </div>
 
@@ -146,12 +148,16 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <a href="{{ route('visitations.show', $visitation) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">View</a>
+                                            @can('update', $visitation)
                                             <a href="{{ route('visitations.edit', $visitation) }}" class="text-yellow-600 hover:text-yellow-900 mr-2">Edit</a>
+                                            @endcan
+                                            @can('delete', $visitation)
                                             <form action="{{ route('visitations.destroy', $visitation) }}" method="POST" class="inline-block">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this visitation?')">Delete</button>
                                             </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @empty

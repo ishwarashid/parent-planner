@@ -1,23 +1,44 @@
 @extends('layouts.admin')
 
 @section('content')
-    <h1>{{ $professional->business_name }}</h1>
+    <h1 class="text-2xl font-semibold mb-4">{{ $professional->business_name }}</h1>
+    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="p-6 text-gray-900">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">Contact Information</h3>
+                    <p class="mt-2"><strong>Contact Name:</strong> {{ $professional->user->name }}</p>
+                    <p><strong>Email:</strong> {{ $professional->user->email }}</p>
+                    <p><strong>Phone Number:</strong> {{ $professional->phone_number }}</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">Business Details</h3>
+                    <p class="mt-2"><strong>Location:</strong> {{ $professional->city }}, {{ $professional->country }}</p>
+                    <p><strong>Website:</strong> <a href="{{ $professional->website }}" class="text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">{{ $professional->website }}</a></p>
+                </div>
+            </div>
 
-    <p><strong>Contact Name:</strong> {{ $professional->user->name }}</p>
-    <p><strong>Email:</strong> {{ $professional->user->email }}</p>
-    <p><strong>Services:</strong> {{ $professional->services }}</p>
-    <p><strong>Phone Number:</strong> {{ $professional->phone_number }}</p>
-    <p><strong>Website:</strong> <a href="{{ $professional->website }}" target="_blank">{{ $professional->website }}</a></p>
-    <p><strong>Country:</strong> {{ $professional->country }}</p>
-    <p><strong>City:</strong> {{ $professional->city }}</p>
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold text-gray-800">Services</h3>
+                <p class="mt-2">{{ $professional->services }}</p>
+            </div>
 
-    <form action="{{ route('admin.professionals.approve', $professional) }}" method="POST" style="display: inline-block;">
-        @csrf
-        <button type="submit" class="btn btn-success">Approve</button>
-    </form>
+            <div class="mt-8 border-t pt-6 flex items-center space-x-4">
+                <h3 class="text-lg font-semibold text-gray-800">Actions</h3>
+                <form action="{{ route('admin.professionals.approve', $professional) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                        Approve
+                    </button>
+                </form>
 
-    <form action="{{ route('admin.professionals.reject', $professional) }}" method="POST" style="display: inline-block;">
-        @csrf
-        <button type="submit" class="btn btn-danger">Reject</button>
-    </form>
+                <form action="{{ route('admin.professionals.reject', $professional) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                        Reject
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
