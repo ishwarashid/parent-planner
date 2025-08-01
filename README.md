@@ -155,3 +155,28 @@ The main database tables include:
 *   `documents`: Stores metadata and paths for uploaded files.
 *   `subscriptions`: Manages user subscriptions.
 *   `subscription_items`: Stores individual items associated with a subscription.
+
+## Professionals Module & Admin Panel
+
+Parent Planner includes a feature to connect parents with family-service professionals. This module allows professionals to advertise their services on the platform, and provides an administrative interface to manage them.
+
+### For Professionals
+
+*   **Separate Registration:** Professionals have a dedicated registration form to create an account with the `professional` role.
+*   **Profile Management:** After logging in, professionals are directed to their own dashboard where they can create and manage their public profile, including business name, services offered, contact information, and social media links.
+*   **Subscription Requirement:** To have their profile publicly listed, professionals must subscribe to a specific "Professional" plan. Their dashboard guides them through the subscription process.
+
+### For Parents & Co-Parents
+
+*   **Public Listing:** A "Professionals" page is available in the main navigation, allowing parents and co-parents to browse a directory of approved and subscribed professionals.
+*   **Search & Filter:** The directory can be searched to easily find professionals by their name, services, or location.
+
+### Admin Panel
+
+An admin panel is included to manage the professional approval workflow.
+
+*   **Admin Access:** To grant a user admin privileges, run the following Artisan command:
+    ```bash
+    php artisan app:grant-admin your-email@example.com
+    ```
+*   **Approval Workflow:** The admin panel, accessible at `/admin`, lists all professionals who have registered and are pending approval. The administrator can view each professional's profile and choose to either `approve` or `reject` their application. Professionals are only able to subscribe and be publicly listed after they have been approved.

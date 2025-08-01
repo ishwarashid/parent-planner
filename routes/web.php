@@ -11,19 +11,32 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Auth\ProfessionalRegistrationController;
+use App\Http\Controllers\ProfessionalController;
+use App\Http\Controllers\PublicProfessionalsController;
 
 Route::get('/', function () {
     return view('landing2');
 });
 
 
+
+
+
 Route::get('/pricing', [SubscriptionController::class, 'pricing'])->name('pricing');
+
+Route::get('professionals', [PublicProfessionalsController::class, 'index'])->name('professionals.public.index');
+
+Route::get('professional-register', [ProfessionalRegistrationController::class, 'create'])->name('professional.register');
+Route::post('professional-register', [ProfessionalRegistrationController::class, 'store']);
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
     Route::get('visitations/api', [VisitationController::class, 'apiIndex'])->name('visitations.api');
     Route::resource('children', ChildController::class);
     Route::resource('visitations', VisitationController::class);
+
     Route::resource('expenses', ExpenseController::class);
     Route::resource('documents', DocumentController::class);
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
@@ -55,6 +68,12 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::middleware(['auth', 'professional'])->prefix('professional')->name('professional.')->group(function () {
+    Route::get('/dashboard', [ProfessionalController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profile/edit', [ProfessionalController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfessionalController::class, 'update'])->name('profile.update');
+});
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');

@@ -43,6 +43,11 @@
                             {{ __('Invitations') }}
                         </x-nav-link>
                     @endcan
+                    @if(Auth::user()->is_admin || Auth::user()->role === 'parent' || Auth::user()->role === 'co-parent')
+                    <x-nav-link :href="route('professionals.public.index')" :active="request()->routeIs('professionals.public.index')">
+                        {{ __('Professionals') }}
+                    </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -130,6 +135,11 @@
                     {{ __('Invitations') }}
                 </x-responsive-nav-link>
             @endcan
+            @if(Auth::user()->is_admin || Auth::user()->role === 'parent' || Auth::user()->role === 'co-parent')
+            <x-responsive-nav-link :href="route('professionals.public.index')" :active="request()->routeIs('professionals.public.index')">
+                {{ __('Professionals') }}
+            </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
