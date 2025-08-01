@@ -13,7 +13,7 @@ class ChildPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return in_array($user->role, ['parent', 'co-parent']);
     }
 
     /**
@@ -21,7 +21,7 @@ class ChildPolicy
      */
     public function view(User $user, Child $child): bool
     {
-        return $user->id === $child->user_id;
+        return in_array($user->role, ['parent', 'co-parent']) && in_array($child->user_id, $user->getFamilyMemberIds());
     }
 
     /**
@@ -29,7 +29,7 @@ class ChildPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return in_array($user->role, ['parent', 'co-parent']);
     }
 
     /**
@@ -37,7 +37,7 @@ class ChildPolicy
      */
     public function update(User $user, Child $child): bool
     {
-        return $user->id === $child->user_id;
+        return in_array($user->role, ['parent', 'co-parent']) && in_array($child->user_id, $user->getFamilyMemberIds());
     }
 
     /**
@@ -45,7 +45,7 @@ class ChildPolicy
      */
     public function delete(User $user, Child $child): bool
     {
-        return $user->id === $child->user_id;
+        return in_array($user->role, ['parent', 'co-parent']) && in_array($child->user_id, $user->getFamilyMemberIds());
     }
 
     /**

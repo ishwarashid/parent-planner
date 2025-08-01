@@ -22,6 +22,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'invited_by',
+        'role',
     ];
 
     /**
@@ -65,5 +67,40 @@ class User extends Authenticatable implements MustVerifyEmail
     public function documents()
     {
         return $this->hasMany(Document::class, 'uploaded_by');
+    }
+
+    public function sentInvitations()
+    {
+        return $this->hasMany(Invitation::class, 'invited_by');
+    }
+
+    // The parent who invited this user
+    public function parent()
+    {
+        return $this->belongsTo(User::class, 'invited_by');
+    }
+
+    // The users invited by this user
+    public function invitedUsers()
+    {
+        return $this->hasMany(User::class, 'invited_by');
+    }
+
+    // Get all user IDs in the family unit
+    public function getFamilyMemberIds(): array
+    {
+        if ($this->invited_by) {
+            // This is an invited user, get the parent's family
+            $parent = $this->parent;
+            if (!$parent) {
+                return [$this->id];
+            }
+            $familyIds = array_merge([$parent->id], $parent->invitedUsers->pluck('id')->all());
+            return $familyIds;
+        } else {
+            // This is a parent user, get their own family
+            $familyIds = array_merge([$this->id], $this->invitedUsers->pluck('id')->all());
+            return $familyIds;
+        }
     }
 }

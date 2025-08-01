@@ -14,7 +14,10 @@ class ExpenseController extends Controller
     public function index()
     {
         $this->authorize('viewAny', Expense::class);
-        $expenses = Expense::whereIn('child_id', auth()->user()->children->pluck('id'))->get();
+        $user = auth()->user()->load('invitedUsers');
+        $familyMemberIds = $user->getFamilyMemberIds();
+        $children = \App\Models\Child::whereIn('user_id', $familyMemberIds)->get();
+        $expenses = Expense::whereIn('child_id', $children->pluck('id'))->get();
         return view('expenses.index', compact('expenses'));
     }
 
@@ -24,7 +27,8 @@ class ExpenseController extends Controller
     public function create()
     {
         $this->authorize('create', Expense::class);
-        $children = auth()->user()->children;
+        $familyMemberIds = auth()->user()->getFamilyMemberIds();
+        $children = \App\Models\Child::whereIn('user_id', $familyMemberIds)->get();
         $categories = ['Healthcare', 'Education', 'Childcare', 'Food', 'Clothing', 'Activities', 'Other'];
         $statuses = ['pending', 'paid', 'disputed'];
         return view('expenses.create', compact('children', 'categories', 'statuses'));
@@ -72,7 +76,8 @@ class ExpenseController extends Controller
     public function edit(Expense $expense)
     {
         $this->authorize('update', $expense);
-        $children = auth()->user()->children;
+        $familyMemberIds = auth()->user()->getFamilyMemberIds();
+        $children = \App\Models\Child::whereIn('user_id', $familyMemberIds)->get();
         $categories = ['Healthcare', 'Education', 'Childcare', 'Food', 'Clothing', 'Activities', 'Other'];
         $statuses = ['pending', 'paid', 'disputed'];
         return view('expenses.edit', compact('expense', 'children', 'categories', 'statuses'));

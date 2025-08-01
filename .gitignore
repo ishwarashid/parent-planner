@@ -25,3 +25,4 @@ Thumbs.db
 zip-laravel.sh
 database/database.sqlite
 *.zip
+/storage/framework/views/*

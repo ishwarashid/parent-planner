@@ -18,6 +18,45 @@ Parent Planner is a web application designed to help co-parents manage the compl
 *   **Reporting:** Generate reports for visitations and expenses, useful for financial planning or legal documentation.
 *   **Notifications:** Receive timely reminders for upcoming visitations and pending expenses.
 *   **Subscription Management:** Manage user subscriptions and access to premium features.
+*   **User Roles & Access Control:** A role-based system to manage permissions for different user types.
+
+## User Roles & Access Control
+
+Parent Planner supports the following user roles with specific access levels:
+
+*   **Parent (Primary Account Holder):**
+    *   This is the default role for users who register directly.
+    *   Full access to all features, including creating and managing children, visitations, expenses, and documents.
+    *   Responsible for the subscription.
+    *   Can invite other users to the account.
+
+*   **Co-parent:**
+    *   Assigned via invitation.
+    *   Full access to all features, same as the Parent.
+    *   Does not manage the subscription.
+
+*   **Nanny, Grandparent, and Guardian:**
+    *   Assigned via invitation.
+    *   **Limited Access:** These roles have "Calendar view only" access.
+    *   They can view the visitation calendar but cannot create, edit, or delete any information (visitations, expenses, documents, or children).
+
+### Invitation Flow & Status:
+
+*   **Sending Invitations:** A `Parent` user can invite others via email to join their family unit with a specific role.
+*   **Accepting/Rejecting Invitations:** Invited users receive an email with a unique link. Clicking this link takes them to a page where they can choose to **Accept** or **Reject** the invitation.
+    *   If **Accepted** by a guest user, they are redirected to the registration page with their email pre-filled and the invitation token included. Upon successful registration, their account is linked to the inviter's family unit with the assigned role.
+    *   If **Accepted** by an already logged-in user, they are redirected to their dashboard with a message indicating the invitation was accepted (future enhancements may allow linking to an existing account).
+    *   If **Rejected**, the invitation status is updated accordingly.
+*   **Invitation Statuses:** The sender's "Invitations" page will display the status of each sent invitation:
+    *   `pending`: The invitation has been sent but not yet acted upon.
+    *   `accepted`: The invitation has been accepted by the recipient.
+    *   `rejected`: The invitation has been explicitly rejected by the recipient.
+    *   `registered`: The recipient has accepted the invitation and successfully registered an account.
+
+### Key Access Rules:
+
+*   **Subscription:** Only the `Parent` (the primary account holder) is required to have an active subscription.
+*   **User Accounts:** All users, whether direct registrants or invited, must have their own login.
 
 ## Technology Stack
 

@@ -13,7 +13,7 @@ class ExpensePolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return in_array($user->role, ['parent', 'co-parent']);
     }
 
     /**
@@ -21,7 +21,7 @@ class ExpensePolicy
      */
     public function view(User $user, Expense $expense): bool
     {
-        return $user->id === $expense->payer_id || $user->id === $expense->child->user_id;
+        return in_array($user->role, ['parent', 'co-parent']) && in_array($expense->payer_id, $user->getFamilyMemberIds());
     }
 
     /**
@@ -29,7 +29,7 @@ class ExpensePolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return in_array($user->role, ['parent', 'co-parent']);
     }
 
     /**
@@ -37,7 +37,7 @@ class ExpensePolicy
      */
     public function update(User $user, Expense $expense): bool
     {
-        return $user->id === $expense->payer_id || $user->id === $expense->child->user_id;
+        return in_array($user->role, ['parent', 'co-parent']) && in_array($expense->payer_id, $user->getFamilyMemberIds());
     }
 
     /**
@@ -45,7 +45,7 @@ class ExpensePolicy
      */
     public function delete(User $user, Expense $expense): bool
     {
-        return $user->id === $expense->payer_id || $user->id === $expense->child->user_id;
+        return in_array($user->role, ['parent', 'co-parent']) && in_array($expense->payer_id, $user->getFamilyMemberIds());
     }
 
     /**

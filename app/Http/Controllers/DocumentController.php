@@ -14,7 +14,10 @@ class DocumentController extends Controller
     public function index()
     {
         $this->authorize('viewAny', Document::class);
-        $documents = Document::whereIn('child_id', auth()->user()->children->pluck('id'))->get();
+        $user = auth()->user()->load('invitedUsers');
+        $familyMemberIds = $user->getFamilyMemberIds();
+        $children = \App\Models\Child::whereIn('user_id', $familyMemberIds)->get();
+        $documents = Document::whereIn('child_id', $children->pluck('id'))->get();
         return view('documents.index', compact('documents'));
     }
 
@@ -24,7 +27,8 @@ class DocumentController extends Controller
     public function create()
     {
         $this->authorize('create', Document::class);
-        $children = auth()->user()->children;
+        $familyMemberIds = auth()->user()->getFamilyMemberIds();
+        $children = \App\Models\Child::whereIn('user_id', $familyMemberIds)->get();
         $categories = ['Medical', 'Legal', 'School', 'Financial', 'Other'];
         return view('documents.create', compact('children', 'categories'));
     }
@@ -70,7 +74,8 @@ class DocumentController extends Controller
     public function edit(Document $document)
     {
         $this->authorize('update', $document);
-        $children = auth()->user()->children;
+        $familyMemberIds = auth()->user()->getFamilyMemberIds();
+        $children = \App\Models\Child::whereIn('user_id', $familyMemberIds)->get();
         $categories = ['Medical', 'Legal', 'School', 'Financial', 'Other'];
         return view('documents.edit', compact('document', 'children', 'categories'));
     }

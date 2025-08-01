@@ -15,15 +15,19 @@ class VisitationController extends Controller
      */
     public function index()
     {
-        $visitations = auth()->user()->visitations()->orderBy('date_start', 'asc')->get();
+        $user = auth()->user()->load('invitedUsers');
+        $familyMemberIds = $user->getFamilyMemberIds();
+        $children = \App\Models\Child::whereIn('user_id', $familyMemberIds)->get();
+        $visitations = Visitation::whereIn('parent_id', $familyMemberIds)->orderBy('date_start', 'asc')->get();
         $currentUserId = auth()->id();
-        $children = auth()->user()->children;
         return view('visitations.calendar', compact('visitations', 'currentUserId', 'children'));
     }
 
     public function apiIndex(Request $request)
     {
-        $visitations = auth()->user()->visitations()->with('child', 'parent');
+        $user = auth()->user()->load('invitedUsers');
+        $familyMemberIds = $user->getFamilyMemberIds();
+        $visitations = Visitation::whereIn('parent_id', $familyMemberIds)->with('child', 'parent');
 
         if ($request->has('child_id') && $request->child_id !== '') {
             $visitations->where('child_id', $request->child_id);
@@ -54,7 +58,8 @@ class VisitationController extends Controller
      */
     public function create()
     {
-        $children = auth()->user()->children;
+        $familyMemberIds = auth()->user()->getFamilyMemberIds();
+        $children = \App\Models\Child::whereIn('user_id', $familyMemberIds)->get();
         return view('visitations.create', compact('children'));
     }
 
@@ -97,7 +102,8 @@ class VisitationController extends Controller
     public function edit(Visitation $visitation)
     {
         $this->authorize('update', $visitation);
-        $children = auth()->user()->children;
+        $familyMemberIds = auth()->user()->getFamilyMemberIds();
+        $children = \App\Models\Child::whereIn('user_id', $familyMemberIds)->get();
         return view('visitations.edit', compact('visitation', 'children'));
     }
 
