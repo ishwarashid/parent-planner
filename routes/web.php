@@ -10,10 +10,12 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\Admin\AdminController;
 
 Route::get('/', function () {
     return view('landing2');
 });
+
 
 Route::get('/pricing', [SubscriptionController::class, 'pricing'])->name('pricing');
 
@@ -53,3 +55,11 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('dashboard');
+    Route::get('/professionals', [AdminController::class, 'professionals'])->name('professionals.index');
+    Route::get('/professionals/{professional}', [AdminController::class, 'showProfessional'])->name('professionals.show');
+    Route::post('/professionals/{professional}/approve', [AdminController::class, 'approveProfessional'])->name('professionals.approve');
+    Route::post('/professionals/{professional}/reject', [AdminController::class, 'rejectProfessional'])->name('professionals.reject');
+});

@@ -103,4 +103,9 @@ class User extends Authenticatable implements MustVerifyEmail
             return $familyIds;
         }
     }
+
+    public function professional()
+    {
+        return $this->hasOne(Professional::class);
+    }
 }
