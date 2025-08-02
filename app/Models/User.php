@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Role;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -46,7 +47,18 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => Role::class,
         ];
+    }
+
+    public function hasPermissionTo(string $permission): bool
+    {
+        if ($this->is_admin) {
+            return true;
+        }
+
+        $permissions = config('permissions.roles')[$this->role->value] ?? [];
+        return in_array($permission, $permissions);
     }
 
     public function children()

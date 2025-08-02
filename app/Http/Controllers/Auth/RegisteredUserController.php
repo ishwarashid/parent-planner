@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\Role;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Invitation;
@@ -48,7 +49,7 @@ class RegisteredUserController extends Controller
         ]);
 
         $invited_by = null;
-        $role = 'parent'; // Default role
+        $role = Role::PARENT; // Default role
         $invitation = null;
 
         if ($request->has('token')) {

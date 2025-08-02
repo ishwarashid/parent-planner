@@ -13,7 +13,7 @@ class InvitationPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']);
+        return $user->hasPermissionTo('invitations.view');
     }
 
     /**
@@ -21,7 +21,7 @@ class InvitationPolicy
      */
     public function view(User $user, Invitation $invitation): bool
     {
-        return $user->id === $invitation->invited_by;
+        return $user->hasPermissionTo('invitations.view') && $user->id === $invitation->invited_by;
     }
 
     /**
@@ -29,7 +29,7 @@ class InvitationPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']);
+        return $user->hasPermissionTo('invitations.create');
     }
 
     /**
@@ -45,7 +45,7 @@ class InvitationPolicy
      */
     public function delete(User $user, Invitation $invitation): bool
     {
-        return $user->id === $invitation->invited_by && $invitation->status !== 'registered';
+        return $user->hasPermissionTo('invitations.delete') && $user->id === $invitation->invited_by && $invitation->status !== 'registered';
     }
 
     /**

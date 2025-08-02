@@ -13,7 +13,7 @@ class VisitationPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->hasPermissionTo('visitations.view');
     }
 
     /**
@@ -21,7 +21,7 @@ class VisitationPolicy
      */
     public function view(User $user, Visitation $visitation): bool
     {
-        return in_array($visitation->parent_id, $user->getFamilyMemberIds());
+        return $user->hasPermissionTo('visitations.view') && in_array($visitation->parent_id, $user->getFamilyMemberIds());
     }
 
     /**
@@ -29,7 +29,7 @@ class VisitationPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']);
+        return $user->hasPermissionTo('visitations.create');
     }
 
     /**
@@ -37,7 +37,7 @@ class VisitationPolicy
      */
     public function update(User $user, Visitation $visitation): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']) && in_array($visitation->parent_id, $user->getFamilyMemberIds());
+        return $user->hasPermissionTo('visitations.update') && in_array($visitation->parent_id, $user->getFamilyMemberIds());
     }
 
     /**
@@ -45,7 +45,7 @@ class VisitationPolicy
      */
     public function delete(User $user, Visitation $visitation): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']) && in_array($visitation->parent_id, $user->getFamilyMemberIds());
+        return $user->hasPermissionTo('visitations.delete') && in_array($visitation->parent_id, $user->getFamilyMemberIds());
     }
 
     /**

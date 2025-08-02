@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Role;
 use App\Models\Invitation;
 use App\Models\User;
 use App\Notifications\InvitationEmail;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class InvitationController extends Controller
 {
@@ -39,7 +41,7 @@ class InvitationController extends Controller
     {
         $request->validate([
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users', Rule::unique('invitations')->where(function ($query) { return $query->where('status', 'pending'); })],
-            'role' => ['required', 'string', Rule::in(['co-parent', 'nanny', 'grandparent', 'guardian'])],
+            'role' => ['required', new Enum(Role::class)],
         ]);
 
         $invitation = Invitation::create([

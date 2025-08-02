@@ -13,7 +13,7 @@ class ExpensePolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']);
+        return $user->hasPermissionTo('expenses.view');
     }
 
     /**
@@ -21,7 +21,7 @@ class ExpensePolicy
      */
     public function view(User $user, Expense $expense): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']) && in_array($expense->payer_id, $user->getFamilyMemberIds());
+        return $user->hasPermissionTo('expenses.view') && in_array($expense->payer_id, $user->getFamilyMemberIds());
     }
 
     /**
@@ -29,7 +29,7 @@ class ExpensePolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']);
+        return $user->hasPermissionTo('expenses.create');
     }
 
     /**
@@ -37,7 +37,7 @@ class ExpensePolicy
      */
     public function update(User $user, Expense $expense): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']) && in_array($expense->payer_id, $user->getFamilyMemberIds());
+        return $user->hasPermissionTo('expenses.update') && in_array($expense->payer_id, $user->getFamilyMemberIds());
     }
 
     /**
@@ -45,7 +45,7 @@ class ExpensePolicy
      */
     public function delete(User $user, Expense $expense): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']) && in_array($expense->payer_id, $user->getFamilyMemberIds());
+        return $user->hasPermissionTo('expenses.delete') && in_array($expense->payer_id, $user->getFamilyMemberIds());
     }
 
     /**

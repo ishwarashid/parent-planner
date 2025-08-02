@@ -13,7 +13,7 @@ class ChildPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']);
+        return $user->hasPermissionTo('children.view');
     }
 
     /**
@@ -21,7 +21,7 @@ class ChildPolicy
      */
     public function view(User $user, Child $child): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']) && in_array($child->user_id, $user->getFamilyMemberIds());
+        return $user->hasPermissionTo('children.view') && in_array($child->user_id, $user->getFamilyMemberIds());
     }
 
     /**
@@ -29,7 +29,7 @@ class ChildPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']);
+        return $user->hasPermissionTo('children.create');
     }
 
     /**
@@ -37,7 +37,7 @@ class ChildPolicy
      */
     public function update(User $user, Child $child): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']) && in_array($child->user_id, $user->getFamilyMemberIds());
+        return $user->hasPermissionTo('children.update') && in_array($child->user_id, $user->getFamilyMemberIds());
     }
 
     /**
@@ -45,7 +45,7 @@ class ChildPolicy
      */
     public function delete(User $user, Child $child): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']) && in_array($child->user_id, $user->getFamilyMemberIds());
+        return $user->hasPermissionTo('children.delete') && in_array($child->user_id, $user->getFamilyMemberIds());
     }
 
     /**
