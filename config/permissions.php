@@ -18,6 +18,7 @@ return [
             'expenses.create', 'expenses.view', 'expenses.update', 'expenses.delete',
             'documents.create', 'documents.view', 'documents.update', 'documents.delete',
             'invitations.create', 'invitations.view', 'invitations.delete',
+            'billing.view',
         ],
         'co-parent' => [
             'children.create', 'children.view', 'children.update', 'children.delete',

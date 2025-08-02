@@ -30,8 +30,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('invitations', InvitationController::class)->except(['show']);
     Route::post('invitations/{invitation}/resend', [InvitationController::class, 'resend'])->name('invitations.resend');
 
-    Route::get('/billing', [SubscriptionController::class, 'billing'])->name('billing');
-    Route::get('/billing-portal', [SubscriptionController::class, 'portal'])->name('billing.portal');
+    Route::get('/billing', [SubscriptionController::class, 'billing'])->name('billing')->middleware('can:billing.view');
+    Route::get('/billing-portal', [SubscriptionController::class, 'portal'])->name('billing.portal')->middleware('can:billing.view');
 });
 
 Route::get('invitation/{token}', [InvitationController::class, 'showAcceptForm'])->name('invitations.show')->middleware('guest');
@@ -41,7 +41,7 @@ Route::post('invitations/accept', [InvitationController::class, 'accept'])->name
 
 
 Route::middleware(['auth', 'verified'])->group(function() {
-    Route::get('/checkout', [SubscriptionController::class, 'checkout'])->name('checkout');
+    Route::get('/checkout', [SubscriptionController::class, 'checkout'])->name('checkout')->middleware('can:billing.view');
 });
 
 Route::post('/stripe/webhook', [\Laravel\Cashier\Http\Controllers\WebhookController::class, 'handleWebhook'])->name('cashier.webhook');

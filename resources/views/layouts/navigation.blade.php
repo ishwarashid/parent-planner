@@ -66,9 +66,11 @@
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
+                        @can('billing.view')
                         <x-dropdown-link :href="route('billing.portal')">
                             {{ __('Billing') }}
                         </x-dropdown-link>
+                        @endcan
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
@@ -144,9 +146,11 @@
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
 
+                @can('billing.view')
                 <x-responsive-nav-link :href="route('billing.portal')">
                     {{ __('Billing') }}
                 </x-responsive-nav-link>
+                @endcan
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">

@@ -41,5 +41,9 @@ class AuthServiceProvider extends ServiceProvider
                 return true;
             }
         });
+
+        Gate::define('billing.view', function ($user) {
+            return $user->hasPermissionTo('billing.view');
+        });
     }
 }
