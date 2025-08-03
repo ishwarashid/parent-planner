@@ -26,6 +26,13 @@ Route::get('professionals', [PublicProfessionalsController::class, 'index'])->na
 
 Route::get('professional-register', [ProfessionalRegistrationController::class, 'create'])->name('professional.register');
 Route::post('professional-register', [ProfessionalRegistrationController::class, 'store']);
+Route::get('professional/registration-pending', function () {
+    return view('auth.professional-registration-pending');
+})->name('professional.registration.pending');
+
+Route::get('/register-choice', function () {
+    return view('auth.register-choice');
+})->name('register.choice');
 
 Route::middleware(['auth', 'dashboard.access', 'admin', 'professional'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

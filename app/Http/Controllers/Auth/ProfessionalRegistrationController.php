@@ -52,8 +52,6 @@ class ProfessionalRegistrationController extends Controller
 
         event(new Registered($user));
 
-        // TODO: Redirect to a page informing the professional that their application is under review.
-
-        return redirect('/login')->with('status', 'Registration successful. Your application is under review.');
+        return redirect()->route('professional.registration.pending');
     }
 }

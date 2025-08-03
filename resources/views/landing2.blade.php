@@ -105,7 +105,7 @@ License: https://freebootstrap.net/license
           <div class="ms-auto w-auto">
             
             
-            <div class="header-social d-flex align-items-center gap-1"><a class="btn btn-primary py-2" href="{{ route('register') }}">Get Started</a>
+            <div class="header-social d-flex align-items-center gap-1"><a class="btn btn-primary py-2" href="{{ route('register.choice') }}">Get Started</a>
               
               <button class="fbs__net-navbar-toggler justify-content-center align-items-center ms-auto" data-bs-toggle="offcanvas" data-bs-target="#fbs__net-navbars" aria-controls="fbs__net-navbars" aria-label="Toggle navigation" aria-expanded="false">
                 <svg class="fbs__net-icon-menu" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -139,7 +139,7 @@ License: https://freebootstrap.net/license
                   <div class="col-lg-11"><span class="hero-subtitle text-uppercase" data-aos="fade-up" data-aos-delay="0">Welcome to Parent Planner</span>
                     <h1 class="hero-title mb-3" data-aos="fade-up" data-aos-delay="100">Simplifying Parenting, Together</h1>
                     <p class="hero-description mb-4 mb-lg-5" data-aos="fade-up" data-aos-delay="200">Whether you're managing school schedules, extracurriculars, or navigating co-parenting after separation or divorce, we're here to help.</p>
-                    <div class="cta d-flex gap-2 mb-4 mb-lg-5" data-aos="fade-up" data-aos-delay="300"><a class="btn" href="{{ route('register') }}">Get Started Now</a><a class="btn btn-white-outline" href="{{ route('login') }}">Learn More 
+                    <div class="cta d-flex gap-2 mb-4 mb-lg-5" data-aos="fade-up" data-aos-delay="300"><a class="btn" href="{{ route('register.choice') }}">Get Started Now</a><a class="btn btn-white-outline" href="{{ route('login') }}">Learn More 
                         <svg class="lucide lucide-arrow-up-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                           <path d="M7 7h10v10"></path>
                           <path d="M7 17 17 7"></path>
