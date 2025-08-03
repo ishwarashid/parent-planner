@@ -26,10 +26,9 @@ class Subscribed
             }
 
             // For professionals, check for the professional subscription.
-            // This should only apply after they are approved.
-            if ($user->role === 'professional' && $user->professional?->status === 'approved' && !$user->subscribed('professional')) {
-                // Redirect to their own dashboard to subscribe.
-                return redirect()->route('professional.dashboard')->with('error', 'You must subscribe to list your profile publicly.');
+            if ($user->role === 'professional' && $user->professional?->approval_status === 'approved' && !$user->subscribed('professional')) {
+                // Redirect to the professional pricing page to subscribe.
+                return redirect()->route('professional.pricing');
             }
         }
 

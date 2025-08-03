@@ -56,7 +56,7 @@
             <!-- Services -->
             <div class="mt-4">
                 <x-input-label for="services" :value="__('Services')" />
-                <textarea id="services" name="services" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required>{{ old('services') }}</textarea>
+                <textarea id="services" name="services" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>{{ old('services') }}</textarea>
                 <x-input-error :messages="$errors->get('services')" class="mt-2" />
             </div>
 

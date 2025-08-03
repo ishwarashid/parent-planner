@@ -78,15 +78,21 @@ Route::middleware(['auth', 'admin', 'professional'])->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::middleware(['auth', 'professional', 'admin'])->prefix('professional')->name('professional.')->group(function () {
+Route::middleware(['auth', 'professional', 'admin', 'subscribed'])->prefix('professional')->name('professional.')->group(function () {
     Route::get('/dashboard', [ProfessionalController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile/edit', [ProfessionalController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfessionalController::class, 'update'])->name('profile.update');
 
     // Subscription routes for professionals
+    Route::get('/pricing', [SubscriptionController::class, 'professionalPricing'])->name('pricing');
     Route::get('/billing', [SubscriptionController::class, 'billing'])->name('billing');
     Route::get('/checkout', [SubscriptionController::class, 'checkout'])->name('checkout');
     Route::get('/billing-portal', [SubscriptionController::class, 'portal'])->name('billing.portal');
+});
+
+Route::middleware(['auth', 'professional'])->prefix('professional')->name('professional.')->group(function () {
+    Route::get('/pricing', [SubscriptionController::class, 'professionalPricing'])->name('pricing');
+    Route::get('/billing', [SubscriptionController::class, 'billing'])->name('billing');
 });
 
 Route::middleware(['auth', 'admin', 'professional'])->prefix('admin')->group(function () {

@@ -29,7 +29,7 @@ class AdminController extends Controller
         $professional->update(['approval_status' => 'approved']);
         // TODO: Add notification to the professional
 
-        return redirect()->route('admin.professionals.index')->with('success', 'Professional approved successfully.');
+        return redirect()->route('professional.pricing')->with('success', 'Professional approved successfully.');
     }
 
     public function rejectProfessional(Professional $professional)

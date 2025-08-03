@@ -35,4 +35,9 @@ class SubscriptionController extends Controller
     {
         return Auth::user()->redirectToBillingPortal(route('dashboard'));
     }
+
+    public function professionalPricing()
+    {
+        return view('professionals.pricing');
+    }
 }
