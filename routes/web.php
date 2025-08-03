@@ -78,7 +78,7 @@ Route::middleware(['auth', 'admin', 'professional'])->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::middleware(['auth', 'professional', 'admin', 'subscribed'])->prefix('professional')->name('professional.')->group(function () {
+Route::middleware(['auth', 'professional', 'admin'])->prefix('professional')->name('professional.')->group(function () {
     Route::get('/dashboard', [ProfessionalController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile/edit', [ProfessionalController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfessionalController::class, 'update'])->name('profile.update');

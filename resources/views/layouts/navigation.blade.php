@@ -15,41 +15,50 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    @can('viewAny', App\Models\Child::class)
-                        <x-nav-link :href="route('children.index')" :active="request()->routeIs('children.index')">
-                            {{ __('Children') }}
+                    @if(in_array(Auth::user()->role, ['nanny', 'grandparent', 'guardian']))
+                        <x-nav-link :href="route('visitations.index')" :active="request()->routeIs('visitations.index')">
+                            {{ __('Visitations') }}
                         </x-nav-link>
-                    @endcan
-                    <x-nav-link :href="route('visitations.index')" :active="request()->routeIs('visitations.index')">
-                        {{ __('Visitations') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.index')">
-                        {{ __('Calendar') }}
-                    </x-nav-link>
-                    @can('viewAny', App\Models\Expense::class)
-                        <x-nav-link :href="route('expenses.index')" :active="request()->routeIs('expenses.index')">
-                            {{ __('Expenses') }}
+                        <x-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.index')">
+                            {{ __('Calendar') }}
                         </x-nav-link>
-                    @endcan
-                    @can('viewAny', App\Models\Document::class)
-                        <x-nav-link :href="route('documents.index')" :active="request()->routeIs('documents.index')">
-                            {{ __('Documents') }}
+                    @elseif(Auth::user()->role !== 'professional')
+                        @can('viewAny', App\Models\Child::class)
+                            <x-nav-link :href="route('children.index')" :active="request()->routeIs('children.index')">
+                                {{ __('Children') }}
+                            </x-nav-link>
+                        @endcan
+                        <x-nav-link :href="route('visitations.index')" :active="request()->routeIs('visitations.index')">
+                            {{ __('Visitations') }}
                         </x-nav-link>
-                    @endcan
-                    @can('viewAny', App\Models\Report::class)
-                        <x-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.index')">
-                            {{ __('Reports') }}
+                        <x-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.index')">
+                            {{ __('Calendar') }}
                         </x-nav-link>
-                    @endcan
-                    @can('viewAny', App\Models\Invitation::class)
-                        <x-nav-link :href="route('invitations.index')" :active="request()->routeIs('invitations.index')">
-                            {{ __('Invitations') }}
+                        @can('viewAny', App\Models\Expense::class)
+                            <x-nav-link :href="route('expenses.index')" :active="request()->routeIs('expenses.index')">
+                                {{ __('Expenses') }}
+                            </x-nav-link>
+                        @endcan
+                        @can('viewAny', App\Models\Document::class)
+                            <x-nav-link :href="route('documents.index')" :active="request()->routeIs('documents.index')">
+                                {{ __('Documents') }}
+                            </x-nav-link>
+                        @endcan
+                        @can('viewAny', App\Models\Report::class)
+                            <x-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.index')">
+                                {{ __('Reports') }}
+                            </x-nav-link>
+                        @endcan
+                        @can('viewAny', App\Models\Invitation::class)
+                            <x-nav-link :href="route('invitations.index')" :active="request()->routeIs('invitations.index')">
+                                {{ __('Invitations') }}
+                            </x-nav-link>
+                        @endcan
+                        @if(Auth::user()->is_admin || Auth::user()->role === 'parent' || Auth::user()->role === 'co-parent')
+                        <x-nav-link :href="route('professionals.public.index')" :active="request()->routeIs('professionals.public.index')">
+                            {{ __('Professionals') }}
                         </x-nav-link>
-                    @endcan
-                    @if(Auth::user()->is_admin || Auth::user()->role === 'parent' || Auth::user()->role === 'co-parent')
-                    <x-nav-link :href="route('professionals.public.index')" :active="request()->routeIs('professionals.public.index')">
-                        {{ __('Professionals') }}
-                    </x-nav-link>
+                        @endif
                     @endif
                 </div>
             </div>
@@ -110,41 +119,50 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            @can('viewAny', App\Models\Child::class)
-                <x-responsive-nav-link :href="route('children.index')" :active="request()->routeIs('children.index')">
-                    {{ __('Children') }}
+            @if(in_array(Auth::user()->role, ['nanny', 'grandparent', 'guardian']))
+                <x-responsive-nav-link :href="route('visitations.index')" :active="request()->routeIs('visitations.index')">
+                    {{ __('Visitations') }}
                 </x-responsive-nav-link>
-            @endcan
-            <x-responsive-nav-link :href="route('visitations.index')" :active="request()->routeIs('visitations.index')">
-                {{ __('Visitations') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.index')">
-                {{ __('Calendar') }}
-            </x-responsive-nav-link>
-            @can('viewAny', App\Models\Expense::class)
-                <x-responsive-nav-link :href="route('expenses.index')" :active="request()->routeIs('expenses.index')">
-                    {{ __('Expenses') }}
+                <x-responsive-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.index')">
+                    {{ __('Calendar') }}
                 </x-responsive-nav-link>
-            @endcan
-            @can('viewAny', App\Models\Document::class)
-                <x-responsive-nav-link :href="route('documents.index')" :active="request()->routeIs('documents.index')">
-                    {{ __('Documents') }}
+            @elseif(Auth::user()->role !== 'professional')
+                @can('viewAny', App\Models\Child::class)
+                    <x-responsive-nav-link :href="route('children.index')" :active="request()->routeIs('children.index')">
+                        {{ __('Children') }}
+                    </x-responsive-nav-link>
+                @endcan
+                <x-responsive-nav-link :href="route('visitations.index')" :active="request()->routeIs('visitations.index')">
+                    {{ __('Visitations') }}
                 </x-responsive-nav-link>
-            @endcan
-            @can('viewAny', App\Models\Report::class)
-                <x-responsive-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.index')">
-                    {{ __('Reports') }}
+                <x-responsive-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.index')">
+                    {{ __('Calendar') }}
                 </x-responsive-nav-link>
-            @endcan
-            @can('viewAny', App\Models\Invitation::class)
-                <x-responsive-nav-link :href="route('invitations.index')" :active="request()->routeIs('invitations.index')">
-                    {{ __('Invitations') }}
+                @can('viewAny', App\Models\Expense::class)
+                    <x-responsive-nav-link :href="route('expenses.index')" :active="request()->routeIs('expenses.index')">
+                        {{ __('Expenses') }}
+                    </x-responsive-nav-link>
+                @endcan
+                @can('viewAny', App\Models\Document::class)
+                    <x-responsive-nav-link :href="route('documents.index')" :active="request()->routeIs('documents.index')">
+                        {{ __('Documents') }}
+                    </x-responsive-nav-link>
+                @endcan
+                @can('viewAny', App\Models\Report::class)
+                    <x-responsive-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.index')">
+                        {{ __('Reports') }}
+                    </x-responsive-nav-link>
+                @endcan
+                @can('viewAny', App\Models\Invitation::class)
+                    <x-responsive-nav-link :href="route('invitations.index')" :active="request()->routeIs('invitations.index')">
+                        {{ __('Invitations') }}
+                    </x-responsive-nav-link>
+                @endcan
+                @if(Auth::user()->is_admin || Auth::user()->role === 'parent' || Auth::user()->role === 'co-parent')
+                <x-responsive-nav-link :href="route('professionals.public.index')" :active="request()->routeIs('professionals.public.index')">
+                    {{ __('Professionals') }}
                 </x-responsive-nav-link>
-            @endcan
-            @if(Auth::user()->is_admin || Auth::user()->role === 'parent' || Auth::user()->role === 'co-parent')
-            <x-responsive-nav-link :href="route('professionals.public.index')" :active="request()->routeIs('professionals.public.index')">
-                {{ __('Professionals') }}
-            </x-responsive-nav-link>
+                @endif
             @endif
         </div>
 
