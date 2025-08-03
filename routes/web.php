@@ -34,7 +34,7 @@ Route::get('/register-choice', function () {
     return view('auth.register-choice');
 })->name('register.choice');
 
-Route::middleware(['auth', 'dashboard.access', 'admin', 'professional'])->group(function () {
+Route::middleware(['auth', 'verified', 'dashboard.access', 'admin', 'professional'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('visitations/api', [VisitationController::class, 'apiIndex'])->name('visitations.api');
     Route::resource('visitations', VisitationController::class)->only(['index', 'show']);
@@ -44,7 +44,7 @@ Route::middleware(['auth', 'dashboard.access', 'admin', 'professional'])->group(
     Route::delete('events/{event}', [CalendarController::class, 'destroy'])->name('events.destroy');
 });
 
-Route::middleware(['auth', 'parent', 'admin', 'professional'])->group(function () {
+Route::middleware(['auth', 'parent', 'verified', 'admin', 'professional'])->group(function () {
     Route::resource('children', ChildController::class);
     Route::resource('visitations', VisitationController::class)->except(['index', 'show']);
     Route::resource('expenses', ExpenseController::class);
@@ -70,7 +70,7 @@ Route::middleware(['auth', 'parent'])->group(function() {
 
 Route::post('/stripe/webhook', [\Laravel\Cashier\Http\Controllers\WebhookController::class, 'handleWebhook'])->name('cashier.webhook');
 
-Route::middleware(['auth', 'admin', 'professional'])->group(function () {
+Route::middleware(['auth', 'admin', 'verified', 'professional'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -78,7 +78,7 @@ Route::middleware(['auth', 'admin', 'professional'])->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::middleware(['auth', 'professional', 'admin'])->prefix('professional')->name('professional.')->group(function () {
+Route::middleware(['auth', 'professional', 'verified', 'admin'])->prefix('professional')->name('professional.')->group(function () {
     Route::get('/dashboard', [ProfessionalController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile/edit', [ProfessionalController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfessionalController::class, 'update'])->name('profile.update');
@@ -95,7 +95,7 @@ Route::middleware(['auth', 'professional'])->prefix('professional')->name('profe
     Route::get('/billing', [SubscriptionController::class, 'billing'])->name('billing');
 });
 
-Route::middleware(['auth', 'admin', 'professional'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'verified', 'admin', 'professional'])->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/professionals', [AdminController::class, 'professionals'])->name('admin.professionals.index');
     Route::get('/professionals/{professional}', [AdminController::class, 'showProfessional'])->name('admin.professionals.show');

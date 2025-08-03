@@ -25,7 +25,7 @@
                                 </select>
                             </div>
                             @can('create', App\Models\Visitation::class)
-                            <button x-data @click="$dispatch('open-modal', { name: 'visitation-form' })" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            <button x-data="{}" @click="$dispatch('open-modal', 'visitation-form')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                 Add New Visitation
                             </button>
                             @endcan

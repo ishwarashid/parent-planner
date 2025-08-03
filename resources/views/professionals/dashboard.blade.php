@@ -46,7 +46,7 @@
                         </a>
                     @else
                         <p>You are not subscribed. Please subscribe to be listed on the platform.</p>
-                        <a href="{{ route('pricing') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2 inline-block">
+                        <a href="{{ route('professional.pricing') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2 inline-block">
                             Subscribe Now
                         </a>
                     @endif
