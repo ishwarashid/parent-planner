@@ -3,11 +3,14 @@
 namespace App\Providers;
 
 use App\Models\Child;
-use App\Policies\ChildPolicy;
 use App\Models\Document;
+use App\Models\Event;
 use App\Models\Expense;
+use App\Models\Invitation;
 use App\Models\Visitation;
+use App\Policies\ChildPolicy;
 use App\Policies\DocumentPolicy;
+use App\Policies\EventPolicy;
 use App\Policies\ExpensePolicy;
 use App\Policies\InvitationPolicy;
 use App\Policies\VisitationPolicy;
@@ -26,6 +29,7 @@ class AuthServiceProvider extends ServiceProvider
         Document::class => DocumentPolicy::class,
         Expense::class => ExpensePolicy::class,
         Invitation::class => InvitationPolicy::class,
+        Event::class => EventPolicy::class,
     ];
 
     /**

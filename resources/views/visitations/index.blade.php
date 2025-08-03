@@ -88,16 +88,6 @@
                         </div>
                     @endif
 
-                    <div class="mb-8">
-                        <!-- Placeholder for FullCalendar.js or Livewire Calendar -->
-                        <div id="calendar" class="bg-gray-50 p-4 rounded-lg shadow-inner" style="min-height: 500px;">
-                            <div class="flex justify-center items-center h-full">
-                                <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Visitation List</h3>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">

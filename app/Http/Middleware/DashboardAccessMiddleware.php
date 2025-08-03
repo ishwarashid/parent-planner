@@ -16,7 +16,7 @@ class DashboardAccessMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $allowedRoles = ['parent', 'co-parent', 'nanny', 'guardian', 'grandparent'];
+        $allowedRoles = ['parent', 'co-parent', 'nanny', 'guardian', 'grandparent', 'professional'];
 
         if (Auth::check() && in_array(Auth::user()->role, $allowedRoles)) {
             return $next($request);

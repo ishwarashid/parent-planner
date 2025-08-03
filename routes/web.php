@@ -14,14 +14,11 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\ProfessionalRegistrationController;
 use App\Http\Controllers\ProfessionalController;
 use App\Http\Controllers\PublicProfessionalsController;
+use App\Http\Controllers\CalendarController;
 
 Route::get('/', function () {
     return view('landing2');
 });
-
-
-
-
 
 Route::get('/pricing', [SubscriptionController::class, 'pricing'])->name('pricing');
 
@@ -30,14 +27,17 @@ Route::get('professionals', [PublicProfessionalsController::class, 'index'])->na
 Route::get('professional-register', [ProfessionalRegistrationController::class, 'create'])->name('professional.register');
 Route::post('professional-register', [ProfessionalRegistrationController::class, 'store']);
 
-
-Route::middleware(['auth', 'verified', 'dashboard.access', 'admin', 'professional'])->group(function () {
+Route::middleware(['auth', 'dashboard.access', 'admin', 'professional'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('visitations/api', [VisitationController::class, 'apiIndex'])->name('visitations.api');
     Route::resource('visitations', VisitationController::class)->only(['index', 'show']);
+    Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::post('events', [CalendarController::class, 'store'])->name('events.store');
+    Route::put('events/{event}', [CalendarController::class, 'update'])->name('events.update');
+    Route::delete('events/{event}', [CalendarController::class, 'destroy'])->name('events.destroy');
 });
 
-Route::middleware(['auth', 'verified', 'parent', 'admin', 'professional'])->group(function () {
+Route::middleware(['auth', 'parent', 'admin', 'professional'])->group(function () {
     Route::resource('children', ChildController::class);
     Route::resource('visitations', VisitationController::class)->except(['index', 'show']);
     Route::resource('expenses', ExpenseController::class);
@@ -52,14 +52,12 @@ Route::middleware(['auth', 'verified', 'parent', 'admin', 'professional'])->grou
     Route::get('/billing-portal', [SubscriptionController::class, 'portal'])->name('billing.portal');
 });
 
-
 Route::get('invitation/{token}', [InvitationController::class, 'showAcceptForm'])->name('invitations.show')->middleware('guest');
 Route::post('invitations/{invitation}/accept', [InvitationController::class, 'acceptInvitation'])->name('invitations.accept.process');
 Route::post('invitations/{invitation}/reject', [InvitationController::class, 'rejectInvitation'])->name('invitations.reject.process');
 Route::post('invitations/accept', [InvitationController::class, 'accept'])->name('invitations.accept')->middleware('guest');
 
-
-Route::middleware(['auth', 'verified', 'parent'])->group(function() {
+Route::middleware(['auth', 'parent'])->group(function() {
     Route::get('/checkout', [SubscriptionController::class, 'checkout'])->name('checkout');
 });
 
@@ -84,10 +82,10 @@ Route::middleware(['auth', 'professional', 'admin'])->prefix('professional')->na
     Route::get('/billing-portal', [SubscriptionController::class, 'portal'])->name('billing.portal');
 });
 
-Route::middleware(['auth', 'admin', 'professional'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', [AdminController::class, 'index'])->name('dashboard');
-    Route::get('/professionals', [AdminController::class, 'professionals'])->name('professionals.index');
-    Route::get('/professionals/{professional}', [AdminController::class, 'showProfessional'])->name('professionals.show');
-    Route::post('/professionals/{professional}/approve', [AdminController::class, 'approveProfessional'])->name('professionals.approve');
-    Route::post('/professionals/{professional}/reject', [AdminController::class, 'rejectProfessional'])->name('professionals.reject');
+Route::middleware(['auth', 'admin', 'professional'])->prefix('admin')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/professionals', [AdminController::class, 'professionals'])->name('admin.professionals.index');
+    Route::get('/professionals/{professional}', [AdminController::class, 'showProfessional'])->name('admin.professionals.show');
+    Route::post('/professionals/{professional}/approve', [AdminController::class, 'approveProfessional'])->name('admin.professionals.approve');
+    Route::post('/professionals/{professional}/reject', [AdminController::class, 'rejectProfessional'])->name('admin.professionals.reject');
 });

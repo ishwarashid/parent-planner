@@ -20,7 +20,7 @@ class VisitationController extends Controller
         $children = \App\Models\Child::whereIn('user_id', $familyMemberIds)->get();
         $visitations = Visitation::whereIn('parent_id', $familyMemberIds)->orderBy('date_start', 'asc')->get();
         $currentUserId = auth()->id();
-        return view('visitations.calendar', compact('visitations', 'currentUserId', 'children'));
+        return view('visitations.index', compact('visitations', 'currentUserId', 'children'));
     }
 
     public function apiIndex(Request $request)

@@ -23,6 +23,9 @@
                     <x-nav-link :href="route('visitations.index')" :active="request()->routeIs('visitations.index')">
                         {{ __('Visitations') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.index')">
+                        {{ __('Calendar') }}
+                    </x-nav-link>
                     @can('viewAny', App\Models\Expense::class)
                         <x-nav-link :href="route('expenses.index')" :active="request()->routeIs('expenses.index')">
                             {{ __('Expenses') }}
@@ -114,6 +117,9 @@
             @endcan
             <x-responsive-nav-link :href="route('visitations.index')" :active="request()->routeIs('visitations.index')">
                 {{ __('Visitations') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.index')">
+                {{ __('Calendar') }}
             </x-responsive-nav-link>
             @can('viewAny', App\Models\Expense::class)
                 <x-responsive-nav-link :href="route('expenses.index')" :active="request()->routeIs('expenses.index')">

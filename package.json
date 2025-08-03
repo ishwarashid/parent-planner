@@ -23,6 +23,7 @@
         "@fullcalendar/interaction": "^6.1.18",
         "@fullcalendar/list": "^6.1.18",
         "@fullcalendar/timegrid": "^6.1.18",
-        "fullcalendar": "^6.1.18"
+        "fullcalendar": "^6.1.18",
+        "tippy.js": "^6.3.7"
     }
 }
