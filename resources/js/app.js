@@ -1,8 +1,11 @@
 import './bootstrap';
 
 import Alpine from 'alpinejs';
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css';
 
 window.Alpine = Alpine;
+window.tippy = tippy;
 
 Alpine.start();
 
@@ -223,5 +226,133 @@ document.addEventListener('DOMContentLoaded', function() {
                 calendar.refetchEvents();
             });
         }
+    }
+
+    var generalCalendarEl = document.getElementById('general-calendar');
+    if (generalCalendarEl) {
+        var events = JSON.parse(generalCalendarEl.dataset.events);
+        var generalCalendar = new Calendar(generalCalendarEl, {
+            plugins: [ dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin ],
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            initialView: 'dayGridMonth',
+            editable: true,
+            selectable: true,
+            displayEventTime: false,
+            events: events,
+            select: function(info) {
+                document.getElementById('eventForm').reset();
+                document.getElementById('event_id').value = '';
+
+                // Function to format date for datetime-local input
+                const toLocalISOString = (date) => {
+                    const pad = (num) => (num < 10 ? '0' : '') + num;
+                    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+                };
+
+                let start = info.start;
+                let end = info.end;
+
+                // If a full day is clicked, set a default time range
+                if (info.allDay) {
+                    start.setHours(9, 0, 0); // 9:00 AM
+                    end = new Date(start);
+                    end.setHours(10, 0, 0); // 10:00 AM
+                }
+
+                document.getElementById('start').value = toLocalISOString(start);
+                document.getElementById('end').value = toLocalISOString(end);
+
+                window.dispatchEvent(new CustomEvent('open-modal', { detail: 'event-form' }));
+            },
+            eventDrop: function(info) {
+                if (!info.event.id) return;
+                var eventData = {
+                    title: info.event.title,
+                    description: info.event.extendedProps.description,
+                    start: info.event.startStr,
+                    end: info.event.endStr,
+                    _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                };
+                fetch('/events/' + info.event.id, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(eventData)
+                });
+            },
+            eventClick: function(info) {
+                if (info.event.id && confirm("Are you sure you want to delete this event?")) {
+                    fetch('/events/' + info.event.id, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        }
+                    }).then(() => {
+                        info.event.remove();
+                    });
+                }
+            },
+            eventDidMount: function(info) {
+                let startTime = info.event.start ? new Date(info.event.start).toLocaleString() : 'N/A';
+                let endTime = info.event.end ? new Date(info.event.end).toLocaleString() : 'N/A';
+                let description = info.event.extendedProps.description || 'No description';
+
+                let content = `<strong>${info.event.title}</strong><br>
+                             <strong>Start:</strong> ${startTime}<br>
+                             <strong>End:</strong> ${endTime}<br>
+                             <strong>Details:</strong> ${description}`;
+
+                tippy(info.el, {
+                    content: content,
+                    allowHTML: true,
+                });
+            }
+        });
+        generalCalendar.render();
+
+        document.getElementById('eventForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let eventId = document.getElementById('event_id').value;
+            let url = eventId ? '/events/' + eventId : '/events';
+            let method = eventId ? 'PUT' : 'POST';
+
+            let formData = new FormData(this);
+            let data = Object.fromEntries(formData.entries());
+
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (eventId) {
+                    let event = generalCalendar.getEventById(eventId);
+                    event.setProp('title', data.title);
+                    event.setExtendedProp('description', data.description);
+                    event.setStart(data.start);
+                    event.setEnd(data.end);
+                } else {
+                    generalCalendar.addEvent({
+                        id: data.id,
+                        title: data.title,
+                        start: data.start,
+                        end: data.end,
+                        description: data.description,
+                        color: '#dc3545'
+                    });
+                }
+                window.dispatchEvent(new CustomEvent('close-modal'));
+            });
+        });
     }
 });
