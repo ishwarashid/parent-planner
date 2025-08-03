@@ -77,7 +77,7 @@ Route::middleware(['auth', 'professional', 'admin'])->prefix('professional')->na
     Route::get('/dashboard', [ProfessionalController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile/edit', [ProfessionalController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfessionalController::class, 'update'])->name('profile.update');
-    
+
     // Subscription routes for professionals
     Route::get('/billing', [SubscriptionController::class, 'billing'])->name('billing');
     Route::get('/checkout', [SubscriptionController::class, 'checkout'])->name('checkout');

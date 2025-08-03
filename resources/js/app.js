@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('is_recurring').checked = info.event.extendedProps.is_recurring;
                 document.getElementById('notes').value = info.event.extendedProps.notes;
 
-                window.dispatchEvent(new CustomEvent('open-modal', { detail: { name: 'visitation-form' } }));
+                window.dispatchEvent(new CustomEvent('open-modal', { detail: 'visitation-form' }));
             },
             dateClick: function(info) {
                 let form = document.getElementById('visitationForm');
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('date_start').value = info.dateStr + 'T12:00'; // Default to noon
                 document.getElementById('date_end').value = info.dateStr + 'T13:00'; // Default to 1 hour duration
 
-                window.dispatchEvent(new CustomEvent('open-modal', { detail: { name: 'visitation-form' } }));
+                window.dispatchEvent(new CustomEvent('open-modal', { detail: 'visitation-form' }));
             },
             eventDrop: function(info) {
                 // Handle event drag-and-drop (update visitation dates)
