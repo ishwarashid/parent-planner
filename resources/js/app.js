@@ -287,15 +287,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             },
             eventClick: function(info) {
-                if (info.event.id && confirm("Are you sure you want to delete this event?")) {
-                    fetch('/events/' + info.event.id, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        }
-                    }).then(() => {
-                        info.event.remove();
-                    });
+                if (info.event.id) {
+                    window.dispatchEvent(new CustomEvent('open-modal', { detail: 'delete-event-confirm' }));
+
+                    document.getElementById('confirmDeleteButton').onclick = function() {
+                        fetch('/events/' + info.event.id, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            }
+                        }).then(() => {
+                            info.event.remove();
+                            window.dispatchEvent(new CustomEvent('close-modal'));
+                        });
+                    };
                 }
             },
             eventDidMount: function(info) {

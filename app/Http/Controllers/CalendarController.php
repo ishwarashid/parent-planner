@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Child;
 use App\Models\Event;
+use App\Models\Expense;
 use App\Models\Visitation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -58,6 +59,18 @@ class CalendarController extends Controller
                 'allDay' => false,
                 'color' => '#dc3545',
                 'description' => $event->description,
+            ];
+        }
+
+        // Get Expenses
+        $expenses = Expense::whereIn('payer_id', $familyMemberIds)->get();
+        foreach ($expenses as $expense) {
+            $events[] = [
+                'title' => 'Expense: ' . $expense->description,
+                'start' => $expense->created_at->format('Y-m-d'),
+                'allDay' => true,
+                'color' => '#ffc107',
+                'description' => 'Amount: ' . $expense->amount . ' - Category: ' . $expense->category,
             ];
         }
 

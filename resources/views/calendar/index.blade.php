@@ -16,4 +16,5 @@
     </div>
 
     @include('calendar.event-modal')
+    @include('calendar.delete-event-modal')
 </x-app-layout>
