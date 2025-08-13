@@ -15,10 +15,16 @@ class Event extends Model
         'description',
         'start',
         'end',
+        'child_id'
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function child()
+    {
+        return $this->belongsTo(Child::class);
     }
 }

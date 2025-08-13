@@ -8,6 +8,14 @@ use Illuminate\Support\Facades\Storage;
 
 class ExpenseController extends Controller
 {
+     public function __construct()
+    {
+        // This single line connects all controller methods to their corresponding policy methods.
+        // e.g., the `store()` method will automatically check the `create()` policy method.
+        // the `edit()` method will automatically check the `update()` policy method.
+        $this->authorizeResource(Expense::class, 'expense');
+    }
+
     /**
      * Display a listing of the resource.
      */

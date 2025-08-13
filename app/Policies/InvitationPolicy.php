@@ -13,7 +13,7 @@ class InvitationPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']);
+        return in_array($user->role, ['parent']);
     }
 
     /**
@@ -29,7 +29,7 @@ class InvitationPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']);
+        return in_array($user->role, ['parent']);
     }
 
     /**
@@ -45,7 +45,8 @@ class InvitationPolicy
      */
     public function delete(User $user, Invitation $invitation): bool
     {
-        return $user->id === $invitation->invited_by && $invitation->status !== 'registered';
+        // return $user->id === $invitation->invited_by && $invitation->status !== 'registered';
+        return $user->id === $invitation->invited_by;
     }
 
     /**

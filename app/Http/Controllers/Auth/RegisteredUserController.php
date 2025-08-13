@@ -43,7 +43,7 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -67,11 +67,19 @@ class RegisteredUserController extends Controller
             'role' => $role,
         ]);
 
+
         if ($invitation) {
+            // If an invitation was successfully processed, they are an Invited User.
+            $user->assignRole('Invited User');
+
+            // Update the invitation status now that they have fully registered.
             $invitation->update([
                 'registered_at' => now(),
                 'status' => 'registered',
             ]);
+        } else {
+            // If there was no invitation, they are a Main Parent.
+            $user->assignRole('Main Parent');
         }
 
         event(new Registered($user));

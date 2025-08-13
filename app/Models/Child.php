@@ -24,6 +24,7 @@ class Child extends Model
         'emergency_contact_info',
         'special_needs',
         'other_info',
+        'color',
     ];
 
     public function user()
@@ -44,5 +45,22 @@ class Child extends Model
     public function documents()
     {
         return $this->hasMany(Document::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($child) {
+            if (empty($child->color)) {
+                $child->color = self::getRandomColor();
+            }
+        });
+    }
+
+    public static function getRandomColor()
+    {
+        $colors = ['#F87171', '#FBBF24', '#34D399', '#60A5FA', '#A78BFA', '#F472B6', '#FCD34D', '#FCA5A5'];
+        return $colors[array_rand($colors)];
     }
 }

@@ -4,63 +4,44 @@ namespace App\Policies;
 
 use App\Models\Child;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ChildPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']);
+        logger('viewAll');
+        return $user->can('view-children');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
+    // The view policy checks both permission AND ownership.
     public function view(User $user, Child $child): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']) && in_array($child->user_id, $user->getFamilyMemberIds());
+        logger($user->getAccountOwnerId());
+        logger($child->user_id);
+
+        // Does the user have the permission AND does the child belong to their family account?
+        if ($user->can('view-children') && $user->getAccountOwnerId() === $child->user_id) {
+            logger('view');
+        } else {
+            logger('no view');
+        }
+
+        return $user->can('view-children') && $user->getAccountOwnerId() === $child->user_id;
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']);
+        logger('can create children');
+        return $user->can('create-children');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
     public function update(User $user, Child $child): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']) && in_array($child->user_id, $user->getFamilyMemberIds());
+        return $user->can('update-children') && $user->getAccountOwnerId() === $child->user_id;
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
     public function delete(User $user, Child $child): bool
     {
-        return in_array($user->role, ['parent', 'co-parent']) && in_array($child->user_id, $user->getFamilyMemberIds());
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Child $child): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Child $child): bool
-    {
-        return false;
+        return $user->can('delete-children') && $user->getAccountOwnerId() === $child->user_id;
     }
 }

@@ -1,6 +1,99 @@
+<style>
+    /* Theme color variables from your new palette */
+    :root {
+        --theme-header: #000033;
+        /* Midnight Blue */
+        --theme-body-text: #1D2951;
+        /* Muted Navy */
+        --theme-button-bg: #40E0D0;
+        /* Turquoise */
+        --theme-button-text: #000033;
+        --theme-button-bg-hover: #48D1CC;
+        /* Medium Turquoise */
+
+        --theme-alert-bg: #AFEEEE;
+        /* Pale Turquoise */
+        --theme-alert-border: #00CED1;
+        /* Dark Turquoise */
+        --theme-alert-text: #2F4F4F;
+        /* Dark Slate Gray */
+
+        /* Action Link Colors */
+        --theme-action-view: #008080;
+        /* Teal */
+        --theme-action-edit: #3F51B5;
+        /* Indigo */
+        --theme-action-delete: #FF6F61;
+        /* Coral */
+    }
+
+    /* General Styling */
+    .theme-header-text {
+        color: var(--theme-header);
+    }
+
+    .theme-button {
+        background-color: var(--theme-button-bg);
+        color: var(--theme-button-text);
+        font-weight: 700;
+        transition: background-color 0.2s;
+    }
+
+    .theme-button:hover {
+        background-color: var(--theme-button-bg-hover);
+    }
+
+    /* Success Alert */
+    .theme-alert-success {
+        background-color: var(--theme-alert-bg);
+        border-color: var(--theme-alert-border);
+        color: var(--theme-alert-text);
+    }
+
+    /* Table Styling */
+    .theme-table-header {
+        background-color: #f9fafb;
+    }
+
+    .theme-table-header-text {
+        color: var(--theme-body-text);
+    }
+
+    .theme-table-row-text {
+        color: var(--theme-body-text);
+    }
+
+    tbody tr:hover {
+        background-color: #f9fafb;
+    }
+
+    /* Table Action Links */
+    .theme-action-link {
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .theme-action-link:hover {
+        text-decoration: underline;
+        opacity: 0.8;
+    }
+
+    .theme-action-view {
+        color: var(--theme-action-view);
+    }
+
+    .theme-action-edit {
+        color: var(--theme-action-edit);
+    }
+
+    .theme-action-delete {
+        color: var(--theme-action-delete);
+    }
+</style>
+
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl leading-tight theme-header-text">
             {{ __('Children') }}
         </h2>
     </x-slot>
@@ -10,39 +103,44 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-end mb-4">
-                        <a href="{{ route('children.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Add New Child
-                        </a>
+                        @can('create', App\Models\Child::class)
+                            <a href="{{ route('children.create') }}" class="py-2 px-4 rounded theme-button">
+                                Add New Child
+                            </a>
+                        @endcan
                     </div>
 
                     @if (session('success'))
-                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <div class="border px-4 py-3 rounded relative mb-4 theme-alert-success" role="alert">
                             <span class="block sm:inline">{{ session('success') }}</span>
                         </div>
                     @endif
 
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                            <thead class="theme-table-header">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Photo
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Name
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Date of Birth
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Allergies
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        School Info
-                                    </th>
-                                    <th scope="col" class="relative px-6 py-3">
-                                        <span class="sr-only">Actions</span>
-                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
+                                        Photo</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
+                                        Name</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
+                                        Date of Birth</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
+                                        Color</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
+                                        Allergies</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
+                                        School Info</th>
+                                     <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
+                                        Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -50,38 +148,72 @@
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             @if ($child->profile_photo_path)
-                                                <img src="{{ asset('storage/' . $child->profile_photo_path) }}" alt="{{ $child->name }}" class="h-10 w-10 rounded-full object-cover">
+                                                <img src="{{ asset('storage/' . $child->profile_photo_path) }}"
+                                                    alt="{{ $child->name }}"
+                                                    class="h-10 w-10 rounded-full object-cover">
                                             @else
-                                                <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
-                                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                                <div
+                                                    class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                                                    <svg class="h-6 w-6" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                                        </path>
+                                                    </svg>
                                                 </div>
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm font-medium text-gray-900">{{ $child->name }}</div>
+                                            <div class="text-sm font-medium theme-table-row-text">{{ $child->name }}
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($child->dob)->format('M d, Y') }}</div>
+                                            <div class="text-sm theme-table-row-text">
+                                                {{ \Carbon\Carbon::parse($child->dob)->format('M d, Y') }}</div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900">{{ $child->allergies ?? 'N/A' }}</div>
+                                            @if ($child->color)
+                                                <div class="h-6 w-6 rounded-full border"
+                                                    style="background-color: {{ $child->color }}"></div>
+                                            @else
+                                                <div class="h-6 w-6 rounded-full border bg-gray-200"></div>
+                                            @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900">{{ $child->school_name ?? 'N/A' }} ({{$child->school_grade ?? 'N/A'}})</div>
+                                            <div class="text-sm theme-table-row-text">{{ $child->allergies ?? 'N/A' }}
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm theme-table-row-text">{{ $child->school_name ?? 'N/A' }}
+                                                ({{ $child->school_grade ?? 'N/A' }})</div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <a href="{{ route('children.show', $child) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">View</a>
-                                            <a href="{{ route('children.edit', $child) }}" class="text-yellow-600 hover:text-yellow-900 mr-2">Edit</a>
-                                            <form action="{{ route('children.destroy', $child) }}" method="POST" class="inline-block">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this child?')">Delete</button>
-                                            </form>
+                                            @can('view', $child)
+                                                <a href="{{ route('children.show', $child) }}"
+                                                    class="mr-3 theme-action-link theme-action-view">View</a>
+                                            @endcan
+                                            @can('update', $child)
+                                                <a href="{{ route('children.edit', $child) }}"
+                                                    class="mr-3 theme-action-link theme-action-edit">Edit</a>
+                                            @endcan
+                                            @can('delete', $child)
+                                                <form action="{{ route('children.destroy', $child) }}" method="POST"
+                                                    class="inline-block">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="theme-action-link theme-action-delete"
+                                                        onclick="return confirm('Are you sure you want to delete this child\'s record?')">Delete</button>
+                                                </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">No children found.</td>
+                                        <td colspan="7"
+                                            class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                                            No children found.
+                                        </td>
                                     </tr>
                                 @endforelse
                             </tbody>

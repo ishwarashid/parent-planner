@@ -11,11 +11,13 @@ class Visitation extends Model
 
     protected $fillable = [
         'child_id',
-        'parent_id',
+        'parent_id',      // The user this visitation is ASSIGNED TO
+        'created_by',     // The user who CREATED this record
         'date_start',
         'date_end',
         'is_recurring',
         'notes',
+        'status',
     ];
 
     public function child()
@@ -23,8 +25,19 @@ class Visitation extends Model
         return $this->belongsTo(Child::class);
     }
 
+    /**
+     * Get the parent (assignee) for the visitation.
+     */
     public function parent()
     {
         return $this->belongsTo(User::class, 'parent_id');
+    }
+
+    /**
+     * Get the user who created the visitation.
+     */
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

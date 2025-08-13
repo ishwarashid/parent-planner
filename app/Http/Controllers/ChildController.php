@@ -8,6 +8,15 @@ use Illuminate\Support\Facades\Storage;
 
 class ChildController extends Controller
 {
+    
+    public function __construct()
+    {
+        // This single line connects all controller methods to their corresponding policy methods.
+        // e.g., the `store()` method will automatically check the `create()` policy method.
+        // the `edit()` method will automatically check the `update()` policy method.
+        $this->authorizeResource(Child::class, 'child');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -41,6 +50,7 @@ class ChildController extends Controller
             'primary_residence' => 'nullable|string|max:255',
             'school_name' => 'required|string|max:255',
             'school_grade' => 'nullable|string|max:255',
+            'color' => 'nullable|string|max:7',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'extracurricular_activities' => 'nullable|string',
             'doctor_info' => 'nullable|string',
@@ -93,6 +103,7 @@ class ChildController extends Controller
             'primary_residence' => 'nullable|string|max:255',
             'school_name' => 'required|string|max:255',
             'school_grade' => 'nullable|string|max:255',
+            'color' => 'nullable|string|max:7',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'extracurricular_activities' => 'nullable|string',
             'doctor_info' => 'nullable|string',
@@ -108,6 +119,10 @@ class ChildController extends Controller
             }
             $path = $request->file('profile_photo')->store('profile_photos', 'public');
             $validatedData['profile_photo_path'] = $path;
+        }
+
+        if (empty($validatedData['color'])) {
+            $validatedData['color'] = Child::getRandomColor();
         }
 
         $child->update($validatedData);

@@ -676,7 +676,7 @@ h6 {
   color: var(--nav-color) !important;
 }
 .fbs__net-navbar.dark a:hover {
-  color: var(--nav-hover-color) !important;
+  /* color: var(--nav-hover-color) !important; */
 }
 .fbs__net-navbar.dark .header-social a:hover {
   background-color: rgba(var(--nav-color-rgb), 0.05);

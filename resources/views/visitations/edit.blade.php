@@ -13,13 +13,35 @@
                         @csrf
                         @method('PUT')
 
-                        <!-- Child -->
+                        <!-- NEW: Assign To -->
                         <div>
+                            <x-input-label for="parent_id" :value="__('Assign To')" />
+                            <select id="parent_id" name="parent_id"
+                                class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                required>
+                                <option value="">Select a Family Member</option>
+                                @foreach ($familyMembers as $member)
+                                    {{-- Pre-select the currently assigned parent, or the old input if validation failed --}}
+                                    <option value="{{ $member->id }}"
+                                        {{ old('parent_id', $visitation->parent_id) == $member->id ? 'selected' : '' }}>
+                                        {{ $member->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('parent_id')" class="mt-2" />
+                        </div>
+
+                        <!-- Child -->
+                        <div class="mt-4">
                             <x-input-label for="child_id" :value="__('Child')" />
-                            <select id="child_id" name="child_id" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                            <select id="child_id" name="child_id"
+                                class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                required>
                                 <option value="">Select a Child</option>
                                 @foreach ($children as $child)
-                                    <option value="{{ $child->id }}" {{ old('child_id', $visitation->child_id) == $child->id ? 'selected' : '' }}>{{ $child->name }}</option>
+                                    <option value="{{ $child->id }}"
+                                        {{ old('child_id', $visitation->child_id) == $child->id ? 'selected' : '' }}>
+                                        {{ $child->name }}</option>
                                 @endforeach
                             </select>
                             <x-input-error :messages="$errors->get('child_id')" class="mt-2" />
@@ -28,32 +50,65 @@
                         <!-- Date Start -->
                         <div class="mt-4">
                             <x-input-label for="date_start" :value="__('Start Date and Time')" />
-                            <x-text-input id="date_start" class="block mt-1 w-full" type="datetime-local" name="date_start" :value="old('date_start', \Carbon\Carbon::parse($visitation->date_start)->format('Y-m-d\\TH:i'))" required />
+                            <x-text-input id="date_start" class="block mt-1 w-full" type="datetime-local"
+                                name="date_start" :value="old(
+                                    'date_start',
+                                    \Carbon\Carbon::parse($visitation->date_start)->format('Y-m-d\TH:i'),
+                                )" required />
                             <x-input-error :messages="$errors->get('date_start')" class="mt-2" />
                         </div>
 
                         <!-- Date End -->
                         <div class="mt-4">
                             <x-input-label for="date_end" :value="__('End Date and Time')" />
-                            <x-text-input id="date_end" class="block mt-1 w-full" type="datetime-local" name="date_end" :value="old('date_end', \Carbon\Carbon::parse($visitation->date_end)->format('Y-m-d\\TH:i'))" required />
+                            <x-text-input id="date_end" class="block mt-1 w-full" type="datetime-local" name="date_end"
+                                :value="old(
+                                    'date_end',
+                                    \Carbon\Carbon::parse($visitation->date_end)->format('Y-m-d\TH:i'),
+                                )" required />
                             <x-input-error :messages="$errors->get('date_end')" class="mt-2" />
+                        </div>
+
+                        <!-- NEW: Status -->
+                        <div class="mt-4">
+                            <x-input-label for="status" :value="__('Status')" />
+                            <select id="status" name="status"
+                                class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                required>
+                                <option value="Scheduled"
+                                    {{ old('status', $visitation->status) == 'Scheduled' ? 'selected' : '' }}>Scheduled
+                                </option>
+                                <option value="Completed"
+                                    {{ old('status', $visitation->status) == 'Completed' ? 'selected' : '' }}>Completed
+                                </option>
+                                <option value="Cancelled"
+                                    {{ old('status', $visitation->status) == 'Cancelled' ? 'selected' : '' }}>Cancelled
+                                </option>
+                            </select>
+                            <x-input-error :messages="$errors->get('status')" class="mt-2" />
                         </div>
 
                         <!-- Is Recurring -->
                         <div class="mt-4 flex items-center">
-                            <input id="is_recurring" name="is_recurring" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" {{ old('is_recurring', $visitation->is_recurring) ? 'checked' : '' }}>
+                            <input id="is_recurring" name="is_recurring" type="checkbox" value="1"
+                                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                {{ old('is_recurring', $visitation->is_recurring) ? 'checked' : '' }}>
                             <x-input-label for="is_recurring" :value="__('Is Recurring?')" class="ml-2" />
-                            <x-input-error :messages="$errors->get('is_recurring')" class="mt-2" />
                         </div>
 
                         <!-- Notes -->
                         <div class="mt-4">
                             <x-input-label for="notes" :value="__('Notes')" />
-                            <x-text-area id="notes" class="block mt-1 w-full" name="notes">{{ old('notes', $visitation->notes) }}</x-text-area>
+                            <x-text-area id="notes" class="block mt-1 w-full"
+                                name="notes">{{ old('notes', $visitation->notes) }}</x-text-area>
                             <x-input-error :messages="$errors->get('notes')" class="mt-2" />
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
+                            <a href="{{ route('visitations.index') }}"
+                                class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-gray-300 focus:bg-gray-300 active:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                Cancel
+                            </a>
                             <x-primary-button class="ml-4">
                                 {{ __('Update Visitation') }}
                             </x-primary-button>

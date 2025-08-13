@@ -4,33 +4,47 @@ namespace App\Policies;
 
 use App\Models\Event;
 use App\Models\User;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
 class EventPolicy
 {
-    use HandlesAuthorization;
-
     /**
-     * Determine whether the user can update the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Event  $event
-     * @return \Illuminate\Auth\Access\Response|bool
+     * Determine whether the user can view the list of events.
      */
-    public function update(User $user, Event $event)
+    public function viewAny(User $user): bool
     {
-        return $user->id === $event->user_id;
+        return $user->can('view-events');
     }
 
     /**
-     * Determine whether the user can delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Event  $event
-     * @return \Illuminate\Auth\Access\Response|bool
+     * Determine whether the user can view a specific event.
+     * Checks for both the permission and that the event belongs to the user's family account.
      */
-    public function delete(User $user, Event $event)
+    public function view(User $user, Event $event): bool
     {
-        return $user->id === $event->user_id;
+        return $user->can('view-events') && $user->getAccountOwnerId() === $event->user_id;
+    }
+
+    /**
+     * Determine whether the user can create events.
+     */
+    public function create(User $user): bool
+    {
+        return $user->can('create-events');
+    }
+
+    /**
+     * Determine whether the user can update the event.
+     */
+    public function update(User $user, Event $event): bool
+    {
+        return $user->can('update-events') && $user->getAccountOwnerId() === $event->user_id;
+    }
+
+    /**
+     * Determine whether the user can delete the event.
+     */
+    public function delete(User $user, Event $event): bool
+    {
+        return $user->can('delete-events') && $user->getAccountOwnerId() === $event->user_id;
     }
 }

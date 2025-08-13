@@ -15,15 +15,16 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('business_name');
-            $table->text('services');
+            $table->json('services');
             $table->string('phone_number');
             $table->string('website')->nullable();
             $table->string('facebook')->nullable();
             $table->string('linkedin')->nullable();
             $table->string('twitter')->nullable();
             $table->string('instagram')->nullable();
-            $table->string('country');
-            $table->string('city');
+            $table->string('continent'); // Changed to nullable
+            $table->string('country');   // Added back as nullable
+            $table->string('city');      // Changed to nullable
             $table->string('approval_status')->default('pending');
             $table->timestamps();
         });

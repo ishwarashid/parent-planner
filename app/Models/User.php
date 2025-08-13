@@ -7,11 +7,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, Billable;
+    use HasFactory, Notifiable, Billable, HasRoles;
+
+    const BASIC_PLAN_IDS = [
+        'price_1RvC8APOErLRYIriK6Wohwtj', // Standard Basic (Monthly)
+        'price_1RvC9KPOErLRYIriXLtJHjBk', // Standard Basic (Yearly)
+    ];
+
+    const PREMIUM_PLAN_IDS = [
+        'price_1RvC9oPOErLRYIrifvr2Ml7Q',
+        'price_1RvCAaPOErLRYIri4yn3Ay4l'
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -102,6 +113,75 @@ class User extends Authenticatable implements MustVerifyEmail
             $familyIds = array_merge([$this->id], $this->invitedUsers->pluck('id')->all());
             return $familyIds;
         }
+    }
+
+    public function isPremium(): bool
+    {
+        // Assumes your subscription name is 'default'. Change if needed.
+        return $this->subscribed('default') &&
+            in_array($this->subscription('default')->stripe_price, self::PREMIUM_PLAN_IDS);
+    }
+
+    public function hasAdminCoParent(): bool
+    {
+        return $this->invitedUsers()->whereHas('roles', function ($query) {
+            $query->where('name', 'Admin Co-Parent');
+        })->exists();
+    }
+
+    public function isBasicPlan()
+    {
+        $subscription = $this->subscription('default');
+
+        // Rule 1: User must have an active subscription
+        if (!$subscription || !$subscription->active()) {
+            return false;
+        }
+        return in_array($subscription->stripe_price, self::BASIC_PLAN_IDS);
+    }
+
+    public function canInvite(): bool
+    {
+        // // Eager load the subscription to avoid extra queries
+        // $subscription = $this->subscription('default');
+
+        // // Rule 1: User must have an active subscription
+        // if (!$subscription || !$subscription->active()) {
+        //     return false;
+        // }
+
+        // // Rule 2: Check if the user is on a Basic plan
+        // $isBasicPlan = in_array($subscription->stripe_price, self::BASIC_PLAN_IDS);
+
+        if ($this->isBasicPlan()) {
+            // Rule 3: For Basic plans, count active invitations.
+            // An active invitation is one that is 'pending', 'accepted', or 'registered'.
+            // A 'rejected' invitation does not count towards the limit.
+            $activeInvitationCount = $this->sentInvitations()
+                ->where('status', '!=', 'rejected')
+                ->count();
+
+            // Allow inviting only if the count is less than 1
+            return $activeInvitationCount < 1;
+        }
+
+        // If the plan is not Basic (i.e., it's Premium), always allow invitations.
+        return true;
+    }
+
+    public function isAccountOwner(): bool
+    {
+        return $this->invited_by === null;
+    }
+
+    public function getAccountOwnerId(): int
+    {
+        return $this->isAccountOwner() ? $this->id : $this->invited_by;
+    }
+
+    public function isInvitedUser(): bool
+    {
+        return $this->invited_by !== null;
     }
 
     public function professional()

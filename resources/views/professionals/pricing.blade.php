@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,24 +14,88 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Custom Color Palette & Styles -->
+    <style>
+        :root {
+            --navy-blue: #1D2951;
+            --dark-navy: #000033;
+            --medium-turquoise: #40E0D0;
+            --light-turquoise: #AFE4DE;
+            --light-bg: #f8fafc;
+        }
+
+        .bg-theme-navy {
+            background-color: #000080;
+        }
+
+        .text-theme-navy {
+            color: var(--navy-blue);
+        }
+
+        .text-theme-dark-navy {
+            color: var(--dark-navy);
+        }
+
+        .bg-theme-turquoise {
+            background-color: var(--medium-turquoise);
+        }
+
+        .text-theme-turquoise {
+            color: var(--medium-turquoise);
+        }
+
+        .hover\:bg-theme-light-turquoise:hover {
+            background-color: var(--light-turquoise);
+        }
+
+        .hover\:text-theme-light-turquoise:hover {
+            color: var(--light-turquoise);
+        }
+
+        .border-theme-turquoise {
+            border-color: var(--medium-turquoise);
+        }
+
+        .bg-theme-light {
+            background-color: var(--light-bg);
+        }
+
+        /* Toggle Switch Styles */
+        .toggle-active {
+            background-color: var(--medium-turquoise);
+            color: var(--dark-navy);
+        }
+
+        .toggle-inactive {
+            background-color: #e5e7eb;
+            /* gray-200 */
+            color: #4b5563;
+            /* gray-600 */
+        }
+    </style>
 </head>
-<body class="font-sans antialiased text-gray-900 bg-gray-50">
+
+<body class="font-sans antialiased bg-theme-light">
     <div class="min-h-screen flex flex-col">
         <!-- Navigation -->
-        <nav class="bg-white shadow-sm fixed w-full z-50">
+        <nav class="bg-theme-navy shadow-md fixed w-full z-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex-shrink-0 flex items-center">
-                        <a href="{{ url('/') }}" class="text-2xl font-bold text-indigo-600">Parent Planner</a>
+                        <a href="{{ url('/') }}" class="text-2xl font-bold text-white">Parent Planner</a>
                     </div>
                     <div class="flex items-center space-x-4">
                         @if (Route::has('login'))
                             @auth
-                                <a href="{{ url('/dashboard') }}" class="font-medium text-gray-600 hover:text-gray-900 transition duration-150 ease-in-out">Dashboard</a>
+                                <a href="{{ url('/dashboard') }}"
+                                    class="font-medium text-white hover:text-theme-light-turquoise transition">Dashboard</a>
                             @else
-                                <a href="{{ route('login') }}" class="font-medium text-gray-600 hover:text-gray-900 transition duration-150 ease-in-out">Log in</a>
+                                <a href="{{ route('login') }}"
+                                    class="font-medium text-white hover:text-theme-light-turquoise transition">Log in</a>
                                 @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition duration-150 ease-in-out">Register</a>
+                                    <a href="{{ route('register') }}"
+                                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-theme-dark-navy bg-theme-turquoise hover:bg-theme-light-turquoise transition font-semibold">Register</a>
                                 @endif
                             @endauth
                         @endif
@@ -41,43 +106,87 @@
 
         <main class="flex-grow pt-16">
             <!-- Pricing Section -->
-            <section class="py-16 bg-white">
+            <section class="py-16 bg-white" x-data="{ billingCycle: 'monthly' }">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="text-center mb-12">
-                        <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900">
-                            Choose Your Plan
-                        </h1>
-                        <p class="mt-4 text-xl text-gray-600">
-                            Simple, transparent pricing. No hidden fees.
-                        </p>
+                        <h1 class="text-4xl sm:text-5xl font-extrabold text-theme-dark-navy">Choose Your Plan</h1>
+                        <p class="mt-4 text-xl text-theme-navy">Simple, transparent pricing. No hidden fees.</p>
                     </div>
 
-                    <div class="flex justify-center max-w-4xl mx-auto">
+                    <!-- Monthly/Yearly Toggle -->
+                    <div class="flex justify-center items-center space-x-4 mb-12">
+                        <span class="font-medium text-theme-navy">Monthly</span>
+                        <div
+                            class="relative inline-block w-14 align-middle select-none transition duration-200 ease-in">
+                            <button @click="billingCycle = (billingCycle === 'monthly' ? 'yearly' : 'monthly')"
+                                class="relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none bg-gray-200"
+                                :class="{ 'bg-theme-turquoise': billingCycle === 'yearly' }">
+                                <span aria-hidden="true"
+                                    class="inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                                    :class="{ 'translate-x-5': billingCycle === 'yearly', 'translate-x-0': billingCycle === 'monthly' }"></span>
+                            </button>
+                        </div>
+                        <span class="font-medium text-theme-navy">Yearly</span>
+                        <span class="text-sm font-semibold text-green-600 bg-green-100 px-2 py-1 rounded-full">Save
+                            $24</span>
+                    </div>
+
+                    {{-- Centered Container for the Pricing Card --}}
+                    <div class="flex justify-center items-stretch gap-8 max-w-md mx-auto">
 
                         <!-- Professional Plan -->
-                        <div class="border rounded-lg shadow-lg p-8 flex flex-col w-full max-w-md">
-                            <h2 class="text-2xl font-bold text-center">Professional</h2>
-                            <div class="text-5xl font-extrabold text-center my-4">
-                                $40 <span class="text-xl font-medium text-gray-500">/ month</span>
+                        <div class="border-2 rounded-lg shadow-xl p-8 flex flex-col w-full relative"
+                            :class="billingCycle === 'yearly' ? 'border-theme-turquoise' : 'border-gray-200'">
+
+                            {{-- ============================================================= --}}
+                            {{-- === THIS IS THE NEW CONDITIONAL "MOST POPULAR" BADGE === --}}
+                            {{-- ============================================================= --}}
+                            <div x-show="billingCycle === 'yearly'" style="display: none;"
+                                class="absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2">
+                                <span
+                                    class="px-3 py-1 text-sm text-theme-dark-navy bg-theme-turquoise rounded-full font-semibold">
+                                    Most Popular
+                                </span>
                             </div>
-                            <ul class="space-y-4 text-gray-600 mb-8">
-                                <li class="flex items-center">
-                                    <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                    All Premium Features
-                                </li>
-                                <li class="flex items-center">
-                                    <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                    Dedicated Account Manager
-                                </li>
-                                <li class="flex items-center">
-                                    <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                    Custom Integrations
-                                </li>
+                            {{-- ============================================================= --}}
+
+                            <h2 class="text-2xl font-bold text-center text-theme-dark-navy">Professional</h2>
+                            <div class="text-center my-4">
+                                <div x-show="billingCycle === 'monthly'">
+                                    <span class="text-5xl font-extrabold text-theme-navy">$14</span>
+                                    <span class="text-xl font-medium text-gray-500">/ month</span>
+                                </div>
+                                <div x-show="billingCycle === 'yearly'" style="display: none;">
+                                    <span class="text-5xl font-extrabold text-theme-navy">$144</span>
+                                    <span class="text-xl font-medium text-gray-500">/ year</span>
+                                </div>
+                            </div>
+                            <ul class="space-y-4 text-theme-navy mb-8">
+                                <li class="flex items-center"><svg class="w-6 h-6 text-theme-turquoise mr-2"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7"></path>
+                                    </svg>All Premium Features</li>
+                                <li class="flex items-center"><svg class="w-6 h-6 text-theme-turquoise mr-2"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7"></path>
+                                    </svg>Connect with Professionals</li>
+                                <li class="flex items-center"><svg class="w-6 h-6 text-theme-turquoise mr-2"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7"></path>
+                                    </svg>Priority Support</li>
                             </ul>
                             <div class="mt-auto">
-                                <a href="{{ route('checkout', ['plan' => 'price_professional']) }}" class="w-full text-center bg-indigo-700 text-white hover:bg-indigo-800 transition duration-150 ease-in-out px-8 py-3 rounded-md text-lg font-semibold shadow-lg">
-                                    Subscribe
-                                </a>
+                                <a href="{{ route('professional.checkout', ['plan' => 'price_1RvCBCPOErLRYIriqFclebNI']) }}"
+                                    x-show="billingCycle === 'monthly'"
+                                    class="w-full text-center bg-theme-turquoise text-theme-dark-navy hover:bg-theme-light-turquoise transition px-8 py-3 rounded-md text-lg font-bold shadow-lg block">Subscribe
+                                    Monthly</a>
+                                <a href="{{ route('professional.checkout', ['plan' => 'price_1RvCC2POErLRYIri2hiQz2C0']) }}"
+                                    x-show="billingCycle === 'yearly'" style="display: none;"
+                                    class="w-full text-center bg-theme-turquoise text-theme-dark-navy hover:bg-theme-light-turquoise transition px-8 py-3 rounded-md text-lg font-bold shadow-lg block">Subscribe
+                                    Yearly</a>
                             </div>
                         </div>
                     </div>
@@ -86,11 +195,12 @@
         </main>
 
         <!-- Footer -->
-        <footer class="bg-gray-800 py-8">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400">
+        <footer class="bg-theme-navy py-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-300">
                 &copy; {{ date('Y') }} Parent Planner. All rights reserved.
             </div>
         </footer>
     </div>
 </body>
+
 </html>

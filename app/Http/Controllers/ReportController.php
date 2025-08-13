@@ -13,6 +13,14 @@ use App\Exports\ExpensesExport;
 
 class ReportController extends Controller
 {
+    // public function __construct()
+    // {
+    //     // This single line connects all controller methods to their corresponding policy methods.
+    //     // e.g., the `store()` method will automatically check the `create()` policy method.
+    //     // the `edit()` method will automatically check the `update()` policy method.
+    //     $this->authorizeResource(Report::class, 'report');
+    // }
+
     public function index()
     {
         $children = auth()->user()->children;
@@ -95,4 +103,3 @@ class ReportController extends Controller
         }
     }
 }
-

@@ -28,7 +28,7 @@ class DashboardController extends Controller
         $pendingExpenses = Expense::whereIn('child_id', $children->pluck('id'))
                                 ->where('status', 'pending')
                                 ->get();
-
+                            
         // Children with upcoming birthdays (next 30 days)
         $childrenWithUpcomingBirthdays = $children->filter(function ($child) {
             $dob = Carbon::parse($child->dob);

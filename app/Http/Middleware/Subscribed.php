@@ -21,6 +21,7 @@ class Subscribed
         if ($user) {
             // For parents, check for the default subscription.
             if ($user->role === 'parent' && !$user->subscribed('default')) {
+                // logger('here');
                 // Redirect to the main pricing page if not subscribed.
                 return redirect()->route('pricing');
             }
