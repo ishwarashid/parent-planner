@@ -67,7 +67,11 @@
                                             <div class="text-sm text-gray-900">{{ $document->notes ?? 'N/A' }}</div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <a href="{{ asset('storage/' . $document->file_url) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">View File</a>
+                                            @can('view', $document)
+                                                <a href="{{ asset('storage/' . $document->file_url) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">View File</a>
+                                            @else
+                                                <span class="text-gray-400">N/A</span>
+                                            @endcan
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             @can('view', $document)
