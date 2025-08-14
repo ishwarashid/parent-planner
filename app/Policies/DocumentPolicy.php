@@ -21,7 +21,11 @@ class DocumentPolicy
      */
     public function view(User $user, Document $document): bool
     {
-        return $user->can('view-documents') && $user->getAccountOwnerId() === $document->user_id;
+        // Get all family member IDs
+        $familyMemberIds = $user->getFamilyMemberIds();
+        
+        // Check if the user has permission and if the document's child belongs to the family
+        return $user->can('view-documents') && in_array($document->child->user_id, $familyMemberIds);
     }
 
     /**
@@ -37,7 +41,11 @@ class DocumentPolicy
      */
     public function update(User $user, Document $document): bool
     {
-        return $user->can('update-documents') && $user->getAccountOwnerId() === $document->user_id;
+        // Get all family member IDs
+        $familyMemberIds = $user->getFamilyMemberIds();
+        
+        // Check if the user has permission and if the document's child belongs to the family
+        return $user->can('update-documents') && in_array($document->child->user_id, $familyMemberIds);
     }
 
     /**
@@ -45,6 +53,10 @@ class DocumentPolicy
      */
     public function delete(User $user, Document $document): bool
     {
-        return $user->can('delete-documents') && $user->getAccountOwnerId() === $document->user_id;
+        // Get all family member IDs
+        $familyMemberIds = $user->getFamilyMemberIds();
+        
+        // Check if the user has permission and if the document's child belongs to the family
+        return $user->can('delete-documents') && in_array($document->child->user_id, $familyMemberIds);
     }
 }
