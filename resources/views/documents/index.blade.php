@@ -70,13 +70,19 @@
                                             <a href="{{ asset('storage/' . $document->file_url) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">View File</a>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <a href="{{ route('documents.show', $document) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">View</a>
-                                            <a href="{{ route('documents.edit', $document) }}" class="text-yellow-600 hover:text-yellow-900 mr-2">Edit</a>
-                                            <form action="{{ route('documents.destroy', $document) }}" method="POST" class="inline-block">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this document?')">Delete</button>
-                                            </form>
+                                            @can('view', $document)
+                                                <a href="{{ route('documents.show', $document) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">View</a>
+                                            @endcan
+                                            @can('update', $document)
+                                                <a href="{{ route('documents.edit', $document) }}" class="text-yellow-600 hover:text-yellow-900 mr-2">Edit</a>
+                                            @endcan
+                                            @can('delete', $document)
+                                                <form action="{{ route('documents.destroy', $document) }}" method="POST" class="inline-block">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this document?')">Delete</button>
+                                                </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @empty

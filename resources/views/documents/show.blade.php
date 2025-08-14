@@ -46,14 +46,18 @@
                     </div>
 
                     <div class="mt-6 flex justify-end">
-                        <a href="{{ route('documents.edit', $document) }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mr-2">
-                            Edit Document
-                        </a>
-                        <form action="{{ route('documents.destroy', $document) }}" method="POST" class="inline-block">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="return confirm('Are you sure you want to delete this document?')">Delete</button>
-                        </form>
+                        @can('update', $document)
+                            <a href="{{ route('documents.edit', $document) }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mr-2">
+                                Edit Document
+                            </a>
+                        @endcan
+                        @can('delete', $document)
+                            <form action="{{ route('documents.destroy', $document) }}" method="POST" class="inline-block">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="return confirm('Are you sure you want to delete this document?')">Delete</button>
+                            </form>
+                        @endcan
                         <a href="{{ route('documents.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2">
                             Back to Documents List
                         </a>
