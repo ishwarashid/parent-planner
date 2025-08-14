@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class SubscriptionController extends Controller
+{
+    public function pricing()
+    {
+        logger('hhhhhhhhhere');
+        return view('subscriptions.pricing');
+    }
+
+    public function checkout(Request $request)
+    {
+        if (auth()->user()->subscribed('default')) {
+            return redirect()->route('dashboard')->with('error', 'You are already subscribed.');
+        }
+        $plan = $request->input('plan');
+        $user = Auth::user();
+
+        return $user->newSubscription('default', $plan)
+            ->checkout([
+                'success_url' => route('dashboard'),
+                'cancel_url' => route('pricing'),
+            ]);
+    }
+
+    public function billing()
+    {
+        return view('subscriptions.billing', [
+            'intent' => Auth::user()->createSetupIntent(),
+        ]);
+    }
+
+    public function portal()
+    {
+        return Auth::user()->redirectToBillingPortal(route('dashboard'));
+    }
+
+    public function professionalPricing()
+    {
+        return view('professionals.pricing');
+    }
+}

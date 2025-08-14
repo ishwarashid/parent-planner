@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.event-current-user {
+    @apply bg-teal-400 border-teal-400;
+}
+
+.event-other-user {
+    @apply bg-teal-300 border-teal-300;
+}
+
+.fc-tooltip {
+    @apply absolute z-10 p-2 bg-gray-800 text-white text-sm rounded-lg shadow-lg;
+    pointer-events: none; /* Prevents the tooltip from interfering with mouse events */
+}
