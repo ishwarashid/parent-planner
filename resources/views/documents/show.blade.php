@@ -15,22 +15,6 @@
         /* Muted Navy */
         --theme-divider: #AFEEEE;
         /* Pale Turquoise */
-        --theme-button-primary-bg: #FFB300;
-        /* Amber */
-        --theme-button-primary-text: #000033;
-        /* Dark Navy */
-        --theme-button-primary-bg-hover: #FFDAB9;
-        /* Peach Puff */
-        --theme-button-secondary-bg: #2F4F4F;
-        /* Dark Slate Gray */
-        --theme-button-secondary-text: #FFFFFF;
-        --theme-button-secondary-bg-hover: #008080;
-        /* Teal */
-        --theme-button-danger-bg: #FF6F61;
-        /* Coral */
-        --theme-button-danger-text: #FFFFFF;
-        --theme-button-danger-bg-hover: #FF5722;
-        /* Deep Orange */
     }
 
     /* General Styling */
@@ -56,38 +40,6 @@
 
     .theme-dd-text {
         color: var(--theme-dd-text);
-    }
-
-    .theme-button {
-        font-weight: 700;
-        transition: background-color 0.2s;
-    }
-
-    .theme-button-primary {
-        background-color: var(--theme-button-primary-bg);
-        color: var(--theme-button-primary-text);
-    }
-
-    .theme-button-primary:hover {
-        background-color: var(--theme-button-primary-bg-hover);
-    }
-
-    .theme-button-secondary {
-        background-color: var(--theme-button-secondary-bg);
-        color: var(--theme-button-secondary-text);
-    }
-
-    .theme-button-secondary:hover {
-        background-color: var(--theme-button-secondary-bg-hover);
-    }
-
-    .theme-button-danger {
-        background-color: var(--theme-button-danger-bg);
-        color: var(--theme-button-danger-text);
-    }
-
-    .theme-button-danger:hover {
-        background-color: var(--theme-button-danger-bg-hover);
     }
 </style>
 
@@ -142,9 +94,10 @@
                         </dl>
                     </div>
 
-                    <div class="mt-6 flex justify-end space-x-4">
+                    <div class="mt-6 flex justify-end items-center space-x-2">
                         @can('update', $document)
-                            <a href="{{ route('documents.edit', $document) }}" class="inline-flex items-center py-2 px-4 rounded theme-button theme-button-primary">
+                            <a href="{{ route('documents.edit', $document) }}"
+                                class="inline-flex items-center px-4 py-2 bg-yellow-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                 Edit Document
                             </a>
                         @endcan
@@ -152,10 +105,15 @@
                             <form action="{{ route('documents.destroy', $document) }}" method="POST" class="inline-block">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="inline-flex items-center py-2 px-4 rounded theme-button theme-button-danger" onclick="return confirm('Are you sure you want to delete this document?')">Delete</button>
+                                <button type="submit"
+                                    class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                                    onclick="return confirm('Are you sure you want to delete this document?')">
+                                    Delete
+                                </button>
                             </form>
                         @endcan
-                        <a href="{{ route('documents.index') }}" class="inline-flex items-center py-2 px-4 rounded theme-button theme-button-secondary">
+                        <a href="{{ route('documents.index') }}"
+                            class="inline-flex items-center px-4 py-2 bg-gray-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
                             Back to Documents List
                         </a>
                     </div>
