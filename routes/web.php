@@ -46,7 +46,7 @@ require __DIR__ . '/auth.php';
 // Route for setting user timezone
 Route::post('/set-timezone', function (\Illuminate\Http\Request $request) {
     $timezone = $request->input('timezone');
-    
+
     // Validate timezone
     try {
         new DateTimeZone($timezone);
@@ -95,6 +95,8 @@ Route::middleware([
     Route::resource('children', ChildController::class);
     Route::resource('visitations', VisitationController::class)->except(['index', 'show']);
     Route::resource('expenses', ExpenseController::class);
+    Route::post('/expenses/{expense}/confirm', [App\Http\Controllers\PaymentConfirmationController::class, 'store'])
+        ->name('payments.confirm');
     Route::resource('documents', DocumentController::class);
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('reports/expenses', [ReportController::class, 'generateExpenseReport'])->name('reports.expenses');

@@ -127,8 +127,8 @@
                             </button>
                         </div>
                         <span class="font-medium text-theme-navy">Yearly</span>
-                        <span class="text-sm font-semibold text-green-600 bg-green-100 px-2 py-1 rounded-full">Save
-                            12$</span>
+                        <span class="text-lg font-semibold text-green-900 bg-green-100 px-3 py-1 rounded-full">Save
+                            $12</span>
                     </div>
 
                   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">

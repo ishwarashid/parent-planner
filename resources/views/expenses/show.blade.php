@@ -110,71 +110,207 @@
                     <div class="border-t theme-dl-divider pt-4">
                         <dl class="divide-y theme-dl-divider">
                             <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                <dt class="text-sm font-medium leading-6 theme-dt-text">Amount</dt>
-                                <dd class="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0 theme-dd-text">${{ number_format($expense->amount, 2) }}</dd>
+                                <dt class="text-sm font-medium leading-6 theme-dt-text">Total Amount</dt>
+                                <dd class="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0 theme-dd-text">
+                                    ${{ number_format($expense->amount, 2) }}</dd>
+                            </div>
+
+                            <!-- NEW: Responsibility Split Section -->
+                            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                <dt class="text-sm font-medium leading-6 theme-dt-text">Responsibility Split</dt>
+                                <dd class="mt-2 text-sm sm:col-span-2 sm:mt-0 theme-dd-text">
+                                    <ul role="list"
+                                        class="divide-y divide-gray-200 rounded-md border border-gray-200">
+                                        @forelse ($expense->splits as $split)
+                                            <li
+                                                class="flex items-center justify-between py-2 pl-4 pr-5 text-sm leading-6">
+                                                <div class="flex w-0 flex-1 items-center">
+                                                    {{-- Make sure splits.user was eager loaded in the controller for performance --}}
+                                                    <span
+                                                        class="truncate font-medium">{{ $split->user->name ?? 'Unknown User' }}</span>
+                                                </div>
+                                                <div class="ml-4 flex-shrink-0">
+                                                    <span class="font-medium">{{ $split->percentage }}%</span>
+                                                    <span
+                                                        class="text-gray-500 ml-2">(${{ number_format($expense->amount * ($split->percentage / 100), 2) }})</span>
+                                                </div>
+                                            </li>
+                                        @empty
+                                            <li
+                                                class="flex items-center justify-between py-2 pl-4 pr-5 text-sm leading-6">
+                                                <span class="truncate font-medium text-gray-500">No split information
+                                                    available.</span>
+                                            </li>
+                                        @endforelse
+                                    </ul>
+                                </dd>
+                            </div>
+                            <!-- END: Responsibility Split Section -->
+
+                            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                <dt class="text-sm font-medium leading-6 theme-dt-text">Paid By</dt>
+                                <dd class="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0 theme-dd-text">
+                                    {{ $expense->payer->name }}</dd>
                             </div>
                             <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                 <dt class="text-sm font-medium leading-6 theme-dt-text">Category</dt>
-                                <dd class="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0 theme-dd-text">{{ $expense->category }}</dd>
+                                <dd class="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0 theme-dd-text">
+                                    {{ $expense->category }}</dd>
                             </div>
                             <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                 <dt class="text-sm font-medium leading-6 theme-dt-text">Status</dt>
                                 <dd class="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $expense->status == 'paid' ? 'bg-green-100 text-green-800' : ($expense->status == 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $expense->status == 'paid' ? 'bg-green-100 text-green-800' : ($expense->status == 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
                                         {{ ucfirst($expense->status) }}
                                     </span>
                                 </dd>
                             </div>
                             <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                <dt class="text-sm font-medium leading-6 theme-dt-text">Payer</dt>
-                                <dd class="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0 theme-dd-text">{{ $expense->payer->name }}</dd>
-                            </div>
-                            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                 <dt class="text-sm font-medium leading-6 theme-dt-text">Receipt</dt>
                                 <dd class="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0 theme-dd-text">
                                     @if ($expense->receipt_url)
-                                        <a href="{{ asset('storage/' . $expense->receipt_url) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">View Receipt</a>
+                                        <a href="{{ asset('storage/' . $expense->receipt_url) }}" target="_blank"
+                                            class="text-indigo-600 hover:text-indigo-900">View Receipt</a>
                                     @else
                                         N/A
                                     @endif
                                 </dd>
                             </div>
                             <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                <dt class="text-sm font-medium leading-6 theme-dt-text">Created At</dt>
-                                <dd class="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0 theme-dd-text">{{ \Carbon\Carbon::parse($expense->created_at)->format('M d, Y H:i A') }}</dd>
-                            </div>
-                            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                <dt class="text-sm font-medium leading-6 theme-dt-text">Last Updated</dt>
-                                <dd class="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0 theme-dd-text">{{ \Carbon\Carbon::parse($expense->updated_at)->format('M d, Y H:i A') }}</dd>
+                                <dt class="text-sm font-medium leading-6 theme-dt-text">Date Added</dt>
+                                <dd class="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0 theme-dd-text">
+                                    {{ \Carbon\Carbon::parse($expense->created_at)->format('M d, Y') }}</dd>
                             </div>
                         </dl>
                     </div>
+                </div>
 
-                    <div class="mt-6 flex justify-end items-center space-x-2">
+                {{-- ========================================================= --}}
+                {{-- NEW: Payment Confirmation Section --}}
+                {{-- ========================================================= --}}
+
+                {{-- This entire section only appears if the expense is waiting for payment. --}}
+                @if ($expense->status === 'pending')
+                    <div class="mt-6 border-t theme-dl-divider pt-4">
+
+                        {{-- This view is for the NON-PAYER --}}
+                        @if (auth()->id() !== $expense->payer_id)
+                            @php
+                                // Check if the current logged-in user has already confirmed their payment.
+                                $hasConfirmed = $expense->confirmations->contains('user_id', auth()->id());
+                            @endphp
+
+                            @if ($hasConfirmed)
+                                {{-- If they have confirmed, show a success message --}}
+                                <div class="p-4 bg-green-100 border border-green-200 rounded-md">
+                                    <p class="font-semibold text-green-800">Payment Confirmed!</p>
+                                    <p class="text-sm text-green-700 mt-1">
+                                        You marked your share as paid on
+                                        {{ $expense->confirmations->firstWhere('user_id', auth()->id())->created_at->format('M d, Y') }}.
+                                    </p>
+                                </div>
+                            @else
+                                {{-- If they haven't confirmed, show the confirmation button --}}
+                                <div class="p-4 bg-yellow-100 border border-yellow-200 rounded-md">
+                                    <p class="font-semibold text-yellow-800">Action Required</p>
+                                    <p class="text-sm text-yellow-700 mt-1">Have you paid your share to
+                                        {{ $expense->payer->name }}? Please confirm below.</p>
+                                    <form action="{{ route('payments.confirm', $expense) }}" method="POST"
+                                        class="mt-3">
+                                        @csrf
+                                        <button type="submit"
+                                            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-xs uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 transition ease-in-out duration-150 theme-button theme-button-primary">
+                                            I Have Paid My Share
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
+                        @endif
+
+                        {{-- This view is for the PAYER --}}
+                        @if (auth()->id() === $expense->payer_id)
+                            <div class="p-4 bg-blue-50 border border-blue-200 rounded-md">
+                                <h4 class="font-semibold theme-dt-text">Reimbursement Status</h4>
+                                <p class="text-xs text-gray-600 mb-3">This list shows who has confirmed they have paid
+                                    their share to you.</p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    {{-- Loop through everyone who has a share of the expense --}}
+                                    @foreach ($expense->splits as $split)
+                                        {{-- Don't show the payer their own status --}}
+                                        @if ($split->user_id !== $expense->payer_id)
+                                            <li>
+                                                <span class="font-medium">{{ $split->user->name }}:</span>
+                                                @if ($expense->confirmations->contains('user_id', $split->user_id))
+                                                    <span class="ml-2 font-semibold text-green-700">Payment
+                                                        Confirmed</span>
+                                                @else
+                                                    <span class="ml-2 text-yellow-700">Awaiting Confirmation</span>
+                                                @endif
+                                            </li>
+                                        @endif
+                                    @endforeach
+                                </ul>
+                                <p class="mt-3 text-xs text-gray-600">Once everyone has paid, you can <a
+                                        href="{{ route('expenses.edit', $expense) }}" class="font-bold underline">edit
+                                        this expense</a> and change the status to "Paid".</p>
+                            </div>
+                        @endif
+                    </div>
+                @endif
+
+
+                {{-- Action Buttons (Edit, Delete, etc.) --}}
+                <div class="mt-6 flex flex-wrap items-center justify-end gap-3">
+                    <a href="{{ route('expenses.index') }}"
+                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-xs uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 transition ease-in-out duration-150 theme-button theme-button-secondary">
+                        Back to List
+                    </a>
+
+                    @can('update', $expense)
+                        <a href="{{ route('expenses.edit', $expense) }}"
+                            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-xs uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 transition ease-in-out duration-150 theme-button theme-button-primary">
+                            Edit
+                        </a>
+                    @endcan
+
+                    @can('delete', $expense)
+                        <form class="inline-block" action="{{ route('expenses.destroy', $expense) }}" method="POST"
+                            onsubmit="return confirm('Are you sure you want to delete this expense?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-xs uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 transition ease-in-out duration-150 theme-button theme-button-danger">
+                                Delete
+                            </button>
+                        </form>
+                    @endcan
+                </div>
+                {{-- <div class="mt-6 flex flex-wrap items-center justify-end gap-3">
+                        <a href="{{ route('expenses.index') }}"
+                            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-xs uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 transition ease-in-out duration-150 theme-button theme-button-secondary">
+                            Back to List
+                        </a>
                         @can('update', $expense)
                             <a href="{{ route('expenses.edit', $expense) }}"
-                                class="inline-flex items-center px-4 py-2 bg-yellow-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition ease-in-out duration-150 mb-4">
-                                Edit Expense
+                                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-xs uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 transition ease-in-out duration-150 theme-button theme-button-primary">
+                                Edit
                             </a>
                         @endcan
                         @can('delete', $expense)
-                            <form action="{{ route('expenses.destroy', $expense) }}" method="POST" class="inline-block">
+                            <form action="{{ route('expenses.destroy', $expense) }}" method="POST"
+                                onsubmit="return confirm('Are you sure you want to delete this expense?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
-                                    class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                                    onclick="return confirm('Are you sure you want to delete this expense?')">
+                                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-xs uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 transition ease-in-out duration-150 theme-button theme-button-danger">
                                     Delete
                                 </button>
                             </form>
                         @endcan
-                        <a href="{{ route('expenses.index') }}"
-                            class="inline-flex items-center px-4 py-2 bg-gray-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150 mb-4">
-                            Back to Expenses List
-                        </a>
-                    </div>
-                </div>
+                    </div> --}}
             </div>
         </div>
+    </div>
     </div>
 </x-app-layout>

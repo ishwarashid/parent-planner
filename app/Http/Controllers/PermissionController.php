@@ -44,9 +44,13 @@ class PermissionController extends Controller
             $user->syncRoles(['Admin Co-Parent']);
         } else {
             // Demote or just update permissions
-            $user->syncRoles(['Invited User']);
-            $permissions = $request->input('permissions', []);
-            $user->syncPermissions($permissions);
+            if ($user->role == 'coparent') {
+                $user->syncRoles(['Co-Parent']);
+            } else {
+                $user->syncRoles(['Invited User']);
+            }
+            // $permissions = $request->input('permissions', []);
+            // $user->syncPermissions($permissions);
         }
 
         // To redirect back to the details page, we need to find the original invitation

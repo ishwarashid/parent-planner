@@ -194,4 +194,15 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(Professional::class);
     }
+
+    // ... inside the User class
+    public function expenseSplits()
+    {
+        return $this->hasMany(ExpenseSplit::class);
+    }
+
+    public function paymentConfirmations()
+    {
+        return $this->hasMany(PaymentConfirmation::class);
+    }
 }

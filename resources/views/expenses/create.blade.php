@@ -3,7 +3,7 @@
     :root {
         --theme-header: #000033;
         /* Midnight Blue */
-        --theme-label: #1D2951;
+        --theme-label: #1D2S1;
         /* Muted Navy */
         --theme-input-border: #AFEEEE;
         /* Pale Turquoise */
@@ -100,13 +100,77 @@
                             <x-input-label for="child_id" class="theme-input-label">
                                 {{ __('Child') }} <span class="theme-required-star">*</span>
                             </x-input-label>
-                            <select id="child_id" name="child_id" class="block mt-1 w-full rounded-md shadow-sm theme-select" required>
+                            <select id="child_id" name="child_id"
+                                class="block mt-1 w-full rounded-md shadow-sm theme-select" required>
                                 <option value="">Select a Child</option>
                                 @foreach ($children as $child)
-                                    <option value="{{ $child->id }}" {{ old('child_id') == $child->id ? 'selected' : '' }}>{{ $child->name }}</option>
+                                    <option value="{{ $child->id }}"
+                                        {{ old('child_id') == $child->id ? 'selected' : '' }}>{{ $child->name }}
+                                    </option>
                                 @endforeach
                             </select>
                             <x-input-error :messages="$errors->get('child_id')" class="mt-2 theme-error" />
+                        </div>
+
+                        <!-- Payer -->
+                        {{-- <div class="mt-4">
+                            <x-input-label for="payer_id" class="theme-input-label">
+                                {{ __('Paid By') }} <span class="theme-required-star">*</span>
+                            </x-input-label>
+                            <select id="payer_id" name="payer_id"
+                                class="block mt-1 w-full rounded-md shadow-sm theme-select" required>
+                                <option value="">Select a Payer</option>
+                                @foreach ($responsibleUsers as $payer)
+                                <option value="{{ $payer->id }}"
+                                    {{ old('payer_id', auth()->id()) == $payer->id ? 'selected' : '' }}>
+                                    {{ $payer->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('payer_id')" class="mt-2 theme-error" />
+                        </div> --}}
+
+                        <!-- Payer Information Display -->
+                        <div class="mt-4">
+                            <x-input-label class="theme-input-label" :value="__('Paid By')" />
+                            <div class="w-full mt-1 p-3 bg-gray-50 border rounded-md">
+                                <p class="text-sm font-semibold theme-info-text">{{ auth()->user()->name }}</p>
+                                <p class="text-xs text-gray-500 mt-1">As the creator of this expense, you are
+                                    automatically assigned as the payer.</p>
+                            </div>
+                        </div>
+
+                        <!-- Expense Split Section -->
+                        <div class="mt-6 border-t pt-4">
+                            <h3 class="text-lg font-medium theme-header-text">Expense Responsibility Split</h3>
+                            <p class="mt-1 text-sm theme-info-text">Define the percentage of the expense each person is
+                                responsible for. Must total 100%.</p>
+
+                            <div id="splits-container" class="mt-4 space-y-3">
+                                @foreach ($responsibleUsers as $user)
+                                    <div class="flex items-center space-x-4">
+                                        <label for="split_{{ $user->id }}"
+                                            class="w-1/3 theme-input-label">{{ $user->name }}</label>
+                                        <div class="flex-grow flex items-center">
+                                            <input type="number" step="0.01" min="0" max="100"
+                                                name="splits[{{ $loop->index }}][percentage]"
+                                                class="split-percentage-input block w-full theme-input"
+                                                placeholder="e.g., 50"
+                                                value="{{ old('splits.' . $loop->index . '.percentage', $loop->count == 2 ? 50 : ($loop->count == 1 ? 100 : '')) }}">
+                                            <input type="hidden" name="splits[{{ $loop->index }}][user_id]"
+                                                value="{{ $user->id }}">
+                                            <span class="ml-2 text-gray-500">%</span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <div class="mt-2 text-right">
+                                <span class="font-bold theme-info-text">Total: <span id="split-total">0</span>%</span>
+                                <p id="split-error" class="text-sm theme-error mt-1" style="display: none;">Total must
+                                    be 100%.</p>
+                            </div>
+                            <x-input-error :messages="$errors->get('splits')" class="mt-2 theme-error" />
                         </div>
 
                         <!-- Description -->
@@ -114,7 +178,8 @@
                             <x-input-label for="description" class="theme-input-label">
                                 {{ __('Description') }} <span class="theme-required-star">*</span>
                             </x-input-label>
-                            <x-text-input id="description" class="block mt-1 w-full theme-input" type="text" name="description" :value="old('description')" required />
+                            <x-text-input id="description" class="block mt-1 w-full theme-input" type="text"
+                                name="description" :value="old('description')" required />
                             <x-input-error :messages="$errors->get('description')" class="mt-2 theme-error" />
                         </div>
 
@@ -123,7 +188,8 @@
                             <x-input-label for="amount" class="theme-input-label">
                                 {{ __('Amount') }} <span class="theme-required-star">*</span>
                             </x-input-label>
-                            <x-text-input id="amount" class="block mt-1 w-full theme-input" type="number" step="0.01" name="amount" :value="old('amount')" required />
+                            <x-text-input id="amount" class="block mt-1 w-full theme-input" type="number"
+                                step="0.01" name="amount" :value="old('amount')" required />
                             <x-input-error :messages="$errors->get('amount')" class="mt-2 theme-error" />
                         </div>
 
@@ -132,10 +198,13 @@
                             <x-input-label for="category" class="theme-input-label">
                                 {{ __('Category') }} <span class="theme-required-star">*</span>
                             </x-input-label>
-                            <select id="category" name="category" class="block mt-1 w-full rounded-md shadow-sm theme-select" required>
+                            <select id="category" name="category"
+                                class="block mt-1 w-full rounded-md shadow-sm theme-select" required>
                                 <option value="">Select a Category</option>
                                 @foreach ($categories as $category)
-                                    <option value="{{ $category }}" {{ old('category') == $category ? 'selected' : '' }}>{{ $category }}</option>
+                                    <option value="{{ $category }}"
+                                        {{ old('category') == $category ? 'selected' : '' }}>{{ $category }}
+                                    </option>
                                 @endforeach
                             </select>
                             <x-input-error :messages="$errors->get('category')" class="mt-2 theme-error" />
@@ -146,9 +215,12 @@
                             <x-input-label for="status" class="theme-input-label">
                                 {{ __('Status') }} <span class="theme-required-star">*</span>
                             </x-input-label>
-                            <select id="status" name="status" class="block mt-1 w-full rounded-md shadow-sm theme-select" required>
+                            <select id="status" name="status"
+                                class="block mt-1 w-full rounded-md shadow-sm theme-select" required>
                                 @foreach ($statuses as $status)
-                                    <option value="{{ $status }}" {{ old('status', 'pending') == $status ? 'selected' : '' }}>{{ ucfirst($status) }}</option>
+                                    <option value="{{ $status }}"
+                                        {{ old('status', 'pending') == $status ? 'selected' : '' }}>
+                                        {{ ucfirst($status) }}</option>
                                 @endforeach
                             </select>
                             <x-input-error :messages="$errors->get('status')" class="mt-2 theme-error" />
@@ -157,12 +229,15 @@
                         <!-- Receipt URL -->
                         <div class="mt-4">
                             <x-input-label for="receipt_url" class="theme-input-label" :value="__('Receipt (Image or PDF)')" />
-                            <input id="receipt_url" class="block mt-1 w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none theme-input" type="file" name="receipt_url" />
+                            <input id="receipt_url"
+                                class="block mt-1 w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none theme-input"
+                                type="file" name="receipt_url" />
                             <x-input-error :messages="$errors->get('receipt_url')" class="mt-2 theme-error" />
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
-                            <a href="{{ route('expenses.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 transition ease-in-out duration-150 theme-button theme-button-secondary">
+                            <a href="{{ route('expenses.index') }}"
+                                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 transition ease-in-out duration-150 theme-button theme-button-secondary">
                                 {{ __('Cancel') }}
                             </a>
                             <x-primary-button class="ml-4 theme-button theme-button-primary">
@@ -174,4 +249,40 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('splits-container');
+            const totalDisplay = document.getElementById('split-total');
+            const errorDisplay = document.getElementById('split-error');
+            const inputs = container.querySelectorAll('.split-percentage-input');
+
+            function calculateTotal() {
+                let total = 0;
+                inputs.forEach(input => {
+                    const value = parseFloat(input.value);
+                    if (!isNaN(value)) {
+                        total += value;
+                    }
+                });
+
+                totalDisplay.textContent = total.toFixed(2);
+
+                if (Math.abs(total - 100) > 0.01 && total > 0) {
+                    totalDisplay.classList.add('theme-error');
+                    errorDisplay.style.display = 'block';
+                } else {
+                    totalDisplay.classList.remove('theme-error');
+                    errorDisplay.style.display = 'none';
+                }
+            }
+
+            inputs.forEach(input => {
+                input.addEventListener('input', calculateTotal);
+            });
+
+            // Initial calculation on page load
+            calculateTotal();
+        });
+    </script>
 </x-app-layout>

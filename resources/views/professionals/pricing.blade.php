@@ -127,7 +127,7 @@
                             </button>
                         </div>
                         <span class="font-medium text-theme-navy">Yearly</span>
-                        <span class="text-sm font-semibold text-green-600 bg-green-100 px-2 py-1 rounded-full">Save
+                        <span class="text-lg font-semibold text-green-900 bg-green-100 px-3 py-1 rounded-full">Save
                             $24</span>
                     </div>
 

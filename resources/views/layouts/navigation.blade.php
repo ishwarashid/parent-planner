@@ -125,9 +125,12 @@
                     @endcan
 
                     @can('view-expenses')
-                        <x-nav-link :href="route('expenses.index')" :active="request()->routeIs('expenses.*')" class="theme-nav-link">
-                            {{ __('Expenses') }}
-                        </x-nav-link>
+                        @if (auth()->user()->role == 'parent' || auth()->user()->role == 'co-parent')
+                            <x-nav-link :href="route('expenses.index')" :active="request()->routeIs('expenses.*')" class="theme-nav-link">
+                                {{ __('Expenses') }}
+                            </x-nav-link>
+                        @endif
+
                     @endcan
 
                     @can('view-documents')
@@ -232,9 +235,11 @@
                 </x-responsive-nav-link>
             @endcan
             @can('view-expenses')
-                <x-responsive-nav-link :href="route('expenses.index')" :active="request()->routeIs('expenses.*')" class="theme-responsive-link">
-                    {{ __('Expenses') }}
-                </x-responsive-nav-link>
+                @if (auth()->user()->role == 'parent' || auth()->user()->role == 'co-parent')
+                    <x-responsive-nav-link :href="route('expenses.index')" :active="request()->routeIs('expenses.*')" class="theme-responsive-link">
+                        {{ __('Expenses') }}
+                    </x-responsive-nav-link>
+                @endif
             @endcan
             @can('view-documents')
                 <x-responsive-nav-link :href="route('documents.index')" :active="request()->routeIs('documents.*')" class="theme-responsive-link">
@@ -244,6 +249,8 @@
             <x-responsive-nav-link :href="route('professionals.public.index')" :active="request()->routeIs('professionals.public.index')" class="theme-responsive-link">
                 {{ __('Professionals') }}
             </x-responsive-nav-link>
+            @if (auth()->user()->isAccountOwner())
+            @endif
             @can('view-invitations')
                 <x-responsive-nav-link :href="route('invitations.index')" :active="request()->routeIs('invitations.*')" class="theme-responsive-link">
                     {{ __('Invitations') }}

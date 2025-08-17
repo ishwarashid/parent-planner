@@ -28,4 +28,14 @@ class Expense extends Model
     {
         return $this->belongsTo(User::class, 'payer_id');
     }
+
+    public function splits()
+    {
+        return $this->hasMany(ExpenseSplit::class);
+    }
+    
+    public function confirmations()
+    {
+        return $this->hasMany(PaymentConfirmation::class);
+    }
 }

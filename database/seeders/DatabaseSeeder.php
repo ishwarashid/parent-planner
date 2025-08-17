@@ -38,14 +38,28 @@ class DatabaseSeeder extends Seeder
             }
         }
 
+        // Main Parent role with all permissions
         $mainParentRole = Role::updateOrCreate(['name' => 'Main Parent']);
         $mainParentRole->givePermissionTo(Permission::all());
 
-        // Create Invited User Role with default permissions
+        // Invited User role with specific view permissions
         $invitedUserRole = Role::updateOrCreate(['name' => 'Invited User']);
         $invitedUserRole->givePermissionTo(['view-children', 'view-events']);
 
+        // Admin Co-Parent role with all permissions except for invitations
         $adminCoParentRole = Role::updateOrCreate(['name' => 'Admin Co-Parent']);
-        $adminCoParentRole->givePermissionTo(Permission::all()); // Give them all permissions
+        $permissionsWithoutInvitations = Permission::where('name', 'NOT LIKE', '%-invitations')->get();
+        $adminCoParentRole->syncPermissions($permissionsWithoutInvitations);
+
+        // Co-Parent role with specific permissions for children, events, and all of expenses
+        $coParentRole = Role::updateOrCreate(['name' => 'Co-Parent']);
+        $coParentRole->givePermissionTo([
+            'view-children',
+            'view-events',
+            'view-expenses',
+            'create-expenses',
+            'update-expenses',
+            'delete-expenses',
+        ]);
     }
 }

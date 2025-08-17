@@ -3,30 +3,47 @@
 namespace App\Http\Controllers;
 
 use App\Models\Expense;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ExpenseController extends Controller
 {
-     public function __construct()
+    public function __construct()
     {
-        // This single line connects all controller methods to their corresponding policy methods.
-        // e.g., the `store()` method will automatically check the `create()` policy method.
-        // the `edit()` method will automatically check the `update()` policy method.
         $this->authorizeResource(Expense::class, 'expense');
     }
 
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request) // <-- Inject the Request object
     {
         $this->authorize('viewAny', Expense::class);
+
+        // Get the status filter from the URL query string (e.g., /expenses?status=pending)
+        $statusFilter = $request->query('status');
+        $statuses = ['pending', 'paid', 'disputed']; // Define valid statuses
+
         $user = auth()->user()->load('invitedUsers');
         $familyMemberIds = $user->getFamilyMemberIds();
         $children = \App\Models\Child::whereIn('user_id', $familyMemberIds)->get();
-        $expenses = Expense::whereIn('child_id', $children->pluck('id'))->get();
-        return view('expenses.index', compact('expenses'));
+
+        // Start building the query
+        $query = Expense::with(['child', 'payer', 'splits.user'])
+            ->whereIn('child_id', $children->pluck('id'));
+
+        // If a valid status filter is present, add it to the query
+        if ($statusFilter && in_array($statusFilter, $statuses)) {
+            $query->where('status', $statusFilter);
+        }
+
+        // Execute the final query
+        $expenses = $query->latest()->get();
+
+        // Pass the statuses and the current filter back to the view
+        return view('expenses.index', compact('expenses', 'statuses', 'statusFilter'));
     }
 
     /**
@@ -35,11 +52,23 @@ class ExpenseController extends Controller
     public function create()
     {
         $this->authorize('create', Expense::class);
-        $familyMemberIds = auth()->user()->getFamilyMemberIds();
+        $user = auth()->user();
+        $familyMemberIds = $user->getFamilyMemberIds();
+        if (!in_array($user->id, $familyMemberIds)) {
+            $familyMemberIds[] = $user->id;
+        }
+
+        // This list is still needed for the "Responsibility Split" section.
+        $responsibleUsers = User::whereIn('id', $familyMemberIds)
+            ->whereIn('role', ['parent', 'co-parent'])
+            ->get();
+
         $children = \App\Models\Child::whereIn('user_id', $familyMemberIds)->get();
+        // $children = \App\Models\Child::whereIn('user_id', 'familyMemberIds')->get();
         $categories = ['Healthcare', 'Education', 'Childcare', 'Food', 'Clothing', 'Activities', 'Other'];
         $statuses = ['pending', 'paid', 'disputed'];
-        return view('expenses.create', compact('children', 'categories', 'statuses'));
+
+        return view('expenses.create', compact('children', 'categories', 'statuses', 'responsibleUsers'));
     }
 
     /**
@@ -48,6 +77,7 @@ class ExpenseController extends Controller
     public function store(Request $request)
     {
         $this->authorize('create', Expense::class);
+
         $validatedData = $request->validate([
             'child_id' => 'required|exists:children,id',
             'description' => 'required|string|max:255',
@@ -55,16 +85,36 @@ class ExpenseController extends Controller
             'category' => 'required|string|max:255',
             'status' => 'required|string|in:pending,paid,disputed',
             'receipt_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
+            // REMOVED: Validation for payer_id is no longer needed from the form.
+            'splits' => 'required|array',
+            'splits.*.user_id' => 'required|exists:users,id',
+            'splits.*.percentage' => 'required|numeric|min:0|max:100',
         ]);
 
-        $validatedData['payer_id'] = auth()->id();
-
-        if ($request->hasFile('receipt_url')) {
-            $path = $request->file('receipt_url')->store('receipts', 'public');
-            $validatedData['receipt_url'] = $path;
+        // Server-side validation that percentages sum to 100
+        $totalPercentage = collect($validatedData['splits'])->sum('percentage');
+        if (abs($totalPercentage - 100.00) > 0.01) {
+            return back()->withErrors(['splits' => 'The percentages must add up to 100%.'])->withInput();
         }
 
-        Expense::create($validatedData);
+        // SET PAYER: The authenticated user is always the payer.
+        $validatedData['payer_id'] = auth()->id();
+
+        DB::transaction(function () use ($validatedData, $request) {
+            if ($request->hasFile('receipt_url')) {
+                $path = $request->file('receipt_url')->store('receipts', 'public');
+                $validatedData['receipt_url'] = $path;
+            }
+
+            $expense = Expense::create($validatedData);
+
+            foreach ($validatedData['splits'] as $split) {
+                $expense->splits()->create([
+                    'user_id' => $split['user_id'],
+                    'percentage' => $split['percentage'],
+                ]);
+            }
+        });
 
         return redirect()->route('expenses.index')->with('success', 'Expense added successfully.');
     }
@@ -75,6 +125,7 @@ class ExpenseController extends Controller
     public function show(Expense $expense)
     {
         $this->authorize('view', $expense);
+        $expense->load(['child', 'payer', 'splits.user', 'confirmations']); // Eager load confirmations for the new feature
         return view('expenses.show', compact('expense'));
     }
 
@@ -84,11 +135,28 @@ class ExpenseController extends Controller
     public function edit(Expense $expense)
     {
         $this->authorize('update', $expense);
-        $familyMemberIds = auth()->user()->getFamilyMemberIds();
+
+        // You can only edit expenses you created/paid for
+        if ($expense->payer_id !== auth()->id()) {
+            abort(403, 'You can only edit expenses that you paid for.');
+        }
+
+        $user = auth()->user();
+        $familyMemberIds = $user->getFamilyMemberIds();
+        if (!in_array($user->id, $familyMemberIds)) {
+            $familyMemberIds[] = $user->id;
+        }
+
+        $responsibleUsers = User::whereIn('id', $familyMemberIds)
+            ->whereIn('role', ['parent', 'co-parent'])
+            ->get();
+
         $children = \App\Models\Child::whereIn('user_id', $familyMemberIds)->get();
         $categories = ['Healthcare', 'Education', 'Childcare', 'Food', 'Clothing', 'Activities', 'Other'];
         $statuses = ['pending', 'paid', 'disputed'];
-        return view('expenses.edit', compact('expense', 'children', 'categories', 'statuses'));
+        $expense->load('splits.user');
+
+        return view('expenses.edit', compact('expense', 'children', 'categories', 'statuses', 'responsibleUsers'));
     }
 
     /**
@@ -105,18 +173,35 @@ class ExpenseController extends Controller
             'category' => 'required|string|max:255',
             'status' => 'required|string|in:pending,paid,disputed',
             'receipt_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
+            // REMOVED: Payer ID is not updatable.
+            'splits' => 'required|array',
+            'splits.*.user_id' => 'required|exists:users,id',
+            'splits.*.percentage' => 'required|numeric|min:0|max:100',
         ]);
 
-        if ($request->hasFile('receipt_url')) {
-            // Delete old receipt if it exists
-            if ($expense->receipt_url) {
-                Storage::disk('public')->delete($expense->receipt_url);
-            }
-            $path = $request->file('receipt_url')->store('receipts', 'public');
-            $validatedData['receipt_url'] = $path;
+        $totalPercentage = collect($validatedData['splits'])->sum('percentage');
+        if (abs($totalPercentage - 100.00) > 0.01) {
+            return back()->withErrors(['splits' => 'The percentages must add up to 100%.'])->withInput();
         }
 
-        $expense->update($validatedData);
+        DB::transaction(function () use ($validatedData, $request, $expense) {
+            if ($request->hasFile('receipt_url')) {
+                if ($expense->receipt_url) {
+                    Storage::disk('public')->delete($expense->receipt_url);
+                }
+                $validatedData['receipt_url'] = $request->file('receipt_url')->store('receipts', 'public');
+            }
+
+            $expense->update($validatedData);
+            $expense->splits()->delete();
+
+            foreach ($validatedData['splits'] as $split) {
+                $expense->splits()->create([
+                    'user_id' => $split['user_id'],
+                    'percentage' => $split['percentage'],
+                ]);
+            }
+        });
 
         return redirect()->route('expenses.index')->with('success', 'Expense updated successfully.');
     }
@@ -128,7 +213,6 @@ class ExpenseController extends Controller
     {
         $this->authorize('delete', $expense);
 
-        // Delete associated receipt file if it exists
         if ($expense->receipt_url) {
             Storage::disk('public')->delete($expense->receipt_url);
         }

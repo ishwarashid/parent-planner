@@ -70,7 +70,11 @@ class RegisteredUserController extends Controller
 
         if ($invitation) {
             // If an invitation was successfully processed, they are an Invited User.
-            $user->assignRole('Invited User');
+            if ($user->role == 'co-parent') {
+                $user->assignRole(['Co-Parent']);
+            } else {
+                $user->assignRole('Invited User');
+            }
 
             // Update the invitation status now that they have fully registered.
             $invitation->update([

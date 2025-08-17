@@ -102,42 +102,73 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <div class="flex justify-end mb-4">
-                        <a href="{{ route('expenses.create') }}" class="py-2 px-4 rounded theme-button">
+
+                    {{-- NEW: Filter and Actions Section --}}
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+
+                        {{-- Filter Form --}}
+                        <form action="{{ route('expenses.index') }}" method="GET" class="flex items-center gap-2">
+                            <label for="status" class="text-sm font-medium theme-body-text">Filter by status:</label>
+                            <select name="status" id="status"
+                                class="rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-sm">
+                                <option value="">All Statuses</option>
+                                @foreach ($statuses as $status)
+                                    <option value="{{ $status }}"
+                                        {{ $statusFilter == $status ? 'selected' : '' }}>
+                                        {{ ucfirst($status) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <button type="submit" class="py-2 px-4 rounded theme-button text-sm">Filter</button>
+                            @if ($statusFilter)
+                                <a href="{{ route('expenses.index') }}"
+                                    class="text-sm text-gray-600 hover:text-gray-900">Clear</a>
+                            @endif
+                        </form>
+
+                        {{-- Add Expense Button --}}
+                        <a href="{{ route('expenses.create') }}"
+                            class="py-2 px-4 rounded theme-button w-full sm:w-auto text-center">
                             Add New Expense
                         </a>
                     </div>
 
                     @if (session('success'))
-                        <div class="border px-4 py-3 rounded relative mb-4 theme-alert-success" role="alert">
-                            <span class="block sm:inline">{{ session('success') }}</span>
-                        </div>
+                        {{-- ... your success message div ... --}}
                     @endif
 
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
+                            {{-- ... your existing table structure remains exactly the same ... --}}
                             <thead class="theme-table-header">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
                                         Child
                                     </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
-                                        Payer
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
                                         Description
                                     </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
-                                        Amount
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
+                                        Total Amount
                                     </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
-                                        Category
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
+                                        Your Share
                                     </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
+                                        Paid By
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
+                                        Date Added
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
                                         Status
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider theme-table-header-text">
-                                        Receipt
                                     </th>
                                     <th scope="col" class="relative px-6 py-3">
                                         <span class="sr-only">Actions</span>
@@ -147,53 +178,79 @@
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @forelse ($expenses as $expense)
                                     <tr>
+                                        {{-- All your existing <td> cells go here --}}
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm font-medium theme-table-row-text">{{ $expense->child->name }}</div>
+                                            <div class="text-sm font-medium theme-table-row-text">
+                                                {{ $expense->child->name ?? 'N/A' }}</div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm theme-table-row-text">{{ $expense->payer->name }}</div>
+                                            <div class="text-sm theme-table-row-text">
+                                                {{ Str::limit($expense->description, 30) }}</div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm theme-table-row-text">{{ $expense->description }}</div>
+                                            <div class="text-sm theme-table-row-text">
+                                                ${{ number_format($expense->amount, 2) }}</div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm theme-table-row-text">${{ number_format($expense->amount, 2) }}</div>
+                                            @php
+                                                $userSplit = $expense->splits->firstWhere('user_id', auth()->id());
+                                                $userShare = $userSplit
+                                                    ? $expense->amount * ($userSplit->percentage / 100)
+                                                    : 0;
+                                            @endphp
+                                            <div class="text-sm font-bold theme-table-row-text">
+                                                ${{ number_format($userShare, 2) }}
+                                                @if ($userSplit)
+                                                    <span
+                                                        class="text-xs text-gray-500">({{ $userSplit->percentage }}%)</span>
+                                                @endif
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm theme-table-row-text">{{ $expense->category }}</div>
+                                            <div class="text-sm theme-table-row-text">
+                                                {{ $expense->payer->name ?? 'N/A' }}</div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $expense->status == 'paid' ? 'bg-green-100 text-green-800' : ($expense->status == 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
+                                            <div class="text-sm theme-table-row-text">
+                                                {{ $expense->created_at->format('M d, Y') }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $expense->status == 'paid' ? 'bg-green-100 text-green-800' : ($expense->status == 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
                                                 {{ ucfirst($expense->status) }}
                                             </span>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            @if ($expense->receipt_url)
-                                                <a href="{{ asset('storage/' . $expense->receipt_url) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">View Receipt</a>
-                                            @else
-                                                N/A
-                                            @endif
-                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             @can('view', $expense)
-                                                <a href="{{ route('expenses.show', $expense) }}" class="mr-3 theme-action-link theme-action-view">View</a>
+                                                <a href="{{ route('expenses.show', $expense) }}"
+                                                    class="mr-3 theme-action-link theme-action-view">View</a>
                                             @endcan
                                             @can('update', $expense)
-                                                <a href="{{ route('expenses.edit', $expense) }}" class="mr-3 theme-action-link theme-action-edit">Edit</a>
+                                                <a href="{{ route('expenses.edit', $expense) }}"
+                                                    class="mr-3 theme-action-link theme-action-edit">Edit</a>
                                             @endcan
                                             @can('delete', $expense)
-                                                <form action="{{ route('expenses.destroy', $expense) }}" method="POST" class="inline-block">
+                                                <form class="inline-block"
+                                                    action="{{ route('expenses.destroy', $expense) }}" method="POST"
+                                                    onsubmit="return confirm('Are you sure you want to delete this expense?')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="theme-action-link theme-action-delete" onclick="return confirm('Are you sure you want to delete this expense?')">Delete</button>
+                                                    <button type="submit"
+                                                        class="theme-action-link theme-action-delete">Delete</button>
                                                 </form>
                                             @endcan
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
-                                            No expenses found.
+                                        <td colspan="8"
+                                            class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                                            {{-- Show a helpful message when there are no results for the filter --}}
+                                            @if ($statusFilter)
+                                                No expenses found with the status "{{ ucfirst($statusFilter) }}".
+                                            @else
+                                                No expenses found.
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforelse
