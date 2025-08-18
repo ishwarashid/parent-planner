@@ -93,15 +93,20 @@ class CalendarController extends Controller
         $customEvents = Event::with('child')->whereIn('user_id', $familyMemberIds)->get();
         $defaultColors = ['#F87171', '#FBBF24', '#34D399', '#60A5FA', '#A78BFA'];
         foreach ($customEvents as $event) {
+            // Set event color based on the status
+            $color = $event->child->color ?? $defaultColors[array_rand($defaultColors)];
+
             $events[] = [
                 'id' => $event->id,
                 'title' => $event->title,
                 'start' => $event->start,
                 'end' => $event->end,
                 'allDay' => false,
-                'color' => $event->child->color ?? $defaultColors[array_rand($defaultColors)],
+                'color' => $color,
                 'description' => $event->description,
                 'child_id' => $event->child_id,
+                'assigned_to' => $event->assigned_to,
+                'status' => $event->status,
             ];
         }
 
@@ -130,15 +135,8 @@ class CalendarController extends Controller
             'description' => 'nullable|string',
             'child_id' => 'nullable|exists:children,id',
             'assigned_to' => 'nullable|exists:users,id',
+            'status' => 'nullable|string|in:Scheduled,Completed,Missed,Cancelled',
         ]);
-
-        // $event = Event::create([
-        //     'user_id' => Auth::id(),
-        //     'title' => $request->title,
-        //     'description' => $request->description,
-        //     'start' => $request->start,
-        //     'end' => $request->end,
-        // ]);
 
         $event = Event::create([
             'user_id' => Auth::id(),
@@ -148,6 +146,7 @@ class CalendarController extends Controller
             'end' => $request->end,
             'child_id' => $request->child_id,
             'assigned_to' => $request->assigned_to,
+            'status' => $request->status ?? 'Scheduled',
         ]);
 
         $childColor = $event->child ? $event->child->color : '#dc3545';
@@ -160,6 +159,7 @@ class CalendarController extends Controller
             'description' => $event->description,
             'child_id' => $event->child_id,
             'assigned_to' => $event->assigned_to,
+            'status' => $event->status,
             'color' => $childColor,
         ]);
 
@@ -179,6 +179,7 @@ class CalendarController extends Controller
             'description' => 'nullable|string',
             'child_id' => 'nullable|exists:children,id',
             'assigned_to' => 'nullable|exists:users,id',
+            'status' => 'nullable|string|in:Scheduled,Completed,Missed,Cancelled',
         ]);
 
         $event->update($request->all());

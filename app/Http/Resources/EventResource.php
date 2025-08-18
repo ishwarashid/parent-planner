@@ -33,6 +33,8 @@ class EventResource extends JsonResource
             'start' => $this->start, // Standard format for dates
             'end' => $this->end, // Only include if not null
             'child_id' => $this->child_id,
+            'assigned_to' => $this->assigned_to,
+            'status' => $this->status,
             'color' => $childColor,
 
             // You can even include the full child object if you want!

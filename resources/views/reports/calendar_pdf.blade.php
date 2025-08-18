@@ -188,6 +188,7 @@
                     <th>Child</th>
                     <th>Assigned To</th>
                     <th>Start Time</th>
+                    <th>Status</th>
                     <th>Created By</th>
                 </tr>
             </thead>
@@ -197,12 +198,21 @@
                         <td>{{ $event->title }}</td>
                         <td>{{ $event->child->name ?? 'N/A' }}</td>
                         <td>{{ $event->assignee->name ?? 'N/A' }}</td>
-                        <td>{{ $event->start->format('M d, Y H:i A') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($event->start)->format('M d, Y H:i A') }}</td>
+                        <td>
+                            @if ($event->status)
+                                <span class="status-badge status-{{ strtolower($event->status) }}">
+                                    {{ ucfirst($event->status) }}
+                                </span>
+                            @else
+                                <span class="status-badge status-scheduled">Scheduled</span>
+                            @endif
+                        </td>
                         <td>{{ $event->user->name ?? 'N/A' }}</td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="no-data">No events found for the selected criteria.</td>
+                        <td colspan="6" class="no-data">No events found for the selected criteria.</td>
                     </tr>
                 @endforelse
             </tbody>

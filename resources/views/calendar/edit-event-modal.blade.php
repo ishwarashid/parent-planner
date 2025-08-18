@@ -8,24 +8,19 @@
 
         {{-- Include the shared form fields --}}
         @include('calendar._event-form-fields', ['children' => $children])
-        @can('update-events')
-            {{-- @if ($event->assigned_to) --}}
-                <div class="mt-4 border-t pt-4">
-                    <label for="edit_status" class="block text-sm theme-modal-label">Status</label>
-                    <p class="text-xs text-gray-500 mb-2">Update the status of this event. Only you or the assigned person
-                        can
-                        change this.</p>
-                    <select id="edit_status" name="status"
-                        class="mt-1 block w-full rounded-md shadow-sm theme-modal-input">
-                        <option value="Scheduled">Scheduled</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Missed">Missed</option>
-                        <option value="Cancelled">Cancelled</option>
-                    </select>
-                </div>
-            {{-- @endif --}}
+        
+        <div class="mt-4 border-t pt-4">
+            <label for="edit_status" class="block text-sm theme-modal-label">Status</label>
+            <p class="text-xs text-gray-500 mb-2">Update the status of this event.</p>
+            <select id="edit_status" name="status"
+                class="mt-1 block w-full rounded-md shadow-sm theme-modal-input">
+                <option value="Scheduled">Scheduled</option>
+                <option value="Completed">Completed</option>
+                <option value="Missed">Missed</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+        </div>
 
-        @endcan
         <div class="flex items-center justify-between mt-6">
             {{-- Delete button is on the left --}}
             @can('delete-events')
@@ -35,19 +30,15 @@
                 </button>
             @endcan
 
-
             {{-- Cancel and Save buttons are on the right --}}
             <div>
                 <button type="button" x-on:click="$dispatch('close')"
                     class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded mr-2">
                     Cancel
                 </button>
-                @can('update-events')
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        Save Changes
-                    </button>
-                @endcan
-
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Save Changes
+                </button>
             </div>
         </div>
     </form>

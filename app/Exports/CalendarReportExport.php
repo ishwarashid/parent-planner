@@ -34,7 +34,7 @@ class CalendarReportExport implements FromCollection, WithHeadings, WithMapping
                     'title' => $event->title,
                     'child' => $event->child->name ?? 'N/A',
                     'assigned_to' => $event->assignee ? $event->assignee->name . ($event->assignee->roles->count() > 0 ? ' (' . $event->assignee->roles->first()->name . ')' : '') : 'Unassigned',
-                    'start' => formatUserTimezone($event->start),
+                    'start' => $event->start ? formatUserTimezone($event->start) : 'N/A',
                     'end' => $event->end ? formatUserTimezone($event->end) : 'N/A',
                     'created_by' => $event->user->name ?? 'N/A',
                     'created_at' => formatUserTimezone($event->created_at),
@@ -50,8 +50,8 @@ class CalendarReportExport implements FromCollection, WithHeadings, WithMapping
                     'title' => 'Visitation', // Visitations don't have titles, so we use a generic label
                     'child' => $visitation->child->name,
                     'assigned_to' => $visitation->parent->name . ($visitation->parent->roles->count() > 0 ? ' (' . $visitation->parent->roles->first()->name . ')' : ''),
-                    'start' => formatUserTimezone($visitation->date_start),
-                    'end' => formatUserTimezone($visitation->date_end),
+                    'start' => $visitation->date_start ? formatUserTimezone($visitation->date_start) : 'N/A',
+                    'end' => $visitation->date_end ? formatUserTimezone($visitation->date_end) : 'N/A',
                     'created_by' => 'N/A', // Visitations don't track creator separately
                     'created_at' => formatUserTimezone($visitation->created_at),
                 ]);

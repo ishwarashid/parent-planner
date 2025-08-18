@@ -745,6 +745,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         info.event.extendedProps.child_id || "";
                     editForm.querySelector("#assigned_to").value =
                         info.event.extendedProps.assigned_to || "";
+                    
+                    // Populate status field if it exists in extendedProps
+                    if (info.event.extendedProps.status) {
+                        editForm.querySelector("#edit_status").value =
+                            info.event.extendedProps.status;
+                    }
 
                     const toLocalISOString = (date) => {
                         const pad = (num) => (num < 10 ? "0" : "") + num;
@@ -855,6 +861,10 @@ document.addEventListener("DOMContentLoaded", function () {
                             event.setExtendedProp(
                                 "assigned_to",
                                 updatedEvent.assigned_to
+                            );
+                            event.setExtendedProp(
+                                "status",
+                                updatedEvent.status
                             );
                             event.setProp("color", updatedEvent.color); // Make sure your controller returns color on update!
                         }
