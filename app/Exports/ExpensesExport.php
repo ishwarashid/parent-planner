@@ -2,60 +2,74 @@
 
 namespace App\Exports;
 
-use App\Models\Expense;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class ExpensesExport implements FromCollection, WithHeadings, WithMapping
+class ExpensesExport implements FromCollection, WithHeadings
 {
-    protected $expenses;
+    protected Collection $expenses;
 
-    public function __construct($expenses)
+    public function __construct(Collection $expenses)
     {
         $this->expenses = $expenses;
     }
 
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * Transform the initial collection of expenses into a new collection
+     * where each row represents a single person's share of an expense.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
-        return $this->expenses;
+        $reportData = new Collection();
+
+        foreach ($this->expenses as $expense) {
+            if ($expense->splits->isEmpty()) {
+                // Handle case where an expense might not have splits (optional, for robustness)
+                continue;
+            }
+
+            foreach ($expense->splits as $split) {
+                // For each split, we create a new row of data for the report.
+                $reportData->push([
+                    'expense_date' => $expense->created_at,
+                    'child_name' => $expense->child->name ?? 'N/A',
+                    'description' => $expense->description,
+                    'category' => $expense->category,
+                    'total_amount' => $expense->amount,
+                    'status' => $expense->status,
+                    'payer_name' => $expense->payer->name ?? 'N/A',
+                    'responsible_person' => $split->user->name ?? 'N/A',
+                    'percentage' => $split->percentage,
+                    'share_amount' => $expense->amount * ($split->percentage / 100),
+                    'payment_confirmed' => $expense->confirmations->contains('user_id', $split->user_id) ? 'Yes' : 'No',
+                ]);
+            }
+        }
+
+        return $reportData;
     }
 
+    /**
+     * Define the column headings for the report.
+     */
     public function headings(): array
     {
         return [
+            'Expense Date',
             'Child Name',
-            'Payer Name',
             'Description',
-            'Amount',
             'Category',
-            'Status',
-            'Date',
-        ];
-    }
-
-    public function map($expense): array
-    {
-        $payerName = $expense->payer->name;
-        if ($expense->payer->hasRole('Admin Co-Parent')) {
-            $payerName .= ' (Admin Co-Parent)';
-        } elseif ($expense->payer->hasRole('Co-Parent')) {
-            $payerName .= ' (Co-Parent)';
-        } elseif ($expense->payer->hasRole('Parent')) {
-            $payerName .= ' (Parent)';
-        }
-        
-        return [
-            $expense->child->name,
-            $payerName,
-            $expense->description,
-            number_format($expense->amount, 2),
-            $expense->category,
-            ucfirst($expense->status),
-            formatUserTimezone($expense->created_at, 'M d, Y H:i A'),
+            'Total Amount',
+            'Expense Status',
+            'Paid By',
+            'Responsible Person',
+            'Responsibility (%)',
+            'Share Amount',
+            'Payment Confirmed?',
         ];
     }
 }

@@ -28,6 +28,10 @@ class ReportController extends Controller
 
     public function generateExpenseReport(Request $request)
     {
+        // Step 1: Authorize this action. Only specific users should run full family reports.
+        // You should create this permission and assign it to the 'parent' or 'admin' role.
+        // $this->authorize('generate-family-reports');
+
         $request->validate([
             'child_id' => 'nullable|exists:children,id',
             'start_date' => 'nullable|date',
@@ -37,47 +41,51 @@ class ReportController extends Controller
             'format' => 'required|in:pdf,csv',
         ]);
 
-        // Get all family member IDs to include expenses from all family members
+        // Step 2: Revert to the original logic to get ALL family expenses.
         $familyMemberIds = auth()->user()->getFamilyMemberIds();
-        
-        // Get children IDs for the family
         $childrenIds = Child::whereIn('user_id', $familyMemberIds)->pluck('id');
-        
-        // Start with all expenses for family children
-        $expenses = Expense::whereIn('child_id', $childrenIds);
 
+        // Start with a base query for all expenses related to the family's children
+        $query = Expense::with(['child', 'payer', 'splits.user', 'confirmations'])
+            ->whereIn('child_id', $childrenIds);
+
+        // Step 3: Apply the user-selected filters from the form
         if ($request->child_id) {
-            $expenses->where('child_id', $request->child_id);
+            $query->where('child_id', $request->child_id);
         }
-
         if ($request->start_date) {
-            $expenses->where('created_at', '>=', $request->start_date);
+            $query->whereDate('created_at', '>=', $request->start_date);
+            // $query->where('created_at', '>=', $request->start_date);
         }
-
         if ($request->end_date) {
-            $expenses->where('created_at', '<=', $request->end_date);
+            $query->whereDate('created_at', '<=', $request->end_date);
+            // $query->where('created_at', '<=', $request->end_date);
         }
-
         if ($request->category) {
-            $expenses->where('category', $request->category);
+            $query->where('category', $request->category);
         }
-
         if ($request->status) {
-            $expenses->where('status', $request->status);
+            $query->where('status', $request->status);
         }
 
-        $expenses = $expenses->get();
+        $expenses = $query->latest()->get();
 
+        // Step 4: Generate the report in the requested format
         if ($request->format === 'pdf') {
+            // The PDF can remain as is, as it can handle nested loops for splits easily.
             $pdf = Pdf::loadView('reports.expenses_pdf', compact('expenses'));
             return $pdf->download('expense_report_' . now()->format('Ymd_His') . '.pdf');
         } else {
+            // For CSV, we pass the collection to our updated export class.
             return Excel::download(new ExpensesExport($expenses), 'expense_report_' . now()->format('Ymd_His') . '.csv');
         }
     }
 
     public function generateCalendarReport(Request $request)
     {
+        // Authorize this action for security
+        // $this->authorize('generate-family-reports');
+
         $request->validate([
             'child_id' => 'nullable|exists:children,id',
             'start_date' => 'nullable|date',
@@ -91,58 +99,60 @@ class ReportController extends Controller
         $events = collect();
         $visitations = collect();
 
+        // Get all family member and children IDs
+        $familyMemberIds = auth()->user()->getFamilyMemberIds();
+        $childrenIds = Child::whereIn('user_id', $familyMemberIds)->pluck('id');
+
         // Get events if requested
         if ($type === 'event' || $type === 'both') {
-            $events = auth()->user()->events();
-            
+            // === THIS IS THE FIX ===
+            // Start by finding all events created BY ANY FAMILY MEMBER.
+            // This is the correct way to scope events to the family.
+            $query = Event::whereIn('user_id', $familyMemberIds)
+                // Eager load relationships for performance
+                ->with(['child', 'assignee.roles', 'user']);
+
+            // Now, apply the filters ON TOP of the correct base data set.
             if ($request->child_id) {
-                $events->where('child_id', $request->child_id);
+                $query->where('child_id', $request->child_id);
             }
-            
             if ($request->start_date) {
-                $events->where('start', '>=', $request->start_date);
+                $query->whereDate('start', '>=', $request->start_date);
             }
-            
             if ($request->end_date) {
-                $events->where('start', '<=', $request->end_date);
+                $query->whereDate('start', '<=', $request->end_date);
             }
-            
             if ($request->assigned_to) {
-                $events->where('assigned_to', $request->assigned_to);
+                $query->where('assigned_to', $request->assigned_to);
             }
-            
-            $events = $events->get();
+            $events = $query->get();
         }
 
-        // Get visitations if requested
+        // Get visitations if requested (This part was already correct)
         if ($type === 'visitation' || $type === 'both') {
-            $visitations = auth()->user()->visitations();
-            
+            $query = Visitation::whereIn('child_id', $childrenIds)
+                ->with(['child', 'parent.roles']);
+
             if ($request->child_id) {
-                $visitations->where('child_id', $request->child_id);
+                $query->where('child_id', $request->child_id);
             }
-            
             if ($request->start_date) {
-                $visitations->where('date_start', '>=', $request->start_date);
+                $query->whereDate('date_start', '>=', $request->start_date);
             }
-            
             if ($request->end_date) {
-                $visitations->where('date_end', '<=', $request->end_date);
+                $query->whereDate('date_start', '<=', $request->end_date);
             }
-            
             if ($request->assigned_to) {
-                $visitations->where('parent_id', $request->assigned_to);
+                $query->where('parent_id', $request->assigned_to);
             }
-            
-            $visitations = $visitations->get();
+            $visitations = $query->get();
         }
 
         if ($request->format === 'pdf') {
             $pdf = Pdf::loadView('reports.calendar_pdf', compact('events', 'visitations', 'type'));
             return $pdf->download('calendar_report_' . now()->format('Ymd_His') . '.pdf');
         } else {
-            // For CSV, use the new export class
-            return Excel::download(new \App\Exports\CalendarReportExport($events, $visitations, $type), 'calendar_report_' . now()->format('Ymd_His') . '.csv');
+            return Excel::download(new CalendarReportExport($events, $visitations, $type), 'calendar_report_' . now()->format('Ymd_His') . '.csv');
         }
     }
 }

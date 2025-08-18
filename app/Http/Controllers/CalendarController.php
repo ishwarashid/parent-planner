@@ -46,12 +46,10 @@ class CalendarController extends Controller
         // 3. Process visitations into calendar events with new details
         foreach ($visitations as $visitation) {
             // Set event color based on the status
-            $color = '#3788d8'; // Default blue for 'Scheduled'
-            if ($visitation->status === 'Completed') {
-                $color = '#28a745'; // Green for 'Completed'
-            } elseif ($visitation->status === 'Cancelled') {
-                $color = '#808080'; // Grey for 'Cancelled'
-            }
+            $color = '#3788d8'; // Default for Scheduled
+            if ($visitation->status === 'Completed') $color = '#28a745';
+            elseif ($visitation->status === 'Cancelled') $color = '#6c757d'; // A better grey
+            elseif ($visitation->status === 'Missed') $color = '#dc3545';
 
             $events[] = [
                 'id' => 'visitation-' . $visitation->id, // Prevents ID conflicts with other event types
@@ -206,5 +204,26 @@ class CalendarController extends Controller
         $event->delete();
 
         return response()->json(['status' => 'success']);
+    }
+
+    // In app/Http/Controllers/EventController.php
+
+    public function updateStatus(Request $request, Event $event)
+    {
+        // Authorize the action (we will create this policy rule next)
+        $this->authorize('updateStatus', $event);
+
+        $validated = $request->validate([
+            // Define the allowed statuses
+            'status' => 'required|string|in:Scheduled,Completed,Missed,Cancelled',
+        ]);
+
+        $event->update(['status' => $validated['status']]);
+
+        // Return a success response, which is useful for AJAX calls
+        return response()->json([
+            'message' => 'Event status updated successfully.',
+            'status' => $event->status,
+        ]);
     }
 }

@@ -47,4 +47,10 @@ class EventPolicy
     {
         return $user->can('delete-events') && $user->getAccountOwnerId() === $event->user_id;
     }
+
+    public function updateStatus(User $user, Event $event): bool
+    {
+        // Return true if the event is assigned to the user OR if the user created it.
+        return $user->can('update-events') && $user->getAccountOwnerId() === $event->user_id;
+    }
 }

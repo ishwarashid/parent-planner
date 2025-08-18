@@ -1,7 +1,7 @@
 {{-- resources/views/calendar/_event-form-fields.blade.php --}}
 
 <!-- Associated Child -->
-<div class="mt-4">
+<div class="">
     <label for="child_id" class="block text-sm theme-modal-label">Child</label>
     <select id="child_id" name="child_id" class="mt-1 block w-full rounded-md shadow-sm theme-modal-input">
         <option value="">-- None --</option>
@@ -12,7 +12,7 @@
 </div>
 
 <!-- Assigned To -->
-<div class="mt-4">
+<div class="mt-2">
     <label for="assigned_to" class="block text-sm theme-modal-label">Assigned To</label>
     <select id="assigned_to" name="assigned_to" class="mt-1 block w-full rounded-md shadow-sm theme-modal-input">
         <option value="">-- Unassigned --</option>
@@ -28,21 +28,21 @@
 </div>
 
 <!-- Title -->
-<div class="mt-4">
+<div class="mt-2">
     <label for="title" class="block text-sm theme-modal-label">Title</label>
     <input type="text" id="title" name="title" class="mt-1 block w-full rounded-md shadow-sm theme-modal-input"
         required>
 </div>
 
 <!-- Description -->
-<div class="mt-4">
+<div class="mt-2">
     <label for="description" class="block text-sm theme-modal-label">Description</label>
     <textarea id="description" name="description" rows="3"
         class="mt-1 block w-full rounded-md shadow-sm theme-modal-input"></textarea>
 </div>
 
 <!-- Start & End Time -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
     <div>
         <label for="start" class="block text-sm theme-modal-label">Start Time</label>
         <input type="datetime-local" id="start" name="start"

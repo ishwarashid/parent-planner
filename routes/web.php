@@ -79,6 +79,7 @@ Route::middleware([
     Route::post('events', [CalendarController::class, 'store'])->name('events.store');
     Route::put('events/{event}', [CalendarController::class, 'update'])->name('events.update');
     Route::delete('events/{event}', [CalendarController::class, 'destroy'])->name('events.destroy');
+    Route::patch('/events/{event}/status', [CalendarController::class, 'updateStatus'])->name('events.updateStatus');
 });
 
 

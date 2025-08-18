@@ -1,268 +1,265 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Expense Report</title>
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        /* Using a common font stack for compatibility */
+        body {
+            font-family: DejaVu Sans, sans-serif;
             margin: 0;
             padding: 0;
             color: #333;
-            font-size: 12px;
+            font-size: 11px;
         }
-        
+
         .header {
-            text-align: center; 
-            margin-bottom: 30px;
+            text-align: center;
+            margin-bottom: 25px;
             padding: 20px;
             background-color: #000033;
             color: white;
         }
-        
+
         .header h1 {
-            margin: 0 0 10px 0;
-            font-size: 24px;
-            font-weight: 600;
+            margin: 0 0 5px 0;
+            font-size: 22px;
         }
-        
+
         .report-info {
-            font-size: 12px;
-            opacity: 0.9;
+            font-size: 11px;
         }
-        
+
         .summary-box {
             background-color: #f8f9fa;
             border-left: 4px solid #000033;
             padding: 15px;
             margin-bottom: 25px;
-            border-radius: 0 4px 4px 0;
         }
-        
+
         .summary-title {
-            font-weight: 600;
+            font-weight: bold;
             color: #000033;
             margin-bottom: 10px;
             font-size: 14px;
         }
-        
+
         .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
+            /* Using tables for PDF layout consistency */
+            width: 100%;
         }
-        
+
         .summary-item {
             text-align: center;
+            width: 25%;
         }
-        
+
         .summary-value {
-            font-size: 20px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: bold;
             color: #000033;
         }
-        
+
         .summary-label {
-            font-size: 11px;
+            font-size: 10px;
             color: #6c757d;
-            text-transform: uppercase;
         }
-        
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin-bottom: 25px; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
         }
-        
-        th { 
-            background-color: #000033; 
+
+        th {
+            background-color: #000033;
             color: white;
-            font-weight: 600;
-            padding: 12px 10px;
+            font-weight: bold;
+            padding: 10px 8px;
             text-align: left;
-            font-size: 11px;
+            font-size: 10px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
-        
-        td { 
+
+        td {
             border-bottom: 1px solid #e9ecef;
-            padding: 10px;
-            font-size: 11px;
+            padding: 8px;
+            font-size: 10px;
+            vertical-align: top;
         }
-        
-        tr:nth-child(even) {
+
+        /* Master row for each expense */
+        .expense-master-row {
             background-color: #f8f9fa;
+            font-weight: bold;
         }
-        
-        tr:hover {
-            background-color: #e9ecef;
+
+        /* Sub-row for split details */
+        .split-detail-row td {
+            padding-left: 25px;
+            border-bottom: 1px dotted #ccc;
         }
-        
+
         .no-data {
             text-align: center;
-            color: #6c757d;
-            font-style: italic;
             padding: 25px;
-            background-color: #f8f9fa;
         }
-        
+
         .status-badge {
             display: inline-block;
             padding: 3px 8px;
             border-radius: 12px;
-            font-size: 10px;
-            font-weight: 600;
+            font-size: 9px;
+            font-weight: bold;
             text-transform: uppercase;
         }
-        
+
         .status-pending {
             background-color: #fff3cd;
             color: #856404;
         }
-        
+
         .status-paid {
             background-color: #d4edda;
             color: #155724;
         }
-        
+
         .status-disputed {
             background-color: #f8d7da;
             color: #721c24;
         }
-        
-        tfoot {
-            font-weight: 600;
-            background-color: #e9ecef;
-        }
-        
+
         .amount {
             text-align: right;
-            font-weight: 600;
+            font-weight: bold;
         }
-        
+
+        tfoot {
+            font-weight: bold;
+            background-color: #e9ecef;
+        }
+
         .footer {
             position: fixed;
-            bottom: 0;
+            bottom: -30px;
+            /* Adjust if footer is not showing */
             left: 0;
             right: 0;
-            padding: 10px;
+            height: 50px;
             text-align: center;
-            font-size: 10px;
+            font-size: 9px;
             color: #6c757d;
-            border-top: 1px solid #e9ecef;
         }
-        
+
         .page-number:before {
             content: "Page " counter(page);
         }
-        
-        @page {
-            @bottom-right {
-                content: "Page " counter(page);
-                font-size: 10px;
-                color: #6c757d;
-            }
-        }
     </style>
 </head>
+
 <body>
+    @php
+        // --- PRE-CALCULATE ALL SUMMARY VALUES ---
+        // These calculations are based on the unique expenses, ensuring no double-counting.
+        $totalAmount = $expenses->sum('amount');
+        $paidAmount = $expenses->where('status', 'paid')->sum('amount');
+        $pendingAmount = $expenses->where('status', 'pending')->sum('amount');
+        $totalTransactions = $expenses->count();
+    @endphp
+
     <div class="header">
         <h1>Expense Report</h1>
-        <p class="report-info">Generated on {{ formatUserTimezone(now()) }} ({{ getUserTimezone() }})</p>
+        <p class="report-info">Generated on {{ now()->format('M d, Y H:i A') }}</p>
     </div>
-    
-    <!-- Summary Section -->
+
     <div class="summary-box">
         <div class="summary-title">Report Summary</div>
-        <div class="summary-grid">
-            @php
-                $totalAmount = $expenses->sum('amount');
-                $paidAmount = $expenses->where('status', 'paid')->sum('amount');
-                $pendingAmount = $expenses->where('status', 'pending')->sum('amount');
-                $disputedAmount = $expenses->where('status', 'disputed')->sum('amount');
-            @endphp
-            <div class="summary-item">
-                <div class="summary-value">${{ number_format($totalAmount, 2) }}</div>
-                <div class="summary-label">Total Expenses</div>
-            </div>
-            <div class="summary-item">
-                <div class="summary-value">${{ number_format($paidAmount, 2) }}</div>
-                <div class="summary-label">Paid</div>
-            </div>
-            <div class="summary-item">
-                <div class="summary-value">${{ number_format($pendingAmount, 2) }}</div>
-                <div class="summary-label">Pending</div>
-            </div>
-            <div class="summary-item">
-                <div class="summary-value">{{ $expenses->count() }}</div>
-                <div class="summary-label">Transactions</div>
-            </div>
-        </div>
+        <table class="summary-grid">
+            <tr>
+                <td class="summary-item">
+                    <div class="summary-value">${{ number_format($totalAmount, 2) }}</div>
+                    <div class="summary-label">Total Expenses</div>
+                </td>
+                <td class="summary-item">
+                    <div class="summary-value">${{ number_format($paidAmount, 2) }}</div>
+                    <div class="summary-label">Paid</div>
+                </td>
+                <td class="summary-item">
+                    <div class="summary-value">${{ number_format($pendingAmount, 2) }}</div>
+                    <div class="summary-label">Pending</div>
+                </td>
+                <td class="summary-item">
+                    <div class="summary-value">{{ $totalTransactions }}</div>
+                    <div class="summary-label">Transactions</div>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th>Child</th>
-                <th>Payer</th>
-                <th>Description</th>
-                <th class="amount">Amount</th>
-                <th>Category</th>
-                <th>Status</th>
-                <th>Date</th>
+                <th style="width:12%;">Date</th>
+                <th style="width:38%;">Child & Description</th>
+                <th style="width:18%;">Paid By</th>
+                <th style="width:12%;" class="amount">Total</th>
+                <th style="width:15%;">Status</th>
             </tr>
         </thead>
         <tbody>
-            @php
-                $totalAmount = 0;
-                
-                function getRoleSuffix($user) {
-                    if ($user->hasRole('Admin Co-Parent')) {
-                        return ' (Admin Co-Parent)';
-                    } elseif ($user->hasRole('Co-Parent')) {
-                        return ' (Co-Parent)';
-                    } elseif ($user->hasRole('Parent')) {
-                        return ' (Parent)';
-                    }
-                    return '';
-                }
-            @endphp
             @forelse ($expenses as $expense)
-                <tr>
-                    <td>{{ $expense->child->name }}</td>
-                    <td>{{ $expense->payer->name }}{{ getRoleSuffix($expense->payer) }}</td>
-                    <td>{{ $expense->description }}</td>
+                {{-- THE MASTER ROW for each expense --}}
+                <tr class="expense-master-row">
+                    <td>{{ $expense->created_at->format('M d, Y') }}</td>
+                    <td>
+                        <strong>{{ $expense->child->name ?? 'N/A' }}</strong><br>
+                        {{ $expense->description }}
+                    </td>
+                    <td>{{ $expense->payer->name ?? 'N/A' }}</td>
                     <td class="amount">${{ number_format($expense->amount, 2) }}</td>
-                    <td>{{ $expense->category }}</td>
                     <td>
                         <span class="status-badge status-{{ strtolower($expense->status) }}">
                             {{ ucfirst($expense->status) }}
                         </span>
                     </td>
-                    <td>{{ formatUserTimezone($expense->created_at, 'M d, Y H:i A') }}</td>
                 </tr>
-                @php
-                    $totalAmount += $expense->amount;
-                @endphp
+
+                {{-- THE SUB-ROWS for each person's share (the split) --}}
+                @foreach ($expense->splits as $split)
+                    <tr class="split-detail-row">
+                        <td></td> {{-- Indent --}}
+                        <td colspan="4">
+                            <strong>↳ Responsible:</strong> {{ $split->user->name ?? 'N/A' }} |
+                            <strong>Share:</strong>
+                            ${{ number_format($expense->amount * ($split->percentage / 100), 2) }}
+                            ({{ $split->percentage }}%) |
+                            <strong>Confirmed:</strong>
+                            @if ($split->user_id === $expense->payer_id)
+                                N/A (Payer)
+                            @else
+                                {{ $expense->confirmations->contains('user_id', $split->user_id) ? 'Yes' : 'No' }}
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
             @empty
                 <tr>
-                    <td colspan="7" class="no-data">No expenses found for the selected criteria.</td>
+                    <td colspan="5" class="no-data">No expenses found for the selected criteria.</td>
                 </tr>
             @endforelse
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="3" style="text-align: right;">Total:</td>
+                <td colspan="3" style="text-align: right;"><strong>Grand Total:</strong></td>
                 <td class="amount">${{ number_format($totalAmount, 2) }}</td>
-                <td colspan="3"></td>
+                <td></td>
             </tr>
         </tfoot>
     </table>
-    
+
     <div class="footer">
-        <div class="page-number"></div>
-        | Generated by Parent Planner
+        Generated by Your App Name
     </div>
 </body>
+
 </html>
