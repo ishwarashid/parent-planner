@@ -173,65 +173,43 @@ class SubscriptionController extends Controller
         return view('subscriptions.checkout', ['checkout' => $checkout]);
     }
 
-    public function billing()
-    {
-        $user = Auth::user();
-        
-        // Check if the user has a Paddle customer ID
-        if (!$user->customer) {
-            // If not, redirect back with an error
-            return redirect()->back()->with('error', 'Unable to access billing portal.');
-        }
-        
-        try {
-            // Get the customer's portal URL from Paddle API
-            $response = \Laravel\Paddle\Cashier::api('GET', "customers/{$user->customer->paddle_id}");
-            $portalUrl = $response['data']['portal_url'] ?? null;
-            
-            // Check if we got a portal URL
-            if (!$portalUrl) {
-                return redirect()->back()->with('error', 'Unable to access billing portal.');
-            }
-            
-            // Redirect to the portal URL
-            return redirect($portalUrl);
-        } catch (\Exception $e) {
-            // Log the error for debugging
-            \Log::error('Error accessing Paddle billing portal: ' . $e->getMessage());
-            
-            // Redirect back with an error message
-            return redirect()->back()->with('error', 'Unable to access billing portal.');
-        }
-    }
-
     public function portal()
     {
+        return redirect()->route('subscription.show');
+    }
+
+    public function updatePaymentMethod()
+    {
         $user = Auth::user();
         
         // Check if the user has a Paddle customer ID
         if (!$user->customer) {
-            // If not, redirect back with an error
-            return redirect()->back()->with('error', 'Unable to access billing portal.');
+            return redirect()->route('subscription.show')->with('error', 'Unable to update payment method.');
         }
         
         try {
-            // Get the customer's portal URL from Paddle API
-            $response = \Laravel\Paddle\Cashier::api('GET', "customers/{$user->customer->paddle_id}");
-            $portalUrl = $response['data']['portal_url'] ?? null;
+            // Get the subscription
+            $subscription = $user->subscription();
             
-            // Check if we got a portal URL
-            if (!$portalUrl) {
-                return redirect()->back()->with('error', 'Unable to access billing portal.');
+            if (!$subscription) {
+                return redirect()->route('subscription.show')->with('error', 'You do not have an active subscription.');
             }
             
-            // Redirect to the portal URL
-            return redirect($portalUrl);
-        } catch (\Exception $e) {
-            // Log the error for debugging
-            \Log::error('Error accessing Paddle billing portal: ' . $e->getMessage());
+            // Get the update payment method URL from Paddle
+            $response = \Laravel\Paddle\Cashier::api('GET', "subscriptions/{$subscription->paddle_id}");
+            $subscriptionData = $response['data'] ?? null;
             
-            // Redirect back with an error message
-            return redirect()->back()->with('error', 'Unable to access billing portal.');
+            if (!$subscriptionData || !isset($subscriptionData['management_urls']['update_payment_method'])) {
+                return redirect()->route('subscription.show')->with('error', 'Unable to update payment method.');
+            }
+            
+            $updatePaymentMethodUrl = $subscriptionData['management_urls']['update_payment_method'];
+            
+            // Redirect to the update payment method URL
+            return redirect($updatePaymentMethodUrl);
+        } catch (\Exception $e) {
+            \Log::error('Error updating payment method: ' . $e->getMessage());
+            return redirect()->route('subscription.show')->with('error', 'Failed to update payment method: ' . $e->getMessage());
         }
     }
 

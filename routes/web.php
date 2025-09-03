@@ -174,6 +174,7 @@ Route::middleware(['auth'])->prefix('account/subscription')->group(function () {
     Route::post('/cancel', [SubscriptionController::class, 'cancel'])->name('subscription.cancel');
     Route::post('/resume', [SubscriptionController::class, 'resume'])->name('subscription.resume');
     Route::post('/swap', [SubscriptionController::class, 'swap'])->name('subscription.swap');
+    Route::get('/payment-method', [SubscriptionController::class, 'updatePaymentMethod'])->name('subscription.payment-method');
     
     Route::get('/invoices', [InvoiceController::class, 'index'])->name('subscription.invoices.index');
     Route::get('/invoices/{transactionId}/download', [InvoiceController::class, 'download'])->name('subscription.invoices.download');
