@@ -21,8 +21,8 @@ class ProfessionalMiddleware
         if (Auth::check()) {
             if (Auth::user()->role === 'professional') {
 
-                // Allow Stripe checkout and webhook URLs to pass through
-                if ($request->is('checkout') || $request->is('stripe/*') || $request->is('billing*')) {
+                // Allow Paddle checkout and webhook URLs to pass through
+                if ($request->is('checkout') || $request->is('paddle/*') || $request->is('billing*')) {
                     return $next($request);
                 }
                 // If user is professional, and the route is not a professional route, redirect to professional dashboard

@@ -40,7 +40,7 @@ Route::get('professional/registration-pending', fn() => view('auth.professional-
 Route::get('/register-choice', fn() => view('auth.register-choice'))->name('register.choice');
 Route::get('invitation/{token}', [InvitationController::class, 'showAcceptForm'])->name('invitations.show')->middleware('guest');
 Route::post('invitations/accept', [InvitationController::class, 'accept'])->name('invitations.accept')->middleware('guest');
-Route::post('/stripe/webhook', [\Laravel\Cashier\Http\Controllers\WebhookController::class, 'handleWebhook'])->name('cashier.webhook');
+Route::post('/paddle/webhook', [Laravel\Paddle\Http\Controllers\WebhookController::class, 'handleWebhook'])->name('cashier.webhook');
 require __DIR__ . '/auth.php';
 
 // Route for setting user timezone

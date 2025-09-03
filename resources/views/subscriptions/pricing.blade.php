@@ -15,6 +15,9 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <!-- Paddle JS -->
+    @paddleJS
+
     <!-- Custom Color Palette & Styles -->
     <style>
         :root {
@@ -162,11 +165,11 @@
                                     </svg>Document Storage</li>
                             </ul>
                             <div class="mt-auto">
-                                <a href="{{ route('checkout', ['plan' => 'price_1RvC8APOErLRYIriK6Wohwtj']) }}"
+                                <a href="{{ route('checkout', ['plan' => 'pri_01k479ewfx5kh4x8yqy2zcaneq']) }}"
                                     x-show="billingCycle === 'monthly'"
                                     class="w-full text-center bg-theme-turquoise text-theme-dark-navy hover:bg-theme-light-turquoise transition px-8 py-3 rounded-md text-lg font-bold shadow-lg block">Subscribe
                                     Monthly</a>
-                                <a href="{{ route('checkout', ['plan' => 'price_1RvC9KPOErLRYIriXLtJHjBk']) }}"
+                                <a href="{{ route('checkout', ['plan' => 'pri_01k479h0xtvns9g9rtbw41h373']) }}"
                                     x-show="billingCycle === 'yearly'" style="display: none;"
                                     class="w-full text-center bg-theme-turquoise text-theme-dark-navy hover:bg-theme-light-turquoise transition px-8 py-3 rounded-md text-lg font-bold shadow-lg block">Subscribe
                                     Yearly</a>
@@ -207,11 +210,11 @@
                                     </svg>Advanced Reporting</li>
                             </ul>
                             <div class="mt-auto">
-                                <a href="{{ route('checkout', ['plan' => 'price_1RvC9oPOErLRYIrifvr2Ml7Q']) }}"
+                                <a href="{{ route('checkout', ['plan' => 'pri_01k479kysbxxcsmndz9gzzp5dt']) }}"
                                     x-show="billingCycle === 'monthly'"
                                     class="w-full text-center bg-theme-turquoise text-theme-dark-navy hover:bg-theme-light-turquoise transition px-8 py-3 rounded-md text-lg font-bold shadow-lg block">Subscribe
                                     Monthly</a>
-                                <a href="{{ route('checkout', ['plan' => 'price_1RvCAaPOErLRYIri4yn3Ay4l']) }}"
+                                <a href="{{ route('checkout', ['plan' => 'pri_01k479mb6cdegmhzyt71r00yem']) }}"
                                     x-show="billingCycle === 'yearly'" style="display: none;"
                                     class="w-full text-center bg-theme-turquoise text-theme-dark-navy hover:bg-theme-light-turquoise transition px-8 py-3 rounded-md text-lg font-bold shadow-lg block">Subscribe
                                     Yearly</a>

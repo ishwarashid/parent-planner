@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Cashier\Billable;
+use Laravel\Paddle\Billable;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -15,13 +15,13 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasFactory, Notifiable, Billable, HasRoles;
 
     const BASIC_PLAN_IDS = [
-        'price_1RvC8APOErLRYIriK6Wohwtj', // Standard Basic (Monthly)
-        'price_1RvC9KPOErLRYIriXLtJHjBk', // Standard Basic (Yearly)
+        'pri_01k479ewfx5kh4x8yqy2zcaneq', // Standard Basic (Monthly)
+        'pri_01k479h0xtvns9g9rtbw41h373', // Standard Basic (Yearly)
     ];
 
     const PREMIUM_PLAN_IDS = [
-        'price_1RvC9oPOErLRYIrifvr2Ml7Q',
-        'price_1RvCAaPOErLRYIri4yn3Ay4l'
+        'pri_01k479kysbxxcsmndz9gzzp5dt',
+        'pri_01k479mb6cdegmhzyt71r00yem'
     ];
 
     /**
@@ -125,7 +125,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         // Assumes your subscription name is 'default'. Change if needed.
         return $this->subscribed('default') &&
-            in_array($this->subscription('default')->stripe_price, self::PREMIUM_PLAN_IDS);
+            in_array($this->subscription('default')->price_id, self::PREMIUM_PLAN_IDS);
     }
 
     public function hasAdminCoParent(): bool
@@ -140,10 +140,10 @@ class User extends Authenticatable implements MustVerifyEmail
         $subscription = $this->subscription('default');
 
         // Rule 1: User must have an active subscription
-        if (!$subscription || !$subscription->active()) {
+        if (!$subscription || !$subscription->valid()) {
             return false;
         }
-        return in_array($subscription->stripe_price, self::BASIC_PLAN_IDS);
+        return in_array($subscription->price_id, self::BASIC_PLAN_IDS);
     }
 
     public function canInvite(): bool

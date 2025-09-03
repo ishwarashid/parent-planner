@@ -17,7 +17,7 @@ Parent Planner is a web application designed to help co-parents manage the compl
 *   **Document Storage:** Securely upload and store important documents like birth certificates or school records.
 *   **Reporting:** Generate reports for visitations and expenses, useful for financial planning or legal documentation.
 *   **Notifications:** Receive timely reminders for upcoming visitations and pending expenses.
-*   **Subscription Management:** Manage user subscriptions and access to premium features.
+*   **Subscription Management:** Manage user subscriptions and access to premium features through Paddle billing.
 *   **User Roles & Access Control:** A role-based system to manage permissions for different user types.
 
 ## User Roles & Access Control
@@ -143,6 +143,23 @@ To run the application's test suite, use the following Artisan command:
 ```bash
 php artisan test
 ```
+
+## Billing System
+
+Parent Planner uses Paddle for subscription billing. The system supports two subscription tiers:
+
+1. **Basic Plan ($3/month or $24/year)**
+   - Shared Calendar
+   - Expense Tracking
+   - Document Storage
+   - Limited to 1 invitation for co-parents
+
+2. **Premium Plan ($5/month or $48/year)**
+   - All Basic Plan features
+   - Unlimited invitations for co-parents and others
+   - Advanced Reporting
+
+For detailed instructions on setting up Paddle integration, see [README-PADDLE.md](README-PADDLE.md).
 
 ## Database Schema
 

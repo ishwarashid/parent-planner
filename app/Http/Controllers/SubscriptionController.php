@@ -9,7 +9,6 @@ class SubscriptionController extends Controller
 {
     public function pricing()
     {
-        logger('hhhhhhhhhere');
         return view('subscriptions.pricing');
     }
 
@@ -21,18 +20,15 @@ class SubscriptionController extends Controller
         $plan = $request->input('plan');
         $user = Auth::user();
 
-        return $user->newSubscription('default', $plan)
-            ->checkout([
-                'success_url' => route('dashboard'),
-                'cancel_url' => route('pricing'),
-            ]);
+        $checkout = $user->checkout($plan)
+            ->returnTo(route('dashboard'));
+
+        return view('subscriptions.checkout', ['checkout' => $checkout]);
     }
 
     public function billing()
     {
-        return view('subscriptions.billing', [
-            'intent' => Auth::user()->createSetupIntent(),
-        ]);
+        return view('subscriptions.billing');
     }
 
     public function portal()
