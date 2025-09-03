@@ -26,7 +26,7 @@ class SubscriptionController extends Controller
             [
                 'id' => 'pri_01k479h0xtvns9g9rtbw41h373', // Example Basic Yearly
                 'name' => 'Basic Plan (Yearly)',
-                'price' => '$24/year'
+                'price' => '$25/year'
             ],
             [
                 'id' => 'pri_01k479kysbxxcsmndz9gzzp5dt', // Example Premium Monthly
@@ -40,7 +40,34 @@ class SubscriptionController extends Controller
             ]
         ];
         
-        return view('subscription.show', compact('subscription', 'plans'));
+        // Get the plan name if subscription exists
+        $planName = 'No Subscription';
+        if ($subscription && $subscription->items->count() > 0) {
+            $firstItem = $subscription->items->first();
+            // Find the plan name from our plans array
+            foreach ($plans as $plan) {
+                if ($plan['id'] === $firstItem->price_id) {
+                    $planName = $plan['name'];
+                    break;
+                }
+            }
+            
+            // If we didn't find it in our plans, try to get it from Paddle
+            if ($planName === 'No Subscription') {
+                try {
+                    $response = Cashier::api('GET', "prices/{$firstItem->price_id}");
+                    $price = $response['data'] ?? null;
+                    if ($price) {
+                        $planName = $price['description'] ?? $price['name'] ?? 'Unknown Plan';
+                    }
+                } catch (Exception $e) {
+                    // If we can't get the plan name from Paddle, use a generic name
+                    $planName = 'Subscription Plan';
+                }
+            }
+        }
+        
+        return view('subscription.show', compact('subscription', 'plans', 'planName'));
     }
 
     public function cancel(Request $request)
