@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Exception;
 
 class ProfileController extends Controller
 {
@@ -47,6 +48,19 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        // Cancel subscription if user has one
+        if ($user->subscription()) {
+            try {
+                $user->subscription()->cancel();
+            } catch (Exception $e) {
+                // Log the error but continue with account deletion
+                \Log::error('Failed to cancel subscription during account deletion: ' . $e->getMessage(), [
+                    'user_id' => $user->id,
+                    'subscription_id' => $user->subscription()->paddle_id ?? null
+                ]);
+            }
+        }
 
         Auth::logout();
 
