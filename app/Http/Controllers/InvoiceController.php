@@ -78,18 +78,13 @@ class InvoiceController extends Controller
                 return redirect()->route('subscription.invoices.index')->with('error', 'Unauthorized access to invoice.');
             }
             
-            // Get the invoice PDF URL
-            $invoiceUrl = $transaction['invoice_pdf'] ?? null;
+            // Generate PDF invoice
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('subscription.invoices.pdf', compact('transaction', 'user'));
             
-            if (!$invoiceUrl) {
-                return redirect()->route('subscription.invoices.index')->with('error', 'Invoice PDF not available.');
-            }
-            
-            // Redirect to the PDF URL
-            return redirect($invoiceUrl);
+            return $pdf->download('invoice-' . $transaction['id'] . '.pdf');
         } catch (Exception $e) {
-            \Log::error('Failed to download invoice: ' . $e->getMessage());
-            return redirect()->route('subscription.invoices.index')->with('error', 'Failed to download invoice: ' . $e->getMessage());
+            \Log::error('Failed to generate invoice: ' . $e->getMessage());
+            return redirect()->route('subscription.invoices.index')->with('error', 'Failed to generate invoice: ' . $e->getMessage());
         }
     }
 }
