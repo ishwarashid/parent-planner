@@ -20,8 +20,8 @@ class Subscribed
         $user = $request->user();
 
         if ($user) {
-            // For parents, check for the default subscription.
-            if ($user->role === 'parent' && !$user->subscribed('default')) {
+            // For parents and parent-related roles, check for the default subscription.
+            if ($user->hasRole(['Main Parent', 'Co-Parent', 'Invited User']) && !$user->subscribed('default')) {
                 // Fallback check: Check if user has an active subscription in Paddle
                 try {
                     if ($user->customer) {
@@ -44,7 +44,7 @@ class Subscribed
             }
 
             // For professionals, check for the professional subscription.
-            if ($user->role === 'professional' && $user->professional?->approval_status === 'approved' && !$user->subscribed('professional')) {
+            if ($user->hasRole('Professional') && $user->professional?->approval_status === 'approved' && !$user->subscribed('professional')) {
                 // Redirect to the professional pricing page to subscribe.
                 return redirect()->route('professional.pricing');
             }
