@@ -44,7 +44,7 @@ class PermissionController extends Controller
             $user->syncRoles(['Admin Co-Parent']);
         } else {
             // Demote or just update permissions
-            if ($user->role == 'coparent') {
+            if ($user->role == 'co-parent') {
                 $user->syncRoles(['Co-Parent']);
             } else {
                 $user->syncRoles(['Invited User']);

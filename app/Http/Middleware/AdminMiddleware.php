@@ -19,7 +19,8 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (Auth::check()) {
-            if (Auth::user()->is_admin) {
+            // Check if user has Admin Co-Parent role
+            if (Auth::user()->hasRole('Admin Co-Parent')) {
                 // If user is admin, and the route is not an admin route, redirect to admin dashboard
                 if (!Str::startsWith($request->path(), 'admin')) {
                     return redirect('/admin');

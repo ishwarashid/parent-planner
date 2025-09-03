@@ -13,7 +13,7 @@ class InvitationPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['parent']);
+        return $user->hasRole(['Main Parent', 'Admin Co-Parent']);
     }
 
     /**
@@ -29,7 +29,7 @@ class InvitationPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['parent']);
+        return $user->hasRole(['Main Parent', 'Admin Co-Parent']);
     }
 
     /**

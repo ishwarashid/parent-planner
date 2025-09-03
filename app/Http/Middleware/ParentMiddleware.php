@@ -16,7 +16,7 @@ class ParentMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && in_array(Auth::user()->role, ['parent', 'co-parent'])) {
+        if (Auth::check() && Auth::user()->hasRole(['Main Parent', 'Co-Parent', 'Invited User'])) {
             return $next($request);
         }
 

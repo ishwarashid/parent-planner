@@ -19,7 +19,7 @@ class ProfessionalMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (Auth::check()) {
-            if (Auth::user()->role === 'professional') {
+            if (Auth::user()->hasRole('Professional')) {
 
                 // Allow Paddle checkout and webhook URLs to pass through
                 if ($request->is('checkout') || $request->is('paddle/*') || $request->is('billing*')) {

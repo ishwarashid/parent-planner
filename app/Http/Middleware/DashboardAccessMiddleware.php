@@ -16,9 +16,10 @@ class DashboardAccessMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $allowedRoles = ['parent', 'co-parent', 'nanny', 'guardian', 'grandparent', 'professional', 'other'];
+        // Define roles that can access the dashboard
+        $allowedRoles = ['Main Parent', 'Co-Parent', 'Invited User', 'Professional'];
 
-        if (Auth::check() && in_array(Auth::user()->role, $allowedRoles)) {
+        if (Auth::check() && Auth::user()->hasRole($allowedRoles)) {
             return $next($request);
         }
 

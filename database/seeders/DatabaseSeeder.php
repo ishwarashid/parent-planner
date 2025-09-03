@@ -61,5 +61,8 @@ class DatabaseSeeder extends Seeder
             'update-expenses',
             'delete-expenses',
         ]);
+
+        // Professional role
+        $professionalRole = Role::updateOrCreate(['name' => 'Professional']);
     }
 }

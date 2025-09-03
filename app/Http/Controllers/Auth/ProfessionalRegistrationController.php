@@ -60,6 +60,8 @@ class ProfessionalRegistrationController extends Controller
             'role' => 'professional',
         ]);
 
+        $user->assignRole('Professional');
+
         $professional = Professional::create([
             'user_id' => $user->id,
             'business_name' => $request->business_name,
