@@ -105,8 +105,15 @@ Route::middleware([
     Route::resource('invitations', InvitationController::class)->except(['show']);
     Route::post('invitations/{invitation}/resend', [InvitationController::class, 'resend'])->name('invitations.resend');
 
-    Route::get('/billing', [SubscriptionController::class, 'billing'])->name('billing');
-    Route::get('/billing-portal', [SubscriptionController::class, 'portal'])->name('billing.portal');
+    // Redirect old billing route to new subscription portal
+    Route::get('/billing', function () {
+        return redirect()->route('subscription.show');
+    })->name('billing');
+    
+    // Redirect billing portal route to our new self-hosted subscription portal
+    Route::get('/billing-portal', function () {
+        return redirect()->route('subscription.show');
+    })->name('billing.portal');
 
     // This route should now be part of the InvitationController logic, but leaving it as-is per your request.
     // The PermissionController is no longer used.
@@ -142,18 +149,34 @@ Route::middleware(['auth', 'verified', 'professional', 'admin'])->prefix('profes
     Route::put('/profile', [ProfessionalController::class, 'update'])->name('professional.profile.update');
 
     // Subscription routes for professionals
-    Route::get('/billing', [SubscriptionController::class, 'billing'])->name('professional.billing');
+    Route::get('/billing', function () {
+        return redirect()->route('subscription.show');
+    })->name('professional.billing');
     Route::get('/checkout', [SubscriptionController::class, 'checkout'])->name('professional.checkout');
-    Route::get('/billing-portal', [SubscriptionController::class, 'portal'])->name('professional.billing.portal');
+    Route::get('/billing-portal', function () {
+        return redirect()->route('subscription.show');
+    })->name('professional.billing.portal');
 });
 
 
 // This second 'professional' group can likely be merged with the one above, but leaving it separate as requested.
 Route::middleware(['auth', 'professional'])->prefix('professional')->name('professional.')->group(function () {
     Route::get('/pricing', [SubscriptionController::class, 'professionalPricing'])->name('pricing');
-    Route::get('/billing', [SubscriptionController::class, 'billing'])->name('billing');
+    Route::get('/billing', function () {
+        return redirect()->route('subscription.show');
+    })->name('billing');
 });
 
+// Self-hosted customer portal routes
+Route::middleware(['auth'])->prefix('account/subscription')->group(function () {
+    Route::get('/', [SubscriptionController::class, 'show'])->name('subscription.show');
+    Route::post('/cancel', [SubscriptionController::class, 'cancel'])->name('subscription.cancel');
+    Route::post('/resume', [SubscriptionController::class, 'resume'])->name('subscription.resume');
+    Route::post('/swap', [SubscriptionController::class, 'swap'])->name('subscription.swap');
+    
+    Route::get('/invoices', [InvoiceController::class, 'index'])->name('subscription.invoices.index');
+    Route::get('/invoices/{transactionId}/download', [InvoiceController::class, 'download'])->name('subscription.invoices.download');
+});
 
 // Simplified 'admin' routes. The AdminController should check for the 'Admin' role or permissions.
 Route::middleware(['auth', 'verified', 'admin', 'professional'])->prefix('admin')->group(function () {
