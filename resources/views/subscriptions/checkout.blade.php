@@ -46,7 +46,7 @@
                     </div>
                     
                     <div class="text-center">
-                        <x-paddle-button :checkout="$checkout" class="px-8 py-4 text-lg">
+                        <x-paddle-button :checkout="$checkout" class="px-8 py-4 text-lg" id="paddle-button">
                             Continue to Checkout
                         </x-paddle-button>
                     </div>
@@ -60,6 +60,19 @@
             </div>
         </main>
     </div>
+    
+    <script>
+        // Listen for Paddle checkout events
+        window.Paddle.Checkout.loaded(function() {
+            // Add event listener for checkout completion
+            window.Paddle.Checkout.on('checkout.completed', function(data) {
+                // Redirect to dashboard after a short delay
+                setTimeout(function() {
+                    window.location.href = '{{ route('dashboard') }}';
+                }, 2000);
+            });
+        });
+    </script>
 </body>
 
 </html>

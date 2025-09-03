@@ -19,7 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'dashboard.access' => \App\Http\Middleware\DashboardAccessMiddleware::class,
         ]);
         $middleware->validateCsrfTokens(except: [
-            'stripe/*'
+            'paddle/*'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
