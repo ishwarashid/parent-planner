@@ -69,68 +69,69 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <h3 class="text-lg font-medium mb-4 theme-section-title">Welcome, {{ Auth::user()->name }}!</h3>
+                
+                <!-- Debug information -->
+                <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded">
+                    <h4 class="font-semibold text-yellow-800">Debug Information</h4>
+                    <p><strong>User Role:</strong> {{ Auth::user()->role }}</p>
+                    <p><strong>User Roles:</strong> {{ implode(', ', Auth::user()->roles->pluck('name')->toArray()) }}</p>
+                    <p><strong>Has view-visitations:</strong> {{ Auth::user()->can('view-visitations') ? 'Yes' : 'No' }}</p>
+                    <p><strong>Has view-expenses:</strong> {{ Auth::user()->can('view-expenses') ? 'Yes' : 'No' }}</p>
+                    <p><strong>Has view-children:</strong> {{ Auth::user()->can('view-children') ? 'Yes' : 'No' }}</p>
+                </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    @can('view-visitations')
-                        <!-- Next Visit Card -->
-                        <div class="p-4 rounded-lg shadow theme-card">
-                            <h4 class="theme-card-header">Next Visitation</h4>
-                            @if ($nextVisit)
-                                <p class="text-2xl theme-card-highlight">
-                                    {{ \Carbon\Carbon::parse($nextVisit->date_start)->diffForHumans() }}</p>
-                                <p class="text-sm theme-card-body">{{ $nextVisit->child->name }} on
-                                    {{ \Carbon\Carbon::parse($nextVisit->date_start)->format('M d, Y H:i A') }}</p>
-                                <a href="{{ route('visitations.show', $nextVisit) }}"
-                                    class="mt-2 block text-sm theme-card-link">View Details</a>
-                            @else
-                                <p class="text-gray-600">No upcoming visitations.</p>
-                                @can('create', App\Models\Visitation::class)
-                                    <a href="{{ route('visitations.create') }}" class="mt-2 block text-sm theme-card-link">Add a
-                                        Visitation</a>
-                                @endcan
-                            @endif
-                        </div>
-                    @endcan
+                    <!-- Next Visit Card -->
+                    <div class="p-4 rounded-lg shadow theme-card">
+                        <h4 class="theme-card-header">Next Visitation</h4>
+                        @if ($nextVisit)
+                            <p class="text-2xl theme-card-highlight">
+                                {{ \Carbon\Carbon::parse($nextVisit->date_start)->diffForHumans() }}</p>
+                            <p class="text-sm theme-card-body">{{ $nextVisit->child->name }} on
+                                {{ \Carbon\Carbon::parse($nextVisit->date_start)->format('M d, Y H:i A') }}</p>
+                            <a href="{{ route('visitations.show', $nextVisit) }}"
+                                class="mt-2 block text-sm theme-card-link">View Details</a>
+                        @else
+                            <p class="text-gray-600">No upcoming visitations.</p>
+                            <a href="{{ route('visitations.create') }}" class="mt-2 block text-sm theme-card-link">Add a
+                                Visitation</a>
+                        @endif
+                    </div>
 
-                    @can('view-expenses')
-                        <!-- Pending Expenses Card -->
-                        <div class="p-4 rounded-lg shadow theme-card">
-                            <h4 class="theme-card-header">Pending Expenses</h4>
-                            @if ($pendingExpenses->count() > 0)
-                                <p class="text-2xl theme-card-highlight">{{ $pendingExpenses->count() }}</p>
-                                <p class="text-sm theme-card-body">Total:
-                                    ${{ number_format($pendingExpenses->sum('amount'), 2) }}</p>
-                                <a href="{{ route('expenses.index') }}" class="mt-2 block text-sm theme-card-link">View All
-                                    Pending</a>
-                            @else
-                                <p class="text-gray-600">No pending expenses.</p>
-                                @can('create-expenses')
-                                    <a href="{{ route('expenses.create') }}" class="mt-2 block text-sm theme-card-link">Add an
-                                        Expense</a>
-                                @endcan
-                            @endif
-                        </div>
-                    @endcan
-                    @can('view-children')
-                        <!-- Upcoming Birthdays Card -->
-                        <div class="p-4 rounded-lg shadow theme-card">
-                            <h4 class="theme-card-header">Upcoming Birthdays</h4>
-                            @if ($childrenWithUpcomingBirthdays->count() > 0)
-                                <ul class="list-disc list-inside text-sm theme-card-body">
-                                    @foreach ($childrenWithUpcomingBirthdays as $child)
-                                        <li>{{ $child->name }} ({{ \Carbon\Carbon::parse($child->dob)->format('M d') }})
-                                            - in
-                                            {{ \Carbon\Carbon::parse($child->dob)->diffForHumans(null, true, false, 1) }}
-                                        </li>
-                                    @endforeach
-                                </ul>
-                                <a href="{{ route('children.index') }}" class="mt-2 block text-sm theme-card-link">View
-                                    Children</a>
-                            @else
-                                <p class="text-gray-600">No upcoming birthdays.</p>
-                            @endif
-                        </div>
-                    @endcan
+                    <!-- Pending Expenses Card -->
+                    <div class="p-4 rounded-lg shadow theme-card">
+                        <h4 class="theme-card-header">Pending Expenses</h4>
+                        @if ($pendingExpenses->count() > 0)
+                            <p class="text-2xl theme-card-highlight">{{ $pendingExpenses->count() }}</p>
+                            <p class="text-sm theme-card-body">Total:
+                                ${{ number_format($pendingExpenses->sum('amount'), 2) }}</p>
+                            <a href="{{ route('expenses.index') }}" class="mt-2 block text-sm theme-card-link">View All
+                                Pending</a>
+                        @else
+                            <p class="text-gray-600">No pending expenses.</p>
+                            <a href="{{ route('expenses.create') }}" class="mt-2 block text-sm theme-card-link">Add an
+                                Expense</a>
+                        @endif
+                    </div>
+                    
+                    <!-- Upcoming Birthdays Card -->
+                    <div class="p-4 rounded-lg shadow theme-card">
+                        <h4 class="theme-card-header">Upcoming Birthdays</h4>
+                        @if ($childrenWithUpcomingBirthdays->count() > 0)
+                            <ul class="list-disc list-inside text-sm theme-card-body">
+                                @foreach ($childrenWithUpcomingBirthdays as $child)
+                                    <li>{{ $child->name }} ({{ \Carbon\Carbon::parse($child->dob)->format('M d') }})
+                                        - in
+                                        {{ \Carbon\Carbon::parse($child->dob)->diffForHumans(null, true, false, 1) }}
+                                    </li>
+                                @endforeach
+                            </ul>
+                            <a href="{{ route('children.index') }}" class="mt-2 block text-sm theme-card-link">View
+                                Children</a>
+                        @else
+                            <p class="text-gray-600">No upcoming birthdays.</p>
+                        @endif
+                    </div>
                 </div>
 
                 <!-- Recent Activity -->
