@@ -48,7 +48,7 @@ class RegisteredUserController extends Controller
         ]);
 
         $invited_by = null;
-        $role = 'parent'; // Default role
+        $role = 'Main Parent'; // Default role
         $invitation = null;
 
         if ($request->has('token')) {
@@ -70,7 +70,7 @@ class RegisteredUserController extends Controller
 
         if ($invitation) {
             // If an invitation was successfully processed, they are an Invited User.
-            if ($user->role == 'co-parent') {
+            if ($user->role == 'Co-Parent') {
                 $user->assignRole(['Co-Parent']);
             } else {
                 $user->assignRole('Invited User');

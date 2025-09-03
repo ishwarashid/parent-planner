@@ -28,7 +28,7 @@
                             </h2>
 
                             <p class="mt-1 text-sm text-gray-600">
-                                {{ __('Your current role in the system is:') }} <strong>{{ ucfirst(auth()->user()->role) }}</strong>
+                                {{ __('Your current role in the system is:') }} <strong>{{ auth()->user()->roles->first()->name ?? ucfirst(auth()->user()->role) }}</strong>
                             </p>
                         </header>
                     </section>
