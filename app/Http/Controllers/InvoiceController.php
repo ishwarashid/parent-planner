@@ -26,10 +26,31 @@ class InvoiceController extends Controller
                 'per_page' => 50
             ]);
             
-            $invoices = $response['data'] ?? [];
+            $transactions = $response['data'] ?? [];
+            
+            // Format the transactions for display
+            $invoices = collect($transactions)->map(function ($transaction) {
+                // Log the transaction structure for debugging
+                \Log::debug('Transaction structure', ['transaction' => $transaction]);
+                
+                return [
+                    'id' => $transaction['id'] ?? 'Unknown',
+                    'billed_at' => $transaction['billed_at'] ?? now(),
+                    'total' => $transaction['details']['totals']['total'] ?? 0,
+                    'currency' => $transaction['details']['totals']['currency_code'] ?? 'USD',
+                    'items' => collect($transaction['details']['line_items'] ?? [])->map(function ($item) {
+                        return [
+                            'description' => $item['description'] ?? $item['product']['name'] ?? 'Unnamed Item',
+                            'amount' => $item['unit_price']['amount'] ?? 0,
+                            'currency' => $item['unit_price']['currency_code'] ?? 'USD',
+                        ];
+                    })->toArray(),
+                ];
+            })->toArray();
             
             return view('subscription.invoices.index', compact('invoices'));
         } catch (Exception $e) {
+            \Log::error('Failed to load invoices: ' . $e->getMessage());
             return redirect()->route('subscription.show')->with('error', 'Failed to load invoices: ' . $e->getMessage());
         }
     }
@@ -67,6 +88,7 @@ class InvoiceController extends Controller
             // Redirect to the PDF URL
             return redirect($invoiceUrl);
         } catch (Exception $e) {
+            \Log::error('Failed to download invoice: ' . $e->getMessage());
             return redirect()->route('subscription.invoices.index')->with('error', 'Failed to download invoice: ' . $e->getMessage());
         }
     }

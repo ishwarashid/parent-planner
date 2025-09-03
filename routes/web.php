@@ -16,6 +16,7 @@ use App\Http\Controllers\ProfessionalController;
 use App\Http\Controllers\PublicProfessionalsController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\InvoiceController;
 
 /*
 |--------------------------------------------------------------------------
