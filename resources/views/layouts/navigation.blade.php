@@ -106,35 +106,38 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    @if(auth()->user()->can('view-children') || auth()->user()->hasRole('Main Parent') || auth()->user()->hasRole('Admin Co-Parent'))
+                    @can('view-children')
                         <x-nav-link :href="route('children.index')" :active="request()->routeIs('children.*')" class="theme-nav-link">
                             {{ __('Children') }}
                         </x-nav-link>
-                    @endif
+                    @endcan
 
-                    @if(auth()->user()->can('view-visitations') || auth()->user()->hasRole('Main Parent') || auth()->user()->hasRole('Admin Co-Parent'))
+                    @can('view-visitations')
                         <x-nav-link :href="route('visitations.index')" :active="request()->routeIs('visitations.*')" class="theme-nav-link">
                             {{ __('Visitations') }}
                         </x-nav-link>
-                    @endif
+                    @endcan
 
-                    @if(auth()->user()->can('view-events') || auth()->user()->hasRole('Main Parent') || auth()->user()->hasRole('Admin Co-Parent') || auth()->user()->hasRole('Co-Parent') || auth()->user()->hasRole('Invited User'))
+                    @can('view-events')
                         <x-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*')" class="theme-nav-link">
                             {{ __('Calendar') }}
                         </x-nav-link>
-                    @endif
+                    @endcan
 
-                    @if(auth()->user()->can('view-expenses') || auth()->user()->hasRole('Main Parent') || auth()->user()->hasRole('Admin Co-Parent') || auth()->user()->hasRole('Co-Parent'))
-                        <x-nav-link :href="route('expenses.index')" :active="request()->routeIs('expenses.*')" class="theme-nav-link">
-                            {{ __('Expenses') }}
-                        </x-nav-link>
-                    @endif
+                    @can('view-expenses')
+                        @if (auth()->user()->role == 'parent' || auth()->user()->role == 'co-parent')
+                            <x-nav-link :href="route('expenses.index')" :active="request()->routeIs('expenses.*')" class="theme-nav-link">
+                                {{ __('Expenses') }}
+                            </x-nav-link>
+                        @endif
 
-                    @if(auth()->user()->can('view-documents') || auth()->user()->hasRole('Main Parent') || auth()->user()->hasRole('Admin Co-Parent'))
+                    @endcan
+
+                    @can('view-documents')
                         <x-nav-link :href="route('documents.index')" :active="request()->routeIs('documents.*')" class="theme-nav-link">
                             {{ __('Documents') }}
                         </x-nav-link>
-                    @endif
+                    @endcan
                     <x-nav-link :href="route('professionals.public.index')" :active="request()->routeIs('professionals.*')" class="theme-nav-link">
                         {{ __('Professionals') }}
                     </x-nav-link>
@@ -216,31 +219,33 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
-            @if(auth()->user()->can('view-children') || auth()->user()->hasRole('Main Parent') || auth()->user()->hasRole('Admin Co-Parent'))
+            @can('view-children')
                 <x-responsive-nav-link :href="route('children.index')" :active="request()->routeIs('children.*')" class="theme-responsive-link">
                     {{ __('Children') }}
                 </x-responsive-nav-link>
-            @endif
-            @if(auth()->user()->can('view-visitations') || auth()->user()->hasRole('Main Parent') || auth()->user()->hasRole('Admin Co-Parent'))
+            @endcan
+            @can('view-visitations')
                 <x-responsive-nav-link :href="route('visitations.index')" :active="request()->routeIs('visitations.*')" class="theme-responsive-link">
                     {{ __('Visitations') }}
                 </x-responsive-nav-link>
-            @endif
-            @if(auth()->user()->can('view-events') || auth()->user()->hasRole('Main Parent') || auth()->user()->hasRole('Admin Co-Parent') || auth()->user()->hasRole('Co-Parent') || auth()->user()->hasRole('Invited User'))
+            @endcan
+            @can('view-events')
                 <x-responsive-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*')" class="theme-responsive-link">
                     {{ __('Calendar') }}
                 </x-responsive-nav-link>
-            @endif
-            @if(auth()->user()->can('view-expenses') || auth()->user()->hasRole('Main Parent') || auth()->user()->hasRole('Admin Co-Parent') || auth()->user()->hasRole('Co-Parent'))
-                <x-responsive-nav-link :href="route('expenses.index')" :active="request()->routeIs('expenses.*')" class="theme-responsive-link">
-                    {{ __('Expenses') }}
-                </x-responsive-nav-link>
-            @endif
-            @if(auth()->user()->can('view-documents') || auth()->user()->hasRole('Main Parent') || auth()->user()->hasRole('Admin Co-Parent'))
+            @endcan
+            @can('view-expenses')
+                @if (auth()->user()->role == 'parent' || auth()->user()->role == 'co-parent')
+                    <x-responsive-nav-link :href="route('expenses.index')" :active="request()->routeIs('expenses.*')" class="theme-responsive-link">
+                        {{ __('Expenses') }}
+                    </x-responsive-nav-link>
+                @endif
+            @endcan
+            @can('view-documents')
                 <x-responsive-nav-link :href="route('documents.index')" :active="request()->routeIs('documents.*')" class="theme-responsive-link">
                     {{ __('Documents') }}
                 </x-responsive-nav-link>
-            @endif
+            @endcan
             <x-responsive-nav-link :href="route('professionals.public.index')" :active="request()->routeIs('professionals.public.index')" class="theme-responsive-link">
                 {{ __('Professionals') }}
             </x-responsive-nav-link>
