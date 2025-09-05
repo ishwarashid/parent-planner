@@ -124,8 +124,19 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isPremium(): bool
     {
         // Assumes your subscription name is 'default'. Change if needed.
-        return $this->subscribed('default') &&
-            in_array($this->subscription('default')->price_id, self::PREMIUM_PLAN_IDS);
+        $subscription = $this->subscription('default');
+        
+        if (!$subscription || !$subscription->valid()) {
+            return false;
+        }
+        
+        // Get the price_id from the first subscription item
+        $firstItem = $subscription->items->first();
+        if (!$firstItem) {
+            return false;
+        }
+        
+        return in_array($firstItem->price_id, self::PREMIUM_PLAN_IDS);
     }
 
     public function hasAdminCoParent(): bool
@@ -135,7 +146,7 @@ class User extends Authenticatable implements MustVerifyEmail
         })->exists();
     }
 
-    public function isBasicPlan()
+    public function isBasicPlan(): bool
     {
         $subscription = $this->subscription('default');
 
@@ -143,22 +154,18 @@ class User extends Authenticatable implements MustVerifyEmail
         if (!$subscription || !$subscription->valid()) {
             return false;
         }
-        return in_array($subscription->price_id, self::BASIC_PLAN_IDS);
+        
+        // Get the price_id from the first subscription item
+        $firstItem = $subscription->items->first();
+        if (!$firstItem) {
+            return false;
+        }
+        
+        return in_array($firstItem->price_id, self::BASIC_PLAN_IDS);
     }
 
     public function canInvite(): bool
     {
-        // // Eager load the subscription to avoid extra queries
-        // $subscription = $this->subscription('default');
-
-        // // Rule 1: User must have an active subscription
-        // if (!$subscription || !$subscription->active()) {
-        //     return false;
-        // }
-
-        // // Rule 2: Check if the user is on a Basic plan
-        // $isBasicPlan = in_array($subscription->stripe_price, self::BASIC_PLAN_IDS);
-
         if ($this->isBasicPlan()) {
             // Rule 3: For Basic plans, count active invitations.
             // An active invitation is one that is 'pending', 'accepted', or 'registered'.

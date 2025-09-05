@@ -233,7 +233,7 @@
                             <p class="font-semibold theme-warning-text">Please upgrade to Premium Subscription to give
                                 full access to all features, to this user.</p>
                         </div>
-                    @endif
+                    @endif                    
                     <div class="mt-6 flex justify-end space-x-3 border-t pt-6">
                         @can('resend', $invitation)
                             <form method="POST" action="{{ route('invitations.resend', $invitation) }}">

@@ -61,6 +61,7 @@ class InvitationController extends Controller
             'userPermissions' => $managedUser ? $managedUser->permissions->pluck('name')->toArray() : [],
         ]);
     }
+    
     /**
      * Show the form for creating a new resource.
      */
