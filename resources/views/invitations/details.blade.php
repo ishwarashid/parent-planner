@@ -189,7 +189,7 @@
                         </dl>
                     </div>
 
-                    @if (auth()->user()->isPremium() && $managedUser && ($invitation->status = 'registered'))
+                    @if (auth()->user()->isPremium() && $managedUser && ($invitation->status == 'registered'))
                         <div class="border-t-2 border-gray-200 mt-8 pt-6">
                             <h3 class="text-xl font-semibold mb-4 theme-title-text">User Permissions</h3>
                             <form action="{{ route('users.permissions.update', $managedUser) }}" method="POST">
