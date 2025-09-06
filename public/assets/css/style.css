@@ -769,9 +769,14 @@ h6 {
   }
 }
 
-.hero__v6 {
+/* .hero__v6 {
   padding: 10rem 0 !important;
+} */
+
+.hero__v6 {
+  padding-top: 10rem !important;
 }
+
 .hero__v6 .hero-subtitle {
   background: color-mix(in srgb, var(--bs-secondary), transparent 70%);
   color: var(--bs-heading-color);
@@ -911,7 +916,8 @@ h6 {
 .faq__v2 .subtitle,
 .stats__v3 .subtitle,
 .testimonials__v2 .subtitle,
-.contact__v2 .subtitle {
+.contact__v2 .subtitle,
+.blog__v1 .subtitle {
   background-color: var(--bs-secondary);
   color: var(--bs-heading-color);
   display: inline-block;

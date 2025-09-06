@@ -134,7 +134,7 @@
                             ${{ number_format($savingsAmount ?? 12, 0) }}</span>
                     </div>
 
-                  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
                         <div class="border border-gray-200 rounded-lg shadow-lg p-8 flex flex-col">
                             <h2 class="text-2xl font-bold text-center text-theme-dark-navy">Basic</h2>
                             <div class="text-center my-4">
@@ -156,17 +156,22 @@
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M5 13l4 4L19 7"></path>
-                                    </svg>Shared Calendar</li>
+                                    </svg>Full access for main parent</li>
                                 <li class="flex items-center"><svg class="w-6 h-6 text-theme-turquoise mr-2"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M5 13l4 4L19 7"></path>
-                                    </svg>Expense Tracking</li>
+                                    </svg>Invite one additional person with limited access</li>
                                 <li class="flex items-center"><svg class="w-6 h-6 text-theme-turquoise mr-2"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M5 13l4 4L19 7"></path>
-                                    </svg>Document Storage</li>
+                                    </svg>Expense tracking, visitations, documents & calendar events</li>
+                                <li class="flex items-center"><svg class="w-6 h-6 text-theme-turquoise mr-2"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7"></path>
+                                    </svg>Report generation</li>
                             </ul>
                             <div class="mt-auto">
                                 <a href="{{ route('checkout', ['plan' => 'pri_01k479ewfx5kh4x8yqy2zcaneq']) }}"
@@ -205,17 +210,22 @@
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M5 13l4 4L19 7"></path>
-                                    </svg>All Basic Features</li>
+                                    </svg>Full access for main parent</li>
                                 <li class="flex items-center"><svg class="w-6 h-6 text-theme-turquoise mr-2"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M5 13l4 4L19 7"></path>
-                                    </svg>Invite Co-Parent & Others</li>
+                                    </svg>Invite unlimited persons and provide full access to one</li>
                                 <li class="flex items-center"><svg class="w-6 h-6 text-theme-turquoise mr-2"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M5 13l4 4L19 7"></path>
-                                    </svg>Advanced Reporting</li>
+                                    </svg>Expense tracking, visitations, documents & calendar events</li>
+                                <li class="flex items-center"><svg class="w-6 h-6 text-theme-turquoise mr-2"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7"></path>
+                                    </svg>Report generation</li>
                             </ul>
                             <div class="mt-auto">
                                 <a href="{{ route('checkout', ['plan' => 'pri_01k479kysbxxcsmndz9gzzp5dt']) }}"

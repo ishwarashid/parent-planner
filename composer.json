@@ -33,7 +33,8 @@
         },
         "files": [
             "app/Helpers/timezone_helper.php",
-            "app/Helpers/do_spaces_helper.php"
+            "app/Helpers/do_spaces_helper.php",
+            "app/Helpers/VideoHelper.php"
         ]
     },
     "autoload-dev": {

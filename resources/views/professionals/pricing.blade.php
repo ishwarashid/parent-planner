@@ -166,16 +166,21 @@
                                 </div>
                             </div>
                             <ul class="space-y-4 text-theme-navy mb-8">
+                                {{-- <li class="flex items-center"><svg class="w-6 h-6 text-theme-turquoise mr-2"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7"></path>
+                                    </svg>All Premium Features</li> --}}
                                 <li class="flex items-center"><svg class="w-6 h-6 text-theme-turquoise mr-2"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M5 13l4 4L19 7"></path>
-                                    </svg>All Premium Features</li>
+                                    </svg>Advertise services to co-parents</li>
                                 <li class="flex items-center"><svg class="w-6 h-6 text-theme-turquoise mr-2"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M5 13l4 4L19 7"></path>
-                                    </svg>Connect with Professionals</li>
+                                    </svg>Connect with co-parents seeking professional help</li>
                                 <li class="flex items-center"><svg class="w-6 h-6 text-theme-turquoise mr-2"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

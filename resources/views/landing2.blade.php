@@ -544,6 +544,78 @@ License: https://freebootstrap.net/license
           </div>
         </section>
         <!-- Testimonials-->
+
+        <!-- ======= Blog =======-->
+        <section class="section blog__v1" id="blog">
+          <div class="container">
+            <div class="row mb-5">
+              <div class="col-md-8 mx-auto text-center">
+                <span class="subtitle text-uppercase mb-3" data-aos="fade-up" data-aos-delay="0">Blog</span>
+                <h2 class="mb-3" data-aos="fade-up" data-aos-delay="100">Latest Parenting Tips</h2>
+                <p data-aos="fade-up" data-aos-delay="200">Stay informed with our latest articles on parenting, co-parenting, and family organization.</p>
+              </div>
+            </div>
+            <div class="row g-4">
+                          <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+                            <div class="blog-card rounded-4 p-4 h-100 d-flex flex-column">
+                              <div class="blog-img mb-4 rounded-3 overflow-hidden">
+                                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                  <i class="bi bi-image fs-1 text-muted"></i>
+                                </div>
+                              </div>
+                              <div class="blog-content flex-grow-1">
+                                <h3 class="fs-5 mb-3">The Benefits of Co-Parenting Apps</h3>
+                                <p class="mb-4">Discover how technology can improve communication and coordination between co-parents.</p>
+                                <a class="special-link d-inline-flex gap-2 align-items-center text-decoration-none" href="{{ route('blogs.index') }}">
+                                  <span class="icons"><i class="icon-1 bi bi-arrow-right-short"></i><i class="icon-2 bi bi-arrow-right-short"> </i></span>
+                                  <span>Read more</span>
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                            <div class="blog-card rounded-4 p-4 h-100 d-flex flex-column">
+                              <div class="blog-img mb-4 rounded-3 overflow-hidden">
+                                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                  <i class="bi bi-image fs-1 text-muted"></i>
+                                </div>
+                              </div>
+                              <div class="blog-content flex-grow-1">
+                                <h3 class="fs-5 mb-3">5 Essential Tools for Modern Parents</h3>
+                                <p class="mb-4">Explore the must-have tools that can simplify your parenting journey and reduce stress.</p>
+                                <a class="special-link d-inline-flex gap-2 align-items-center text-decoration-none" href="{{ route('blogs.index') }}">
+                                  <span class="icons"><i class="icon-1 bi bi-arrow-right-short"></i><i class="icon-2 bi bi-arrow-right-short"> </i></span>
+                                  <span>Read more</span>
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                            <div class="blog-card rounded-4 p-4 h-100 d-flex flex-column">
+                              <div class="blog-img mb-4 rounded-3 overflow-hidden">
+                                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                  <i class="bi bi-image fs-1 text-muted"></i>
+                                </div>
+                              </div>
+                              <div class="blog-content flex-grow-1">
+                                <h3 class="fs-5 mb-3">Managing Finances After Divorce</h3>
+                                <p class="mb-4">Learn effective strategies for handling shared expenses and financial responsibilities.</p>
+                                <a class="special-link d-inline-flex gap-2 align-items-center text-decoration-none" href="{{ route('blogs.index') }}">
+                                  <span class="icons"><i class="icon-1 bi bi-arrow-right-short"></i><i class="icon-2 bi bi-arrow-right-short"> </i></span>
+                                  <span>Read more</span>
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row mt-5">
+                          <div class="col-12 text-center" data-aos="fade-up" data-aos-delay="300">
+                            <a class="btn btn-primary" href="{{ route('blogs.index') }}">View All Blog Posts</a>
+                          </div>
+                        </div>
+          </div>
+        </section>
+        <!-- End Blog-->
         
         <!-- ======= FAQ =======-->
         <section class="section faq__v2" id="faq">
@@ -616,7 +688,7 @@ License: https://freebootstrap.net/license
                     <div class="icon d-block"><i class="bi bi-telephone"></i></div><span> <span class="d-block">Phone</span><strong>+(01 234 567 890)</strong></span>
                   </div>
                   <div class="d-flex align-items-start gap-3" data-aos="fade-up" data-aos-delay="100">
-                    <div class="icon d-block"><i class="bi bi-send"></i></div><span> <span class="d-block">Email</span><strong>support@parentplanner.com</strong></span>
+                    <div class="icon d-block"><i class="bi bi-send"></i></div><span> <span class="d-block">Email</span><strong>info@parentplanner.site</strong></span>
                   </div>
                   <div class="d-flex align-items-start gap-3" data-aos="fade-up" data-aos-delay="200">
                     <div class="icon d-block"><i class="bi bi-geo-alt"></i></div><span> <span class="d-block">Address</span>
@@ -626,7 +698,8 @@ License: https://freebootstrap.net/license
               </div>
               <div class="col-md-6">
                 <div class="form-wrapper" data-aos="fade-up" data-aos-delay="300">
-                  <form id="contactForm">
+                  <form id="contactForm" method="POST" action="{{ route('contact.submit') }}">
+                    @csrf
                     <div class="row gap-3 mb-3">
                       <div class="col-md-12">
                         <label class="mb-2" for="name">Name</label>
@@ -640,7 +713,7 @@ License: https://freebootstrap.net/license
                     <div class="row gap-3 mb-3">
                       <div class="col-md-12">
                         <label class="mb-2" for="subject">Subject</label>
-                        <input class="form-control" id="subject" type="text" name="subject">
+                        <input class="form-control" id="subject" type="text" name="subject" required>
                       </div>
                     </div>
                     <div class="row gap-3 gap-md-0 mb-3">
@@ -651,8 +724,12 @@ License: https://freebootstrap.net/license
                     </div>
                     <button class="btn btn-primary fw-semibold" type="submit">Send Message</button>
                   </form>
-                  <div class="mt-3 d-none alert alert-success" id="successMessage">Message sent successfully!</div>
-                  <div class="mt-3 d-none alert alert-danger" id="errorMessage">Message sending failed. Please try again later.</div>
+                  @if(session('success'))
+                  <div class="mt-3 alert alert-success" id="successMessage">{{ session('success') }}</div>
+                  @endif
+                  @if(session('error'))
+                  <div class="mt-3 alert alert-danger" id="errorMessage">{{ session('error') }}</div>
+                  @endif
                 </div>
               </div>
             </div>
@@ -663,7 +740,7 @@ License: https://freebootstrap.net/license
         <!-- ======= Footer =======-->
         <footer class="footer pt-5 pb-5">
           <div class="container">
-            <div class="row mb-5 pb-4">
+            {{-- <div class="row mb-5 pb-4">
               <div class="col-md-7">
                 <h2 class="fs-5">Join our newsletter</h2>
                 <p>Stay updated with our latest features and offers—join our newsletter today!</p>
@@ -674,7 +751,7 @@ License: https://freebootstrap.net/license
                   <button class="btn btn-primary fs-6" type="submit">Subscribe</button>
                 </form>
               </div>
-            </div>
+            </div> --}}
            
             <div class="row credits pt-3">
               <div class="col-xl-8 text-center text-xl-start mb-3 mb-xl-0">
