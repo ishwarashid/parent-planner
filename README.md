@@ -156,6 +156,20 @@ The main database tables include:
 *   `subscriptions`: Manages user subscriptions.
 *   `subscription_items`: Stores individual items associated with a subscription.
 
+## DigitalOcean Spaces Configuration
+
+Parent Planner can store uploaded files (child profile photos, documents, and expense receipts) in DigitalOcean Spaces for better scalability and reliability. To configure DigitalOcean Spaces:
+
+1. Create a DigitalOcean Space and API key
+2. Update your `.env` file with the following variables:
+   ```bash
+   DO_SPACES_KEY=your_spaces_key
+   DO_SPACES_SECRET=your_spaces_secret
+   DO_SPACES_REGION=your_spaces_region
+   DO_SPACES_BUCKET=your_spaces_bucket
+   DO_SPACES_ENDPOINT=https://your_region.digitaloceanspaces.com
+   ```
+
 ## Professionals Module & Admin Panel
 
 Parent Planner includes a feature to connect parents with family-service professionals. This module allows professionals to advertise their services on the platform, and provides an administrative interface to manage them.

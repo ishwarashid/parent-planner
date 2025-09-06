@@ -102,7 +102,7 @@ class ExpenseController extends Controller
 
         DB::transaction(function () use ($validatedData, $request) {
             if ($request->hasFile('receipt_url')) {
-                $path = $request->file('receipt_url')->store('receipts', 'public');
+                $path = $request->file('receipt_url')->store('receipts', 'do');
                 $validatedData['receipt_url'] = $path;
             }
 
@@ -187,9 +187,9 @@ class ExpenseController extends Controller
         DB::transaction(function () use ($validatedData, $request, $expense) {
             if ($request->hasFile('receipt_url')) {
                 if ($expense->receipt_url) {
-                    Storage::disk('public')->delete($expense->receipt_url);
+                    Storage::disk('do')->delete($expense->receipt_url);
                 }
-                $validatedData['receipt_url'] = $request->file('receipt_url')->store('receipts', 'public');
+                $validatedData['receipt_url'] = $request->file('receipt_url')->store('receipts', 'do');
             }
 
             $expense->update($validatedData);
@@ -214,7 +214,7 @@ class ExpenseController extends Controller
         $this->authorize('delete', $expense);
 
         if ($expense->receipt_url) {
-            Storage::disk('public')->delete($expense->receipt_url);
+            Storage::disk('do')->delete($expense->receipt_url);
         }
 
         $expense->delete();

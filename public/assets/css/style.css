@@ -897,7 +897,14 @@ h6 {
 .about__v4 .mission-icon i {
   color: var(--bs-secondary);
 }
-
+.pricing__v2 .features li .icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  background-color: var(--bs-primary);
+  color: var(--bs-heading-color);
+}
 .pricing__v2 .subtitle,
 .howitworks__v1 .subtitle,
 .services__v3 .subtitle,

@@ -161,7 +161,7 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             @can('view', $document)
-                                                <a href="{{ asset('storage/' . $document->file_url) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">View File</a>
+                                                <a href="{{ $document->file_url }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">View File</a>
                                             @else
                                                 <span class="text-gray-400">N/A</span>
                                             @endcan

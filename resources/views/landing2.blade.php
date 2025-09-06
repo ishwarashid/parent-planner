@@ -104,22 +104,40 @@ License: https://freebootstrap.net/license
           
           <div class="ms-auto w-auto">
             
-            
-            <div class="header-social d-flex align-items-center gap-1"><a class="btn btn-primary py-2" href="{{ route('register.choice') }}">Get Started</a>
-              
-              <button class="fbs__net-navbar-toggler justify-content-center align-items-center ms-auto" data-bs-toggle="offcanvas" data-bs-target="#fbs__net-navbars" aria-controls="fbs__net-navbars" aria-label="Toggle navigation" aria-expanded="false">
-                <svg class="fbs__net-icon-menu" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="21" x2="3" y1="6" y2="6"></line>
-                  <line x1="15" x2="3" y1="12" y2="12"></line>
-                  <line x1="17" x2="3" y1="18" y2="18"></line>
-                </svg>
-                <svg class="fbs__net-icon-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M18 6 6 18"></path>
-                  <path d="m6 6 12 12"></path>
-                </svg>
-              </button>
-              
-            </div>
+            @auth
+              <div class="header-social d-flex align-items-center gap-1">
+                <a class="btn btn-primary py-2" href="{{ url('/dashboard') }}">Dashboard</a>
+                
+                <button class="fbs__net-navbar-toggler justify-content-center align-items-center ms-auto" data-bs-toggle="offcanvas" data-bs-target="#fbs__net-navbars" aria-controls="fbs__net-navbars" aria-label="Toggle navigation" aria-expanded="false">
+                  <svg class="fbs__net-icon-menu" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="21" x2="3" y1="6" y2="6"></line>
+                    <line x1="15" x2="3" y1="12" y2="12"></line>
+                    <line x1="17" x2="3" y1="18" y2="18"></line>
+                  </svg>
+                  <svg class="fbs__net-icon-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18"></path>
+                    <path d="m6 6 12 12"></path>
+                  </svg>
+                </button>
+              </div>
+            @else
+              <div class="header-social d-flex align-items-center gap-1">
+                <a class="btn btn-outline-primary py-2 me-2" href="{{ route('login') }}">Log in</a>
+                <a class="btn btn-primary py-2" href="{{ route('register.choice') }}">Get Started</a>
+                
+                <button class="fbs__net-navbar-toggler justify-content-center align-items-center ms-auto" data-bs-toggle="offcanvas" data-bs-target="#fbs__net-navbars" aria-controls="fbs__net-navbars" aria-label="Toggle navigation" aria-expanded="false">
+                  <svg class="fbs__net-icon-menu" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="21" x2="3" y1="6" y2="6"></line>
+                    <line x1="15" x2="3" y1="12" y2="12"></line>
+                    <line x1="17" x2="3" y1="18" y2="18"></line>
+                  </svg>
+                  <svg class="fbs__net-icon-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18"></path>
+                    <path d="m6 6 12 12"></path>
+                  </svg>
+                </button>
+              </div>
+            @endauth
             
           </div>
         </div>
@@ -179,7 +197,7 @@ License: https://freebootstrap.net/license
                       <li class="d-flex align-items-center gap-2"><span class="icon rounded-circle text-center"><i class="bi bi-check"></i></span><span class="text">Built for both single and co-parents</span></li>
                       <li class="d-flex align-items-center gap-2"><span class="icon rounded-circle text-center"><i class="bi bi-check"></i></span><span class="text">Transparent financial tracking</span></li>
                       <li class="d-flex align-items-center gap-2"><span class="icon rounded-circle text-center"><i class="bi bi-check"></i></span><span class="text">Real-time updates & notifications</span></li>
-                      <li class="d-flex align-items-center gap-2"><span class="icon rounded-circle text-center"><i class="bi bi-check"></i></span><span class="text">Secure and private</span></li>
+                      <li class="d-flex align-items-center gap-2"><span class="icon rounded-circle text-center"><i class="bi bi-check"></i></span><span class="text">Secure and private&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></li>
                     </ul>
                   </div>
                 </div>
@@ -270,7 +288,7 @@ License: https://freebootstrap.net/license
                 <div class="p-5 rounded-4 price-table h-100">
                   <h3>Basic</h3>
                   <p>For single parents or those new to co-parenting, get essential features to organize your family life.</p>
-                  <div class="price mb-4"><strong>$9.99</strong><span>/ month</span></div>
+                  <div class="price mb-4"><strong>$3.00</strong><span>/ month</span></div>
                   <div><a class="btn" href="{{ route('pricing') }}">Get Started</a></div>
                 </div>
               </div>
@@ -280,7 +298,7 @@ License: https://freebootstrap.net/license
                     <div class="col-md-6">
                       <h3 class="mb-3">Premium</h3>
                       <p>For co-parents who need advanced tools for seamless coordination and financial tracking.</p>
-                      <div class="price mb-4"><strong class="me-1">$19.99</strong><span>/ month</span></div>
+                      <div class="price mb-4"><strong class="me-1">$5.00</strong><span>/ month</span></div>
                       <div><a class="btn btn-white hover-outline" href="#">Get Started</a></div>
                     </div>
                     <div class="col-md-6 pricing-features">
@@ -299,6 +317,49 @@ License: https://freebootstrap.net/license
           </div>
         </section>
         <!-- End Pricing-->
+
+        <!-- ======= Professional Pricing =======-->
+        <section class="section pricing__v2" id="pricing">
+          <div class="container">
+            <div class="row mb-5">
+              <div class="col-md-5 mx-auto text-center"><span class="subtitle text-uppercase mb-3" data-aos="fade-up" data-aos-delay="0">Professional Plans</span>
+                <h2 class="mb-3" data-aos="fade-up" data-aos-delay="100">Advertise Your Services</h2>
+                <p data-aos="fade-up" data-aos-delay="200">Connect with families who need your professional services.</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="300">
+                <div class="p-5 rounded-4 price-table h-100">
+                  <h3>Monthly</h3>
+                  <p>Flexible month-to-month plan.</p>
+                  <div class="price mb-4"><strong>$14.00</strong><span>/ month</span></div>
+                  <div><a class="btn" href="{{ route('pricing') }}">Get Started</a></div>
+                </div>
+              </div>
+              <div class="col-md-4 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="400">
+                <div class="p-5 rounded-4 price-table h-100">
+                  <h3>Yearly</h3>
+                  <p>Save $24 with annual billing.</p>
+                  <div class="price mb-4"><strong class="me-1">$144.00</strong><span>/ year</span></div>
+                  <div><a class="btn" href="#">Get Started</a></div>
+                </div>
+              </div>
+              <div class="col-md-4" data-aos="fade-up" data-aos-delay="500">
+                <div class="p-5 rounded-4 price-table h-100">
+                  <h3 class="mb-4">Why Families Choose Professionals</h3>
+                  <ul class="d-flex flex-column gap-3 features list-unstyled">
+                    <li class="d-flex align-items-center gap-2"><span class="icon rounded-circle text-center"><i class="bi bi-check"></i></span><span>Legal advice</span></li>
+                    <li class="d-flex align-items-center gap-2"><span class="icon rounded-circle text-center"><i class="bi bi-check"></i></span><span>Financial planning</span></li>
+                    <li class="d-flex align-items-center gap-2"><span class="icon rounded-circle text-center"><i class="bi bi-check"></i></span><span>Child counseling</span></li>
+                    <li class="d-flex align-items-center gap-2"><span class="icon rounded-circle text-center"><i class="bi bi-check"></i></span><span>Mediation services</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- End Professional Pricing-->
+
         
         <!-- ======= How it works =======-->
         <section class="section howitworks__v1" id="how-it-works">

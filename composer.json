@@ -11,6 +11,7 @@
         "laravel/cashier": "^15.7",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "league/flysystem-aws-s3-v3": "^3.29",
         "maatwebsite/excel": "^3.1",
         "spatie/laravel-permission": "^6.21"
     },
@@ -31,7 +32,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/timezone_helper.php"
+            "app/Helpers/timezone_helper.php",
+            "app/Helpers/do_spaces_helper.php"
         ]
     },
     "autoload-dev": {

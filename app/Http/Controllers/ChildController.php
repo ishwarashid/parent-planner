@@ -41,6 +41,7 @@ class ChildController extends Controller
      */
     public function store(Request $request)
     {
+        logger('here');
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'dob' => 'required|date',
@@ -58,10 +59,14 @@ class ChildController extends Controller
             'special_needs' => 'nullable|string',
             'other_info' => 'nullable|string',
         ]);
-
+        
         if ($request->hasFile('profile_photo')) {
-            $path = $request->file('profile_photo')->store('profile_photos', 'public');
+            $path = $request->file('profile_photo')->store('profile_photos', 'do');
             $validatedData['profile_photo_path'] = $path;
+        }
+
+        if (empty($validatedData['color'])) {
+            $validatedData['color'] = Child::getRandomColor();
         }
 
         $request->user()->children()->create($validatedData);
@@ -115,9 +120,9 @@ class ChildController extends Controller
         if ($request->hasFile('profile_photo')) {
             // Delete old photo if it exists
             if ($child->profile_photo_path) {
-                Storage::disk('public')->delete($child->profile_photo_path);
+                Storage::disk('do')->delete($child->profile_photo_path);
             }
-            $path = $request->file('profile_photo')->store('profile_photos', 'public');
+            $path = $request->file('profile_photo')->store('profile_photos', 'do');
             $validatedData['profile_photo_path'] = $path;
         }
 

@@ -47,6 +47,30 @@ class Child extends Model
         return $this->hasMany(Document::class);
     }
 
+    /**
+     * Get the URL to the profile photo.
+     *
+     * @return string
+     */
+    public function getProfilePhotoUrlAttribute()
+    {
+        if (empty($this->profile_photo_path)) {
+            return '';
+        }
+        
+        // If the file is stored in DigitalOcean Spaces with private visibility, generate a temporary URL
+        if (config('filesystems.disks.do.visibility') === 'private' && str_contains($this->profile_photo_path, 'digitaloceanspaces')) {
+            try {
+                return \Illuminate\Support\Facades\Storage::disk('do')->temporaryUrl($this->profile_photo_path, now()->addMinutes(5));
+            } catch (Exception $e) {
+                // Fall back to the helper function if there's an error
+                return do_spaces_url($this->profile_photo_path);
+            }
+        }
+        
+        return do_spaces_url($this->profile_photo_path);
+    }
+
     protected static function boot()
     {
         parent::boot();

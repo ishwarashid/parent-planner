@@ -137,20 +137,20 @@ Route::middleware(['auth', 'verified', 'admin', 'professional'])->group(function
 
 // Simplified 'professional' routes. The controllers should now check for the 'Professional' role or specific permissions.
 Route::middleware(['auth', 'verified', 'professional', 'admin'])->prefix('professional')->name('professional.')->group(function () {
-    Route::get('/dashboard', [ProfessionalController::class, 'dashboard'])->name('professional.dashboard');
-    Route::get('/profile/edit', [ProfessionalController::class, 'edit'])->name('professional.profile.edit');
-    Route::put('/profile', [ProfessionalController::class, 'update'])->name('professional.profile.update');
+    Route::get('/dashboard', [ProfessionalController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profile/edit', [ProfessionalController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfessionalController::class, 'update'])->name('profile.update');
 
     // Subscription routes for professionals
-    Route::get('/billing', [SubscriptionController::class, 'billing'])->name('professional.billing');
-    Route::get('/checkout', [SubscriptionController::class, 'checkout'])->name('professional.checkout');
-    Route::get('/billing-portal', [SubscriptionController::class, 'portal'])->name('professional.billing.portal');
+    Route::get('/billing', [SubscriptionController::class, 'billing'])->name('billing');
+    Route::get('/checkout', [SubscriptionController::class, 'checkout'])->name('checkout');
+    Route::get('/billing-portal', [SubscriptionController::class, 'portal'])->name('billing.portal');
 });
 
 
 // This second 'professional' group can likely be merged with the one above, but leaving it separate as requested.
 Route::middleware(['auth', 'professional'])->prefix('professional')->name('professional.')->group(function () {
-    Route::get('/pricing', [SubscriptionController::class, 'professionalPricing'])->name('pricing');
+    // Route::get('/pricing', [SubscriptionController::class, 'professionalPricing'])->name('pricing');
     Route::get('/billing', [SubscriptionController::class, 'billing'])->name('billing');
 });
 
