@@ -18,16 +18,27 @@ class DashboardController extends Controller
         $children = Child::whereIn('user_id', $familyMemberIds)->get();
 
         // Upcoming Visitations (e.g., next 7 days)
-        $upcomingVisitations = Visitation::whereIn('child_id', $children->pluck('id'))
-                                        ->where('date_start', '>=', Carbon::now())
-                                        ->where('date_start', '<=', Carbon::now()->addDays(7))
-                                        ->orderBy('date_start')
-                                        ->get();
+       $upcomingVisitations = Visitation::query()
+                            ->whereBetween('date_start', [Carbon::now(), Carbon::now()->addDays(7)])
+                            ->where(function ($q) use ($user, $children) {
+                                $q->where('parent_id', $user->id);
+
+                                if ($user->role === 'parent') {
+                                    $q->orWhereIn('child_id', $children->pluck('id'));
+                                }
+                            })
+                            ->orderBy('date_start')
+                            ->get();
 
         // Pending Expenses
-        $pendingExpenses = Expense::whereIn('child_id', $children->pluck('id'))
-                                ->where('status', 'pending')
-                                ->get();
+        $pendingExpenses = Expense::query()
+                            ->when(
+                                in_array($user->role, ['parent', 'co-parent']),
+                                fn($q) => $q->whereIn('child_id', $children->pluck('id')),
+                                fn($q) => $q->whereRaw('0=1') // return nothing for others
+                            )
+                            ->where('status', 'pending')
+                            ->get();
                             
         // Children with upcoming birthdays (next 30 days)
         $childrenWithUpcomingBirthdays = $children->filter(function ($child) {
@@ -52,10 +63,17 @@ class DashboardController extends Controller
         });
 
         // Next visit countdown
-        $nextVisit = Visitation::whereIn('child_id', $children->pluck('id'))
-                                ->where('date_start', '>=', Carbon::now())
-                                ->orderBy('date_start')
-                                ->first();
+        $nextVisit = Visitation::query()
+                    ->where('date_start', '>=', Carbon::now())
+                    ->where(function ($q) use ($user, $children) {
+                        $q->where('parent_id', $user->id);
+
+                        if ($user->role === 'parent') {
+                            $q->orWhereIn('child_id', $children->pluck('id'));
+                        }
+                    })
+                    ->orderBy('date_start')
+                    ->first();
 
         return view('dashboard', compact('upcomingVisitations', 'pendingExpenses', 'childrenWithUpcomingBirthdays', 'nextVisit'));
     }
