@@ -83,7 +83,7 @@
                                 class="mt-2 block text-sm theme-card-link">View Details</a>
                         @else
                             <p class="text-gray-600">No upcoming visitations.</p>
-                            <a href="{{ route('visitations.create') }}" class="mt-2 block text-sm theme-card-link">Add a
+                            <a href="{{ route('visitations.index') }}" class="mt-2 block text-sm theme-card-link">Add a
                                 Visitation</a>
                         @endif
                     </div>
