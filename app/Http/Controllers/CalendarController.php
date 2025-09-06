@@ -90,7 +90,16 @@ class CalendarController extends Controller
         }
 
         // Get Custom Events
-        $customEvents = Event::with('child')->whereIn('user_id', $familyMemberIds)->get();
+        $customEvents = Event::with('child')
+                        ->whereIn('user_id', $familyMemberIds)
+                        ->when($user->role !== 'parent', fn($q) => 
+                            $q->where(fn($q2) => 
+                                $q2->whereNull('assigned_to')
+                                ->orWhere('assigned_to', $user->id)
+                            )
+                        )
+                        ->get();
+
         $defaultColors = ['#F87171', '#FBBF24', '#34D399', '#60A5FA', '#A78BFA'];
         foreach ($customEvents as $event) {
             // Set event color based on the status
@@ -111,7 +120,12 @@ class CalendarController extends Controller
         }
 
         // Get Expenses
-        $expenses = Expense::whereIn('payer_id', $familyMemberIds)->get();
+        $expenses = Expense::when(
+                    in_array($user->role, ['parent', 'co-parent']),
+                    fn($q) => $q->whereIn('payer_id', $familyMemberIds),
+                    fn($q) => $q->whereRaw('0 = 1') // return nothing
+                    )->get();
+
         foreach ($expenses as $expense) {
             $events[] = [
                 'title' => 'Expense: ' . $expense->description,
