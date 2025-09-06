@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\PaddleService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Paddle\Cashier;
@@ -9,6 +10,12 @@ use Exception;
 
 class SubscriptionController extends Controller
 {
+    protected $paddleService;
+
+    public function __construct(PaddleService $paddleService)
+    {
+        $this->paddleService = $paddleService;
+    }
     public function show()
     {
         $user = Auth::user();
@@ -156,7 +163,69 @@ class SubscriptionController extends Controller
             \Log::error('Error checking Paddle subscription status: ' . $e->getMessage());
         }
         
-        return view('subscriptions.pricing');
+        // Fetch prices from Paddle
+        $priceIds = [
+            'pri_01k479ewfx5kh4x8yqy2zcaneq', // Basic Monthly
+            'pri_01k479h0xtvns9g9rtbw41h373', // Basic Yearly
+            'pri_01k479kysbxxcsmndz9gzzp5dt', // Premium Monthly
+            'pri_01k479mb6cdegmhzyt71r00yem'  // Premium Yearly
+        ];
+        
+        $prices = $this->paddleService->fetchPrices($priceIds);
+        
+        // Organize prices by type (monthly/yearly)
+        $plans = [
+            'basic' => [
+                'monthly' => null,
+                'yearly' => null
+            ],
+            'premium' => [
+                'monthly' => null,
+                'yearly' => null
+            ]
+        ];
+        
+        foreach ($prices as $price) {
+            // Determine plan type based on ID or name
+            if (strpos($price['id'], 'pri_01k479ewfx5kh4x8yqy2zcaneq') !== false || 
+                strpos($price['name'], 'Basic') !== false && strpos($price['name'], 'Monthly') !== false) {
+                $plans['basic']['monthly'] = $price;
+            } elseif (strpos($price['id'], 'pri_01k479h0xtvns9g9rtbw41h373') !== false || 
+                      strpos($price['name'], 'Basic') !== false && strpos($price['name'], 'Yearly') !== false) {
+                $plans['basic']['yearly'] = $price;
+            } elseif (strpos($price['id'], 'pri_01k479kysbxxcsmndz9gzzp5dt') !== false || 
+                      strpos($price['name'], 'Premium') !== false && strpos($price['name'], 'Monthly') !== false) {
+                $plans['premium']['monthly'] = $price;
+            } elseif (strpos($price['id'], 'pri_01k479mb6cdegmhzyt71r00yem') !== false || 
+                      strpos($price['name'], 'Premium') !== false && strpos($price['name'], 'Yearly') !== false) {
+                $plans['premium']['yearly'] = $price;
+            }
+        }
+        
+        // Calculate savings for display
+        $basicSavings = 0;
+        $premiumSavings = 0;
+        
+        if ($plans['basic']['monthly'] && $plans['basic']['yearly']) {
+            // Extract numeric values from price strings (e.g., "$3.00" -> 3.00)
+            $basicMonthlyPrice = floatval(preg_replace('/[^\d.]/', '', $plans['basic']['monthly']['price']));
+            $basicYearlyPrice = floatval(preg_replace('/[^\d.]/', '', $plans['basic']['yearly']['price']));
+            // Calculate savings: (monthly price * 12) - yearly price
+            $basicSavings = ($basicMonthlyPrice * 12) - $basicYearlyPrice;
+        }
+        
+        if ($plans['premium']['monthly'] && $plans['premium']['yearly']) {
+            // Extract numeric values from price strings (e.g., "$5.00" -> 5.00)
+            $premiumMonthlyPrice = floatval(preg_replace('/[^\d.]/', '', $plans['premium']['monthly']['price']));
+            $premiumYearlyPrice = floatval(preg_replace('/[^\d.]/', '', $plans['premium']['yearly']['price']));
+            // Calculate savings: (monthly price * 12) - yearly price
+            $premiumSavings = ($premiumMonthlyPrice * 12) - $premiumYearlyPrice;
+        }
+        
+        // Use the higher savings value for display
+        $savingsAmount = max($basicSavings, $premiumSavings);
+        
+        return view('subscriptions.pricing', compact('plans', 'savingsAmount'));
     }
 
     public function checkout(Request $request)
@@ -215,6 +284,39 @@ class SubscriptionController extends Controller
 
     public function professionalPricing()
     {
-        return view('professionals.pricing');
+        // Fetch professional plan prices from Paddle
+        $priceIds = [
+            'price_1RvCBCPOErLRYIriqFclebNI', // Professional Monthly
+            'price_1RvCC2POErLRYIri2hiQz2C0'  // Professional Yearly
+        ];
+        
+        $prices = $this->paddleService->fetchPrices($priceIds);
+        
+        // Organize prices by type (monthly/yearly)
+        $plans = [
+            'monthly' => null,
+            'yearly' => null
+        ];
+        
+        foreach ($prices as $price) {
+            if (strpos($price['id'], 'price_1RvCBCPOErLRYIriqFclebNI') !== false) {
+                $plans['monthly'] = $price;
+            } elseif (strpos($price['id'], 'price_1RvCC2POErLRYIri2hiQz2C0') !== false) {
+                $plans['yearly'] = $price;
+            }
+        }
+        
+        // Calculate savings for display
+        $savingsAmount = 0;
+        
+        if ($plans['monthly'] && $plans['yearly']) {
+            // Extract numeric values from price strings (e.g., "$14.00" -> 14.00)
+            $monthlyPrice = floatval(preg_replace('/[^\d.]/', '', $plans['monthly']['price']));
+            $yearlyPrice = floatval(preg_replace('/[^\d.]/', '', $plans['yearly']['price']));
+            // Calculate savings: (monthly price * 12) - yearly price
+            $savingsAmount = ($monthlyPrice * 12) - $yearlyPrice;
+        }
+        
+        return view('professionals.pricing', compact('plans', 'savingsAmount'));
     }
 }

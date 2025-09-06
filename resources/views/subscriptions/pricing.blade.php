@@ -131,7 +131,7 @@
                         </div>
                         <span class="font-medium text-theme-navy">Yearly</span>
                         <span class="text-lg font-semibold text-green-900 bg-green-100 px-3 py-1 rounded-full">Save
-                            $12</span>
+                            ${{ number_format($savingsAmount ?? 12, 0) }}</span>
                     </div>
 
                   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
@@ -139,11 +139,15 @@
                             <h2 class="text-2xl font-bold text-center text-theme-dark-navy">Basic</h2>
                             <div class="text-center my-4">
                                 <div x-show="billingCycle === 'monthly'">
-                                    <span class="text-5xl font-extrabold text-theme-navy">$3</span>
+                                    <span class="text-5xl font-extrabold text-theme-navy">
+                                        {{ $plans['basic']['monthly']['price'] ?? '$3' }}
+                                    </span>
                                     <span class="text-xl font-medium text-gray-500">/ month</span>
                                 </div>
                                 <div x-show="billingCycle === 'yearly'" style="display: none;">
-                                    <span class="text-5xl font-extrabold text-theme-navy">$24</span>
+                                    <span class="text-5xl font-extrabold text-theme-navy">
+                                        {{ $plans['basic']['yearly']['price'] ?? '$24' }}
+                                    </span>
                                     <span class="text-xl font-medium text-gray-500">/ year</span>
                                 </div>
                             </div>
@@ -184,11 +188,15 @@
                             <h2 class="text-2xl font-bold text-center text-theme-dark-navy">Premium</h2>
                             <div class="text-center my-4">
                                 <div x-show="billingCycle === 'monthly'">
-                                    <span class="text-5xl font-extrabold text-theme-navy">$5</span>
+                                    <span class="text-5xl font-extrabold text-theme-navy">
+                                        {{ $plans['premium']['monthly']['price'] ?? '$5' }}
+                                    </span>
                                     <span class="text-xl font-medium text-gray-500">/ month</span>
                                 </div>
                                 <div x-show="billingCycle === 'yearly'" style="display: none;">
-                                    <span class="text-5xl font-extrabold text-theme-navy">$48</span>
+                                    <span class="text-5xl font-extrabold text-theme-navy">
+                                        {{ $plans['premium']['yearly']['price'] ?? '$48' }}
+                                    </span>
                                     <span class="text-xl font-medium text-gray-500">/ year</span>
                                 </div>
                             </div>
