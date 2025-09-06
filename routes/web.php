@@ -16,6 +16,9 @@ use App\Http\Controllers\ProfessionalController;
 use App\Http\Controllers\PublicProfessionalsController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ContactController;
+use App\Models\Blog;
+use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,8 +27,20 @@ use App\Http\Controllers\PermissionController;
 */
 
 Route::get('/', function () {
-    return view('landing2');
+    $latestBlogs = Blog::where('published', true)
+        ->orderBy('published_at', 'desc')
+        ->take(3)
+        ->get();
+        
+    return view('landing2', compact('latestBlogs'));
 });
+
+// Contact form route
+Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
+
+// Blog routes
+Route::get('/blogs', [App\Http\Controllers\BlogController::class, 'index'])->name('blogs.index');
+Route::get('/blogs/{slug}', [App\Http\Controllers\BlogController::class, 'show'])->name('blogs.show');
 
 Route::get('/pricing', [SubscriptionController::class, 'pricing'])->name('pricing');
 Route::get('/professional/pricing', [SubscriptionController::class, 'professionalPricing'])->name('professional.pricing');
@@ -162,4 +177,15 @@ Route::middleware(['auth', 'verified', 'admin', 'professional'])->prefix('admin'
     Route::get('/professionals/{professional}', [AdminController::class, 'showProfessional'])->name('admin.professionals.show');
     Route::post('/professionals/{professional}/approve', [AdminController::class, 'approveProfessional'])->name('admin.professionals.approve');
     Route::post('/professionals/{professional}/reject', [AdminController::class, 'rejectProfessional'])->name('admin.professionals.reject');
+    
+    // Blog routes
+    Route::resource('blogs', App\Http\Controllers\Admin\BlogController::class)->names([
+        'index' => 'admin.blogs.index',
+        'create' => 'admin.blogs.create',
+        'store' => 'admin.blogs.store',
+        'show' => 'admin.blogs.show',
+        'edit' => 'admin.blogs.edit',
+        'update' => 'admin.blogs.update',
+        'destroy' => 'admin.blogs.destroy',
+    ]);
 });
