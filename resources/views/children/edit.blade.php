@@ -223,7 +223,7 @@
                                 <x-input-label for="profile_photo" class="theme-input-label" :value="__('Profile Photo')" />
                                 <div class="mt-2 flex items-center space-x-6">
                                     @if ($child->profile_photo_path)
-                                        <img src="{{ asset('storage/' . $child->profile_photo_path) }}"
+                                        <img src="{{ $child->profile_photo_url }}"
                                             alt="Current Profile Photo" class="h-20 w-20 rounded-full object-cover">
                                     @else
                                         <div
