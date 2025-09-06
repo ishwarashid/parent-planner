@@ -145,9 +145,9 @@ Route::middleware(['auth', 'verified', 'admin', 'professional'])->group(function
 
 // Simplified 'professional' routes. The controllers should now check for the 'Professional' role or specific permissions.
 Route::middleware(['auth', 'verified', 'professional', 'admin'])->prefix('professional')->name('professional.')->group(function () {
-    Route::get('/dashboard', [ProfessionalController::class, 'dashboard'])->name('professional.dashboard');
-    Route::get('/profile/edit', [ProfessionalController::class, 'edit'])->name('professional.profile.edit');
-    Route::put('/profile', [ProfessionalController::class, 'update'])->name('professional.profile.update');
+    Route::get('/dashboard', [ProfessionalController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profile/edit', [ProfessionalController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfessionalController::class, 'update'])->name('profile.update');
 
     // Subscription routes for professionals
     Route::get('/billing', function () {

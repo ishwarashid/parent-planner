@@ -27,4 +27,28 @@ class Document extends Model
     {
         return $this->belongsTo(User::class, 'uploaded_by');
     }
+
+    /**
+     * Get the URL to the document file.
+     *
+     * @return string
+     */
+    public function getFileUrlAttribute($value)
+    {
+        if (empty($value)) {
+            return '';
+        }
+        
+        // If the file is stored in DigitalOcean Spaces with private visibility, generate a temporary URL
+        if (config('filesystems.disks.do.visibility') === 'private' && str_contains($value, 'digitaloceanspaces')) {
+            try {
+                return \Illuminate\Support\Facades\Storage::disk('do')->temporaryUrl($value, now()->addMinutes(5));
+            } catch (Exception $e) {
+                // Fall back to the helper function if there's an error
+                return do_spaces_url($value);
+            }
+        }
+        
+        return do_spaces_url($value);
+    }
 }

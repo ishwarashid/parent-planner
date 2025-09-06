@@ -148,7 +148,7 @@
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             @if ($child->profile_photo_path)
-                                                <img src="{{ asset('storage/' . $child->profile_photo_path) }}"
+                                                <img src="{{ $child->profile_photo_url }}"
                                                     alt="{{ $child->name }}"
                                                     class="h-10 w-10 rounded-full object-cover">
                                             @else

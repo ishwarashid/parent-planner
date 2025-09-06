@@ -58,7 +58,7 @@ class DocumentController extends Controller
         $validatedData['uploaded_by'] = auth()->id();
 
         if ($request->hasFile('file_url')) {
-            $path = $request->file('file_url')->store('documents', 'public');
+            $path = $request->file('file_url')->store('documents', 'do');
             $validatedData['file_url'] = $path;
         }
 
@@ -106,9 +106,9 @@ class DocumentController extends Controller
         if ($request->hasFile('file_url')) {
             // Delete old file if it exists
             if ($document->file_url) {
-                Storage::disk('public')->delete($document->file_url);
+                Storage::disk('do')->delete($document->file_url);
             }
-            $path = $request->file('file_url')->store('documents', 'public');
+            $path = $request->file('file_url')->store('documents', 'do');
             $validatedData['file_url'] = $path;
         }
 
@@ -126,7 +126,7 @@ class DocumentController extends Controller
 
         // Delete associated file if it exists
         if ($document->file_url) {
-            Storage::disk('public')->delete($document->file_url);
+            Storage::disk('do')->delete($document->file_url);
         }
 
         $document->delete();
