@@ -178,8 +178,14 @@
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
-                        @if (Auth::user()->isAccountOwner())
+                        @if (Auth::user()->isAccountOwner() && Auth::user()->role !== 'professional')
                             <x-dropdown-link :href="route('billing')">
+                                {{ __('Billing') }}
+                            </x-dropdown-link>
+                        @endif
+
+                        @if (Auth::user()->isAccountOwner() && Auth::user()->role === 'professional')
+                            <x-dropdown-link :href="route('professional.billing')">
                                 {{ __('Billing') }}
                             </x-dropdown-link>
                         @endif

@@ -14,24 +14,24 @@ class PaddleService
      * @return array
      */
     public function fetchPrices($priceIds = [])
-    {
+    {   
         try {
             $query = '';
             if (!empty($priceIds)) {
-                $query = '?' . http_build_query(['id' => $priceIds]);
+                $query = '?id=' . implode(',', $priceIds);
             }
             
             $response = Cashier::api('GET', "prices{$query}");
             $prices = $response['data'] ?? [];
-            
+
             $formattedPrices = [];
             foreach ($prices as $price) {
                 $formattedPrices[] = [
-                    'id' => $price['id'],
-                    'name' => $price['name'] ?? $price['description'] ?? 'Subscription Plan',
-                    'price' => $this->formatPrice($price),
+                    'id'            => $price['id'],
+                    'name'          => $price['name'] ?? $price['description'] ?? 'Subscription Plan',
+                    'price'         => $this->formatPrice($price),
                     'billing_cycle' => $price['billing_cycle'] ?? null,
-                    'unit_price' => $price['unit_price'] ?? null
+                    'unit_price'    => $price['unit_price'] ?? null
                 ];
             }
             
@@ -41,6 +41,7 @@ class PaddleService
             return [];
         }
     }
+
 
     /**
      * Format price for display

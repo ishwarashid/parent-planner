@@ -16,50 +16,61 @@ class SubscriptionController extends Controller
     {
         $this->paddleService = $paddleService;
     }
+
     public function show()
     {
         $user = Auth::user();
-        
-        // Check if user has a subscription
         $subscription = $user->subscription();
-        
-        // Get available plans (using example Paddle sandbox plan IDs)
-        $plans = [
-            [
-                'id' => 'pri_01k479ewfx5kh4x8yqy2zcaneq', // Example Basic Monthly
-                'name' => 'Basic Plan (Monthly)',
-                'price' => '$3/month'
-            ],
-            [
-                'id' => 'pri_01k479h0xtvns9g9rtbw41h373', // Example Basic Yearly
-                'name' => 'Basic Plan (Yearly)',
-                'price' => '$25/year'
-            ],
-            [
-                'id' => 'pri_01k479kysbxxcsmndz9gzzp5dt', // Example Premium Monthly
-                'name' => 'Premium Plan (Monthly)',
-                'price' => '$5/month'
-            ],
-            [
-                'id' => 'pri_01k479mb6cdegmhzyt71r00yem', // Example Premium Yearly
-                'name' => 'Premium Plan (Yearly)',
-                'price' => '$48/year'
-            ]
-        ];
-        
-        // Get the plan name if subscription exists
+
+        // Role-based plan IDs
+        if ($user->role == 'professional') {
+            $priceIds = [
+                'pri_01k4f4cp96rcgxyf15gg167pex', // Professional Monthly
+                'pri_01k4f4dh6rz19qsf5djr73y0mg'  // Professional Yearly
+            ];
+        } else {
+            $priceIds = [
+                'pri_01k479ewfx5kh4x8yqy2zcaneq', // Basic Monthly
+                'pri_01k479h0xtvns9g9rtbw41h373', // Basic Yearly
+                'pri_01k479kysbxxcsmndz9gzzp5dt', // Premium Monthly
+                'pri_01k479mb6cdegmhzyt71r00yem'  // Premium Yearly
+            ];
+        }
+
+        // Fetch only those prices
+        $prices = $this->paddleService->fetchPrices($priceIds);
+
+        // Build flat plans array for the view
+        $plans = [];
+        foreach ($prices as $price) {
+            $interval = str_contains(strtolower($price['name'] ?? ''), 'year') ? 'yearly' : 'monthly';
+
+            $plans[] = [
+                'id'       => $price['id'],
+                'name'     => $price['name'] ?? ($price['description'] ?? 'Unknown Plan'),
+                'price'    => $price['price'] ?? 'N/A',
+                'interval' => $interval,
+                'type'     => $user->role === 'professional'
+                    ? 'professional'
+                    : (str_contains(strtolower($price['name'] ?? ''), 'premium') ? 'premium' : 'basic')
+            ];
+        }
+
+        // Default plan name
         $planName = 'No Subscription';
+
+        // Resolve current plan name if user has subscription
         if ($subscription && $subscription->items->count() > 0) {
             $firstItem = $subscription->items->first();
-            // Find the plan name from our plans array
+
             foreach ($plans as $plan) {
                 if ($plan['id'] === $firstItem->price_id) {
                     $planName = $plan['name'];
                     break;
                 }
             }
-            
-            // If we didn't find it in our plans, try to get it from Paddle
+
+            // Fallback: fetch from Paddle API if not matched
             if ($planName === 'No Subscription') {
                 try {
                     $response = Cashier::api('GET', "prices/{$firstItem->price_id}");
@@ -68,12 +79,10 @@ class SubscriptionController extends Controller
                         $planName = $price['description'] ?? $price['name'] ?? 'Unknown Plan';
                     }
                 } catch (Exception $e) {
-                    // If we can't get the plan name from Paddle, use a generic name
                     $planName = 'Subscription Plan';
                 }
             }
         }
-        
         return view('subscription.show', compact('subscription', 'plans', 'planName'));
     }
 
@@ -137,7 +146,6 @@ class SubscriptionController extends Controller
         }
     }
 
-    // Existing methods...
     public function pricing()
     {
         $user = Auth::user();
@@ -286,8 +294,8 @@ class SubscriptionController extends Controller
     {
         // Fetch professional plan prices from Paddle
         $priceIds = [
-            'price_1RvCBCPOErLRYIriqFclebNI', // Professional Monthly
-            'price_1RvCC2POErLRYIri2hiQz2C0'  // Professional Yearly
+            'pri_01k4f4cp96rcgxyf15gg167pex', // Professional Monthly
+            'pri_01k4f4dh6rz19qsf5djr73y0mg'  // Professional Yearly
         ];
         
         $prices = $this->paddleService->fetchPrices($priceIds);
@@ -299,9 +307,9 @@ class SubscriptionController extends Controller
         ];
         
         foreach ($prices as $price) {
-            if (strpos($price['id'], 'price_1RvCBCPOErLRYIriqFclebNI') !== false) {
+            if (strpos($price['id'], 'pri_01k4f4cp96rcgxyf15gg167pex') !== false) {
                 $plans['monthly'] = $price;
-            } elseif (strpos($price['id'], 'price_1RvCC2POErLRYIri2hiQz2C0') !== false) {
+            } elseif (strpos($price['id'], 'pri_01k4f4dh6rz19qsf5djr73y0mg') !== false) {
                 $plans['yearly'] = $price;
             }
         }

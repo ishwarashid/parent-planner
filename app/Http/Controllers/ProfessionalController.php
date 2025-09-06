@@ -72,6 +72,6 @@ class ProfessionalController extends Controller
 
         $professional->update($validatedData);
 
-        return redirect()->route('professional.dashboard')->with('success', 'Profile updated successfully.');
+        return redirect()->route('professional.professional.dashboard')->with('success', 'Profile updated successfully.');
     }
 }

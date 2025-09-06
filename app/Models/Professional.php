@@ -40,7 +40,7 @@ class Professional extends Model
         return $query->where('approval_status', 'approved')
             ->whereHas('user', function ($q) {
                 $q->whereHas('subscriptions', function ($sub) {
-                    $sub->where('stripe_status', 'active');
+                    $sub->where('status', 'active');
                 });
             });
     }

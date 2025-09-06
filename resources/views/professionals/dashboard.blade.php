@@ -93,7 +93,7 @@
                         </div>
                     </div>
                     <div class="mt-6">
-                        <a href="{{ route('professional.profile.edit') }}"
+                        <a href="{{ route('professional.professional.profile.edit') }}"
                             class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                             Edit Profile
                         </a>
@@ -106,7 +106,7 @@
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Subscription</h3>
                     @if ($professional->user->subscribed('default'))
                         <p>You are currently subscribed.</p>
-                        <a href="{{ route('billing.portal') }}"
+                        <a href="{{ route('subscription.show') }}"
                             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 inline-block">
                             Manage Subscription
                         </a>
