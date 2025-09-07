@@ -138,7 +138,7 @@ class SubscriptionController extends Controller
             }
             
             // Swap the plan
-            $user->subscription()->swap($request->plan);
+            $user->subscription()->swapAndInvoice($request->plan);
             
             return redirect()->route('subscription.show')->with('status', 'Your subscription has been updated.');
         } catch (Exception $e) {
