@@ -222,20 +222,17 @@
                             <div>
                                 <x-input-label for="profile_photo" class="theme-input-label" :value="__('Profile Photo')" />
                                 <div class="mt-2 flex items-center space-x-6">
-                                    @if ($child->profile_photo_path)
-                                        <img src="{{ $child->profile_photo_url }}"
-                                            alt="Current Profile Photo" class="h-20 w-20 rounded-full object-cover">
-                                    @else
-                                        <div
-                                            class="h-20 w-20 rounded-full bg-gray-100 flex items-center justify-center">
-                                            <svg class="h-10 w-10 text-gray-400" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                    @endif
+                                    <div class="h-20 w-20 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                                        <img id="current-profile" src="{{ $child->profile_photo_path ? $child->profile_photo_url : '#' }}"
+                                            alt="Current Profile Photo" class="h-20 w-20 rounded-full object-cover {{ $child->profile_photo_path ? '' : 'hidden' }}">
+                                        <img id="profile-preview" class="h-20 w-20 rounded-full object-cover hidden" src="#" alt="Profile Photo Preview">
+                                        <svg id="default-icon" class="h-10 w-10 text-gray-400 {{ $child->profile_photo_path ? 'hidden' : '' }}" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                            </path>
+                                        </svg>
+                                    </div>
                                     <div>
                                         <label for="profile_photo"
                                             class="cursor-pointer py-2 px-4 rounded-md theme-button theme-button-secondary">Change
@@ -244,7 +241,7 @@
                                             file chosen</span>
                                     </div>
                                 </div>
-                                <input id="profile_photo" type="file" name="profile_photo" class="hidden">
+                                <input id="profile_photo" type="file" name="profile_photo" class="hidden" accept="image/*">
                                 <x-input-error :messages="$errors->get('profile_photo')" class="mt-2 theme-error" />
                             </div>
                         </div>
@@ -310,12 +307,46 @@
         <script>
             const fileInput = document.getElementById('profile_photo');
             const fileNameDisplay = document.getElementById('file-name-display');
+            const currentProfile = document.getElementById('current-profile');
+            const profilePreview = document.getElementById('profile-preview');
+            const defaultIcon = document.getElementById('default-icon');
 
-            fileInput.addEventListener('change', () => {
+            fileInput.addEventListener('change', function() {
                 if (fileInput.files.length > 0) {
-                    fileNameDisplay.textContent = fileInput.files[0].name;
+                    const file = fileInput.files[0];
+                    fileNameDisplay.textContent = file.name;
+                    
+                    // Display image preview
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            // Hide current profile and default icon
+                            currentProfile.classList.add('hidden');
+                            defaultIcon.classList.add('hidden');
+                            
+                            // Show preview
+                            profilePreview.src = e.target.result;
+                            profilePreview.classList.remove('hidden');
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        // If not an image, revert to current profile or default icon
+                        profilePreview.classList.add('hidden');
+                        if (currentProfile.src && currentProfile.src !== window.location.href + '#') {
+                            currentProfile.classList.remove('hidden');
+                        } else {
+                            defaultIcon.classList.remove('hidden');
+                        }
+                    }
                 } else {
                     fileNameDisplay.textContent = 'No file chosen';
+                    // Revert to current profile or default icon when no file is selected
+                    profilePreview.classList.add('hidden');
+                    if (currentProfile.src && currentProfile.src !== window.location.href + '#') {
+                        currentProfile.classList.remove('hidden');
+                    } else {
+                        defaultIcon.classList.remove('hidden');
+                    }
                 }
             });
         </script>

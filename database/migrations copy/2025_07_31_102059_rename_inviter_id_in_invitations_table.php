@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('subscriptions', function (Blueprint $table) {
-            $table->string('name')->default('default')->after('billable_id');
+        Schema::table('invitations', function (Blueprint $table) {
+            $table->renameColumn('inviter_id', 'invited_by');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('subscriptions', function (Blueprint $table) {
-            $table->dropColumn('name');
+        Schema::table('invitations', function (Blueprint $table) {
+            $table->renameColumn('invited_by', 'inviter_id');
         });
     }
 };

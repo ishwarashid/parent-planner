@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Professional;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 // Import the Mail facade and your new Mailable classes (which we'll create below)
@@ -23,6 +24,13 @@ class AdminController extends Controller
         // Added latest() to show the newest pending professionals first.
         $professionals = Professional::with('user')->where('approval_status', 'pending')->latest()->get();
         return view('admin.professionals.index', compact('professionals'));
+    }
+
+    public function users()
+    {
+        // Fetch only main users (account owners) who are not invited users
+        $users = User::where('invited_by', null)->with('roles')->latest()->get();
+        return view('admin.users.index', compact('users'));
     }
 
     public function showProfessional(Professional $professional)

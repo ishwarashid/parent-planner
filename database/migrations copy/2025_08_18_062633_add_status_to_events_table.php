@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('subscriptions', function (Blueprint $table) {
-            $table->string('name')->default('default')->after('billable_id');
+        Schema::table('events', function (Blueprint $table) {
+            $table->string('status')->after('assigned_to')->default('Scheduled');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('subscriptions', function (Blueprint $table) {
-            $table->dropColumn('name');
+        Schema::table('events', function (Blueprint $table) {
+            $table->dropColumn('status');
         });
     }
 };

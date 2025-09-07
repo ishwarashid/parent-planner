@@ -203,6 +203,9 @@ Route::middleware(['auth', 'verified', 'admin', 'professional'])->prefix('admin'
     Route::post('/professionals/{professional}/approve', [AdminController::class, 'approveProfessional'])->name('admin.professionals.approve');
     Route::post('/professionals/{professional}/reject', [AdminController::class, 'rejectProfessional'])->name('admin.professionals.reject');
     
+    // Users routes
+    Route::get('/users', [AdminController::class, 'users'])->name('admin.users.index');
+    
     // Blog routes
     Route::resource('blogs', App\Http\Controllers\Admin\BlogController::class)->names([
         'index' => 'admin.blogs.index',

@@ -26,20 +26,28 @@ class VisitationPolicy
 
     public function view(User $user, Visitation $visitation): bool
     {
+        // First check if user has permission to view visitations
+        if (!$user->can('view-visitations')) {
+            return false;
+        }
+
+        // Get family member IDs
         $familyMemberIds = $user->getFamilyMemberIds();
 
-        // 1. Check if the visitation's assigned parent belongs to the user's family
+        // Check if the visitation's assigned parent belongs to the user's family
         if (!in_array($visitation->parent_id, $familyMemberIds)) {
             return false;
         }
 
-        // 2. Main/Admin Parent can see any visitation in their family
+        // Main/Admin Parent can see any visitation in their family
         if ($user->hasRole(['Main Parent', 'Admin Co-Parent'])) {
-            return $user->can('view-visitations');
+            return true;
         }
 
-        // 3. Other users can only view visitations assigned to them
-        return $user->can('view-visitations') && $visitation->parent_id === $user->id;
+        // Other users can view visitations if:
+        // 1. Assigned to them (parent_id matches user id)
+        // 2. Created by them (created_by matches user id)
+        return $visitation->parent_id === $user->id || $visitation->created_by === $user->id;
     }
 
     /**

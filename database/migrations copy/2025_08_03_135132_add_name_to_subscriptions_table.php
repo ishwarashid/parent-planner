@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('subscriptions', function (Blueprint $table) {
-            $table->string('name')->default('default')->after('billable_id');
+            $table->string('name')->default('default')->after('user_id');
         });
     }
 

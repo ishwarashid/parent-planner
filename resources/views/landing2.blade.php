@@ -53,14 +53,8 @@ License: https://freebootstrap.net/license
           <!-- Start Logo-->
           <a class="navbar-brand w-auto" href="index.html">
             <!-- If you use a text logo, uncomment this if it is commented-->
-            Parent Planner
-            
-            <!-- If you plan to use an image logo, uncomment this if it is commented-->
-            
-            {{-- <!-- logo dark--><img class="logo dark img-fluid" src="assets/images/logo-dark.svg" alt="Parent Planner logo"> 
-            
-            <!-- logo light--><img class="logo light img-fluid" src="assets/images/logo-light.svg" alt="Parent Planner logo"> --}}
-            
+            {{-- Parent Planner --}}
+            {{-- <img class="logo img-fluid" src="{{asset('assets/images/light-logo.jpg')}}" alt="Parent Planner logo"> --}}
             </a>
           <!-- End Logo-->
           

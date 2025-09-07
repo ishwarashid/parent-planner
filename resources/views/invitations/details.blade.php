@@ -189,19 +189,19 @@
                         </dl>
                     </div>
 
-                    @if (auth()->user()->isPremium() && $managedUser && ($invitation->status = 'registered'))
-                        <div class="border-t-2 border-gray-200 mt-8 pt-6">
-                            <h3 class="text-xl font-semibold mb-4 theme-title-text">User Permissions</h3>
-                            <form action="{{ route('users.permissions.update', $managedUser) }}" method="POST">
-                                @csrf
-                                @method('PUT')
+                    @if (auth()->user()->isPremium() && $managedUser && $invitation->status == 'registered')
+                        @if ($canPromoteToAdmin)
+                            <div class="border-t-2 border-gray-200 mt-8 pt-6">
+                                <h3 class="text-xl font-semibold mb-4 theme-title-text">User Permissions</h3>
+                                <form action="{{ route('users.permissions.update', $managedUser) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
 
-                                @if ($canPromoteToAdmin)
                                     <div class="p-4 border rounded-lg mb-8 theme-info-block">
                                         <label for="promote_toggle" class="flex items-center cursor-pointer">
                                             <div class="relative">
                                                 <input type="checkbox" id="promote_toggle" name="promote_to_admin"
-                                                    class="sr-only" x-model="isAdmin">
+                                                    class="sr-only" {{ $managedUser->hasRole('Admin Co-Parent') ? 'checked' : '' }}>
                                                 <div class="block w-14 h-8 rounded-full toggle-bg"></div>
                                                 <div
                                                     class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform">
@@ -215,15 +215,20 @@
                                             </div>
                                         </label>
                                     </div>
-                                @endif
 
-                                <div class="flex justify-end mt-8">
-                                    <button type="submit" class="theme-button theme-button-primary">Save
-                                        Permissions</button>
-                                </div>
-                            </form>
-                        </div>
-                    @elseif (auth()->user()->isPremium() && ($invitation->status == 'registered'))
+                                    <div class="flex justify-end mt-8">
+                                        <button type="submit" class="theme-button theme-button-primary">Save
+                                            Permissions</button>
+                                    </div>
+                                </form>
+                            </div>
+                        @else
+                            <div class="p-4 border rounded-lg mb-8 text-center theme-warning-block">
+                                <p class="font-semibold theme-warning-text">You have already assigned the Admin
+                                    Co-Parent role to another user.</p>
+                            </div>
+                        @endif
+                    @elseif (auth()->user()->isPremium() && $invitation->status == 'registered' && !$managedUser)
                         <div class="p-4 border rounded-lg mb-8 text-center theme-warning-block">
                             <p class="font-semibold theme-warning-text">You have already assigned the Admin
                                 Co-Parent role to another user.</p>
@@ -233,7 +238,7 @@
                             <p class="font-semibold theme-warning-text">Please upgrade to Premium Subscription to give
                                 full access to all features, to this user.</p>
                         </div>
-                    @endif                    
+                    @endif
                     <div class="mt-6 flex justify-end space-x-3 border-t pt-6">
                         @can('resend', $invitation)
                             <form method="POST" action="{{ route('invitations.resend', $invitation) }}">

@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('subscriptions', function (Blueprint $table) {
-            $table->string('name')->default('default')->after('billable_id');
+        Schema::table('invitations', function (Blueprint $table) {
+            $table->string('status')->default('pending')->after('token');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('subscriptions', function (Blueprint $table) {
-            $table->dropColumn('name');
+        Schema::table('invitations', function (Blueprint $table) {
+            $table->dropColumn('status');
         });
     }
 };

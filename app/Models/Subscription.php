@@ -15,14 +15,13 @@ class Subscription extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'user_id',
         'type',
-        'stripe_id',
-        'stripe_status',
-        'stripe_price',
-        'quantity',
+        'paddle_id',
+        'status',
         'trial_ends_at',
+        'paused_at',
         'ends_at',
+        'name',
     ];
 
     /**
@@ -32,15 +31,24 @@ class Subscription extends Model
      */
     protected $casts = [
         'trial_ends_at' => 'datetime',
+        'paused_at' => 'datetime',
         'ends_at' => 'datetime',
     ];
+
+    /**
+     * Get the billable model related to the subscription.
+     */
+    public function billable()
+    {
+        return $this->morphTo();
+    }
 
     /**
      * Get the user that owns the subscription.
      */
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'billable_id');
     }
 
     /**

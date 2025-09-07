@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
 
         // Invited User role with specific view permissions
         $invitedUserRole = Role::updateOrCreate(['name' => 'Invited User']);
-        $invitedUserRole->givePermissionTo(['view-children', 'view-events']);
+        $invitedUserRole->givePermissionTo(['view-children', 'view-events', 'view-visitations']);
 
         // Admin Co-Parent role with all permissions except for invitations
         $adminCoParentRole = Role::updateOrCreate(['name' => 'Admin Co-Parent']);

@@ -130,7 +130,6 @@
                                 {{ __('Expenses') }}
                             </x-nav-link>
                         @endif
-
                     @endcan
 
                     @can('view-documents')
