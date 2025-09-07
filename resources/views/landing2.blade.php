@@ -54,7 +54,7 @@ License: https://freebootstrap.net/license
           <a class="navbar-brand w-auto" href="index.html">
             <!-- If you use a text logo, uncomment this if it is commented-->
             {{-- Parent Planner --}}
-            {{-- <img class="logo img-fluid" src="{{asset('assets/images/light-logo.jpg')}}" alt="Parent Planner logo"> --}}
+            <img class="logo img-fluid" src="{{asset('assets/images/light-logo.png')}}" alt="Parent Planner logo" width="200px">
             </a>
           <!-- End Logo-->
           
@@ -72,9 +72,9 @@ License: https://freebootstrap.net/license
                 <a class="logo-link" id="fbs__net-navbarsLabel" href="index.html">
                   
                   
-                  <!-- logo dark--><img class="logo dark img-fluid" src="assets/images/logo-dark.svg" alt="Parent Planner logo"> 
+                  {{-- <img class="logo dark img-fluid" src="assets/images/logo-dark.svg" alt="Parent Planner logo">  --}}
                   
-                  <!-- logo light--><img class="logo light img-fluid" src="assets/images/logo-light.svg" alt="Parent Planner logo"></a>
+                  <img class="logo light img-fluid" src="{{asset('assets/images/light-logo.png')}}" alt="Parent Planner logo"></a>
                 
               </div>
               <button class="btn-close btn-close-black" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -678,16 +678,16 @@ License: https://freebootstrap.net/license
             <div class="row">
               <div class="col-md-6">
                 <div class="d-flex gap-5 flex-column">
-                  <div class="d-flex align-items-start gap-3" data-aos="fade-up" data-aos-delay="0">
+                  {{-- <div class="d-flex align-items-start gap-3" data-aos="fade-up" data-aos-delay="0">
                     <div class="icon d-block"><i class="bi bi-telephone"></i></div><span> <span class="d-block">Phone</span><strong>+(01 234 567 890)</strong></span>
-                  </div>
+                  </div> --}}
                   <div class="d-flex align-items-start gap-3" data-aos="fade-up" data-aos-delay="100">
                     <div class="icon d-block"><i class="bi bi-send"></i></div><span> <span class="d-block">Email</span><strong>info@parentplanner.site</strong></span>
                   </div>
-                  <div class="d-flex align-items-start gap-3" data-aos="fade-up" data-aos-delay="200">
+                  {{-- <div class="d-flex align-items-start gap-3" data-aos="fade-up" data-aos-delay="200">
                     <div class="icon d-block"><i class="bi bi-geo-alt"></i></div><span> <span class="d-block">Address</span>
                       <address class="fw-bold">123 Main Street Apt 4B Springfield, <br> IL 62701 United States</address></span>
-                  </div>
+                  </div> --}}
                 </div>
               </div>
               <div class="col-md-6">
@@ -732,7 +732,7 @@ License: https://freebootstrap.net/license
         <!-- End Contact-->
         
         <!-- ======= Footer =======-->
-        <footer class="footer pt-5 pb-5">
+        <footer class="footer">
           <div class="container">
             {{-- <div class="row mb-5 pb-4">
               <div class="col-md-7">
@@ -748,8 +748,7 @@ License: https://freebootstrap.net/license
             </div> --}}
            
             <div class="row credits pt-3">
-              <div class="col-xl-8 text-center text-xl-start mb-3 mb-xl-0">
-                
+              <div class="col-xl-8 text-center text-xl-start mb-3">
                 ©
                 <script>document.write(new Date().getFullYear());</script> Parent Planner. 
                  All rights reserved.

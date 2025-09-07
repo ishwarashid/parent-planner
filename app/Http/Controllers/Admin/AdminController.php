@@ -26,10 +26,36 @@ class AdminController extends Controller
         return view('admin.professionals.index', compact('professionals'));
     }
 
-    public function users()
+    public function users(Request $request)
     {
-        // Fetch only main users (account owners) who are not invited users
-        $users = User::where('invited_by', null)->with('roles')->latest()->get();
+        // Start with all users
+        $query = User::query();
+        
+        // Exclude professionals and admin users
+        $query->whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'Professional');
+        })->where('is_admin', '!=', 1);
+        
+        // Filter by main members vs invited members if specified
+        if ($request->has('user_type')) {
+            if ($request->user_type === 'main') {
+                $query->where('invited_by', null);
+            } elseif ($request->user_type === 'invited') {
+                $query->where('invited_by', '!=', null);
+            }
+        }
+        
+        // Search by name or email if specified
+        if ($request->has('search') && !empty($request->search)) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('email', 'like', '%' . $request->search . '%');
+            });
+        }
+        
+        // Eager load roles for better performance
+        $users = $query->with('roles')->latest()->paginate(15);
+        
         return view('admin.users.index', compact('users'));
     }
 

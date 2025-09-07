@@ -125,10 +125,10 @@
                 </div>
 
                 <!-- Recent Activity -->
-                <h3 class="text-lg font-medium mb-4 theme-section-title">Recent Activity</h3>
+                {{-- <h3 class="text-lg font-medium mb-4 theme-section-title">Recent Activity</h3>
                 <div class="p-4 rounded-lg shadow-inner theme-card-placeholder" style="min-height: 150px;">
                     <p class="text-center text-gray-500 pt-12">Recent activities will be displayed here.</p>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>

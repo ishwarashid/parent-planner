@@ -20,8 +20,8 @@ class AdminMiddleware
     {
         if (Auth::check()) {
             if (Auth::user()->is_admin) {
-                // If user is admin, and the route is not an admin route, redirect to admin dashboard
-                if (!Str::startsWith($request->path(), 'admin')) {
+                // If user is admin, and the route is not an admin route and not profile route, redirect to admin dashboard
+                if (!Str::startsWith($request->path(), 'admin') && !Str::startsWith($request->path(), 'profile')) {
                     return redirect('/admin');
                 }
             } else {

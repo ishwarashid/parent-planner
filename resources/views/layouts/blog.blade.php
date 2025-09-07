@@ -133,7 +133,7 @@
                 </div> --}}
                
                 <div class="row credits pt-3">
-                    <div class="col-xl-8 text-center text-xl-start mb-3 mb-xl-0">
+                    <div class="col-xl-8 text-center text-xl-start mb-3">
                         © <script>document.write(new Date().getFullYear());</script> Parent Planner. All rights reserved.
                     </div>
                 </div>

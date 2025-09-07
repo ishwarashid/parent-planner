@@ -8,7 +8,7 @@
             <p class="mt-2 text-gray-600">From here you can manage different aspects of the application. Use the navigation links to get started.</p>
             <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
                 <a href="{{ route('admin.users.index') }}" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded text-center">
-                    View Main Users
+                    View Users
                 </a>
                 <a href="{{ route('admin.professionals.index') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-center">
                     Manage Professionals

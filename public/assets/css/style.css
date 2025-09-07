@@ -320,6 +320,7 @@ h6 {
 }
 .fbs__net-navbar .navbar-brand .logo.light {
   display: block;
+  width: 200px;
 }
 .fbs__net-navbar .navbar-nav > li > .nav-link {
   position: relative;
