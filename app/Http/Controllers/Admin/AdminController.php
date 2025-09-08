@@ -32,9 +32,8 @@ class AdminController extends Controller
         $query = User::query();
         
         // Exclude professionals and admin users
-        $query->whereDoesntHave('roles', function ($query) {
-            $query->where('name', 'Professional');
-        })->where('is_admin', '!=', 1);
+        $query->where('role', '!=', 'professional')
+              ->where('is_admin', '!=', 1);
         
         // Filter by main members vs invited members if specified
         if ($request->has('user_type')) {

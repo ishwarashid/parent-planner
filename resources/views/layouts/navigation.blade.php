@@ -96,7 +96,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current" />
+                        <x-application-logo-two class="block h-9 w-auto fill-current" />
                     </a>
                 </div>
 
@@ -137,9 +137,11 @@
                             {{ __('Documents') }}
                         </x-nav-link>
                     @endcan
-                    <x-nav-link :href="route('professionals.public.index')" :active="request()->routeIs('professionals.*')" class="theme-nav-link">
-                        {{ __('Professionals') }}
-                    </x-nav-link>
+                    @if (auth()->user()->role != 'professional')
+                        <x-nav-link :href="route('professionals.public.index')" :active="request()->routeIs('professionals.*')" class="theme-nav-link">
+                            {{ __('Professionals') }}
+                        </x-nav-link>
+                    @endif
                     @can('view-invitations')
                         <x-nav-link :href="route('invitations.index')" :active="request()->routeIs('invitations.*')" class="theme-nav-link">
                             {{ __('Invitations') }}

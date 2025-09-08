@@ -1,0 +1,1 @@
+<img src="{{ asset('assets/images/light-cut.png') }}" alt="Parent Planner" style="width: 80px">

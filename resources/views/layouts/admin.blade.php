@@ -20,7 +20,7 @@
             <aside class="w-64 bg-gray-800 text-gray-200 flex-shrink-0">
                 <div class="p-6">
                     <a href="{{ route('admin.dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-white" />
+                        <x-application-logo-two class="block h-9 w-auto fill-current text-white" />
                     </a>
                 </div>
                 <nav class="mt-4 px-4">
