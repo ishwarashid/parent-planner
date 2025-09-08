@@ -293,7 +293,7 @@ License: https://freebootstrap.net/license
                       <h3 class="mb-3">Premium</h3>
                       <p>For co-parents who need advanced tools for seamless coordination and financial tracking.</p>
                       <div class="price mb-4"><strong class="me-1">$5.00</strong><span>/ month</span></div>
-                      <div><a class="btn btn-white hover-outline" href="#">Get Started</a></div>
+                      <div><a class="btn btn-white hover-outline" href="{{ route('pricing') }}">Get Started</a></div>
                     </div>
                     <div class="col-md-6 pricing-features">
                       <h4 class="text-uppercase fw-bold mb-3">Features</h4>
@@ -327,7 +327,7 @@ License: https://freebootstrap.net/license
                   <h3>Monthly</h3>
                   <p>Flexible month-to-month plan.</p>
                   <div class="price mb-4"><strong>$14.00</strong><span>/ month</span></div>
-                  <div><a class="btn" href="{{ route('pricing') }}">Get Started</a></div>
+                  <div><a class="btn" href="{{ route('professional.pricing') }}">Get Started</a></div>
                 </div>
               </div>
               <div class="col-md-4 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="400">
@@ -335,7 +335,7 @@ License: https://freebootstrap.net/license
                   <h3>Yearly</h3>
                   <p>Save $24 with annual billing.</p>
                   <div class="price mb-4"><strong class="me-1">$144.00</strong><span>/ year</span></div>
-                  <div><a class="btn" href="#">Get Started</a></div>
+                  <div><a class="btn" href="{{ route('professional.pricing') }}">Get Started</a></div>
                 </div>
               </div>
               <div class="col-md-4" data-aos="fade-up" data-aos-delay="500">

@@ -151,7 +151,7 @@ class SubscriptionController extends Controller
         $user = Auth::user();
         
         // Check if user has an active subscription in our database
-        if ($user->subscribed('default')) {
+        if ($user != null && $user->subscribed('default')) {
             return redirect()->route('dashboard');
         }
         
