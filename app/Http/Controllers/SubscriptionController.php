@@ -25,15 +25,15 @@ class SubscriptionController extends Controller
         // Role-based plan IDs
         if ($user->role == 'professional') {
             $priceIds = [
-                'pri_01k4f4cp96rcgxyf15gg167pex', // Professional Monthly
-                'pri_01k4f4dh6rz19qsf5djr73y0mg'  // Professional Yearly
+                'pri_01k4m53g0ddw2pt8wgjwsdpjwr', // Professional Monthly
+                'pri_01k4m54crw11827hzxp3ngms0j'  // Professional Yearly
             ];
         } else {
             $priceIds = [
-                'pri_01k479ewfx5kh4x8yqy2zcaneq', // Basic Monthly
-                'pri_01k479h0xtvns9g9rtbw41h373', // Basic Yearly
-                'pri_01k479kysbxxcsmndz9gzzp5dt', // Premium Monthly
-                'pri_01k479mb6cdegmhzyt71r00yem'  // Premium Yearly
+                'pri_01k4m4zrc1w8qjqrdvsj309r9h', // Basic Monthly
+                'pri_01k4m50qe4tspwqzzcb5pj21fs', // Basic Yearly
+                'pri_01k4m51sqtkav7fp4fesrxpjmz', // Premium Monthly
+                'pri_01k4m52mb2br3rj9nfn8pbpez6'  // Premium Yearly
             ];
         }
 
@@ -173,10 +173,10 @@ class SubscriptionController extends Controller
         
         // Fetch prices from Paddle
         $priceIds = [
-            'pri_01k479ewfx5kh4x8yqy2zcaneq', // Basic Monthly
-            'pri_01k479h0xtvns9g9rtbw41h373', // Basic Yearly
-            'pri_01k479kysbxxcsmndz9gzzp5dt', // Premium Monthly
-            'pri_01k479mb6cdegmhzyt71r00yem'  // Premium Yearly
+                'pri_01k4m4zrc1w8qjqrdvsj309r9h', // Basic Monthly
+                'pri_01k4m50qe4tspwqzzcb5pj21fs', // Basic Yearly
+                'pri_01k4m51sqtkav7fp4fesrxpjmz', // Premium Monthly
+                'pri_01k4m52mb2br3rj9nfn8pbpez6'  // Premium Yearly
         ];
         
         $prices = $this->paddleService->fetchPrices($priceIds);
@@ -195,16 +195,16 @@ class SubscriptionController extends Controller
         
         foreach ($prices as $price) {
             // Determine plan type based on ID or name
-            if (strpos($price['id'], 'pri_01k479ewfx5kh4x8yqy2zcaneq') !== false || 
+            if (strpos($price['id'], 'pri_01k4m4zrc1w8qjqrdvsj309r9h') !== false || 
                 strpos($price['name'], 'Basic') !== false && strpos($price['name'], 'Monthly') !== false) {
                 $plans['basic']['monthly'] = $price;
-            } elseif (strpos($price['id'], 'pri_01k479h0xtvns9g9rtbw41h373') !== false || 
+            } elseif (strpos($price['id'], 'pri_01k4m50qe4tspwqzzcb5pj21fs') !== false || 
                       strpos($price['name'], 'Basic') !== false && strpos($price['name'], 'Yearly') !== false) {
                 $plans['basic']['yearly'] = $price;
-            } elseif (strpos($price['id'], 'pri_01k479kysbxxcsmndz9gzzp5dt') !== false || 
+            } elseif (strpos($price['id'], 'pri_01k4m51sqtkav7fp4fesrxpjmz') !== false || 
                       strpos($price['name'], 'Premium') !== false && strpos($price['name'], 'Monthly') !== false) {
                 $plans['premium']['monthly'] = $price;
-            } elseif (strpos($price['id'], 'pri_01k479mb6cdegmhzyt71r00yem') !== false || 
+            } elseif (strpos($price['id'], 'pri_01k4m52mb2br3rj9nfn8pbpez6') !== false || 
                       strpos($price['name'], 'Premium') !== false && strpos($price['name'], 'Yearly') !== false) {
                 $plans['premium']['yearly'] = $price;
             }
@@ -294,8 +294,8 @@ class SubscriptionController extends Controller
     {
         // Fetch professional plan prices from Paddle
         $priceIds = [
-            'pri_01k4f4cp96rcgxyf15gg167pex', // Professional Monthly
-            'pri_01k4f4dh6rz19qsf5djr73y0mg'  // Professional Yearly
+            'pri_01k4m53g0ddw2pt8wgjwsdpjwr', // Professional Monthly
+            'pri_01k4m54crw11827hzxp3ngms0j'  // Professional Yearly
         ];
         
         $prices = $this->paddleService->fetchPrices($priceIds);
@@ -307,9 +307,9 @@ class SubscriptionController extends Controller
         ];
         
         foreach ($prices as $price) {
-            if (strpos($price['id'], 'pri_01k4f4cp96rcgxyf15gg167pex') !== false) {
+            if (strpos($price['id'], 'pri_01k4m53g0ddw2pt8wgjwsdpjwr') !== false) {
                 $plans['monthly'] = $price;
-            } elseif (strpos($price['id'], 'pri_01k4f4dh6rz19qsf5djr73y0mg') !== false) {
+            } elseif (strpos($price['id'], 'pri_01k4m54crw11827hzxp3ngms0j') !== false) {
                 $plans['yearly'] = $price;
             }
         }

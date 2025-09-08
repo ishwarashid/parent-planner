@@ -15,13 +15,13 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasFactory, Notifiable, Billable, HasRoles;
 
     const BASIC_PLAN_IDS = [
-        'pri_01k479ewfx5kh4x8yqy2zcaneq', // Standard Basic (Monthly)
-        'pri_01k479h0xtvns9g9rtbw41h373', // Standard Basic (Yearly)
+        'pri_01k4m4zrc1w8qjqrdvsj309r9h', // Standard Basic (Monthly)
+        'pri_01k4m50qe4tspwqzzcb5pj21fs', // Standard Basic (Yearly)
     ];
 
     const PREMIUM_PLAN_IDS = [
-        'pri_01k479kysbxxcsmndz9gzzp5dt',
-        'pri_01k479mb6cdegmhzyt71r00yem'
+        'pri_01k4m51sqtkav7fp4fesrxpjmz',
+        'pri_01k4m52mb2br3rj9nfn8pbpez6'
     ];
 
     /**

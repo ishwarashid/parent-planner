@@ -188,11 +188,11 @@
                                     </svg>Priority Support</li>
                             </ul>
                             <div class="mt-auto">
-                                <a href="{{ route('professional.professional.checkout', ['plan' => 'pri_01k4f4cp96rcgxyf15gg167pex']) }}"
+                                <a href="{{ route('professional.professional.checkout', ['plan' => 'pri_01k4m53g0ddw2pt8wgjwsdpjwr']) }}"
                                     x-show="billingCycle === 'monthly'"
                                     class="w-full text-center bg-theme-turquoise text-theme-dark-navy hover:bg-theme-light-turquoise transition px-8 py-3 rounded-md text-lg font-bold shadow-lg block">Subscribe
                                     Monthly</a>
-                                <a href="{{ route('professional.professional.checkout', ['plan' => 'pri_01k4f4dh6rz19qsf5djr73y0mg']) }}"
+                                <a href="{{ route('professional.professional.checkout', ['plan' => 'pri_01k4m54crw11827hzxp3ngms0j']) }}"
                                     x-show="billingCycle === 'yearly'" style="display: none;"
                                     class="w-full text-center bg-theme-turquoise text-theme-dark-navy hover:bg-theme-light-turquoise transition px-8 py-3 rounded-md text-lg font-bold shadow-lg block">Subscribe
                                     Yearly</a>
