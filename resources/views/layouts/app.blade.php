@@ -32,6 +32,22 @@
             <main>
                 {{ $slot }}
             </main>
+            
+            <!-- Footer -->
+            <footer class="bg-white border-t border-gray-200 mt-8">
+                <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+                    <div class="flex flex-col md:flex-row justify-between items-center">
+                        <div class="text-center md:text-left mb-4 md:mb-0">
+                            &copy; {{ date('Y') }} Parent Planner. All rights reserved.
+                        </div>
+                        <div class="flex space-x-6">
+                            <a href="{{ route('terms') }}" class="text-gray-600 hover:text-gray-900">Terms</a>
+                            <a href="{{ route('privacy') }}" class="text-gray-600 hover:text-gray-900">Privacy</a>
+                            <a href="{{ route('refund') }}" class="text-gray-600 hover:text-gray-900">Refund Policy</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
         @stack('scripts')
         <script>

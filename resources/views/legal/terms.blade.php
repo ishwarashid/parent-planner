@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Terms and Conditions - Parent Planner</title>
+    
+    <!-- ======= Google Font =======-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+    <!-- End Google Font-->
+    
+    <!-- ======= Styles =======-->
+    <link href="{{asset('assets/vendors/bootstrap/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/vendors/bootstrap-icons/font/bootstrap-icons.min.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
+    <!-- End Styles-->
+    
+    <style>
+        .legal-content {
+            line-height: 1.6;
+        }
+        .legal-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .legal-content h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.25rem;
+        }
+        .legal-content p {
+            margin-bottom: 1rem;
+        }
+        .legal-content ul {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+        .legal-content li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- ======= Site Wrap =======-->
+    <div class="site-wrap">
+        <!-- ======= Header =======-->
+        <header class="fbs__net-navbar navbar navbar-expand-lg dark" aria-label="freebootstrap.net navbar">
+            <div class="container d-flex align-items-center justify-content-between">
+                <!-- Start Logo-->
+                <a class="navbar-brand w-auto" href="{{ url('/') }}">
+                    <img class="logo img-fluid" src="{{asset('assets/images/light-logo.png')}}" alt="Parent Planner logo" width="200px">
+                </a>
+                <!-- End Logo-->
+                
+                <!-- Start offcanvas-->
+                <div class="offcanvas offcanvas-start w-75" id="fbs__net-navbars" tabindex="-1" aria-labelledby="fbs__net-navbarsLabel">
+                    <div class="offcanvas-header">
+                        <div class="offcanvas-header-logo">
+                            <h5 id="fbs__net-navbarsLabel" class="offcanvas-title">Parent Planner</h5>
+                            <a class="logo-link" id="fbs__net-navbarsLabel" href="{{ url('/') }}">
+                                <img class="logo light img-fluid" src="{{asset('assets/images/light-logo.png')}}" alt="Parent Planner logo">
+                            </a>
+                        </div>
+                        <button class="btn-close btn-close-black" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="offcanvas-body align-items-lg-center">
+                        <ul class="navbar-nav nav me-auto ps-lg-5 mb-2 mb-lg-0">
+                            <li class="nav-item"><a class="nav-link scroll-link" href="{{ url('/') }}#home">Home</a></li>
+                            <li class="nav-item"><a class="nav-link scroll-link" href="{{ url('/') }}#about">About</a></li>
+                            <li class="nav-item"><a class="nav-link scroll-link" href="{{ url('/') }}#pricing">Pricing</a></li>
+                            <li class="nav-item"><a class="nav-link scroll-link" href="{{ url('/') }}#how-it-works">How It Works</a></li>
+                            <li class="nav-item"><a class="nav-link scroll-link" href="{{ url('/') }}#services">Services</a></li>
+                            <li class="nav-item"><a class="nav-link scroll-link" href="{{ url('/') }}#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- End offcanvas-->
+                
+                <div class="ms-auto w-auto">
+                    @auth
+                        <div class="header-social d-flex align-items-center gap-1">
+                            <a class="btn btn-primary py-2" href="{{ url('/dashboard') }}">Dashboard</a>
+                            <button class="fbs__net-navbar-toggler justify-content-center align-items-center ms-auto" data-bs-toggle="offcanvas" data-bs-target="#fbs__net-navbars" aria-controls="fbs__net-navbars" aria-label="Toggle navigation" aria-expanded="false">
+                                <svg class="fbs__net-icon-menu" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="21" x2="3" y1="6" y2="6"></line>
+                                    <line x1="15" x2="3" y1="12" y2="12"></line>
+                                    <line x1="17" x2="3" y1="18" y2="18"></line>
+                                </svg>
+                                <svg class="fbs__net-icon-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 6 6 18"></path>
+                                    <path d="m6 6 12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    @else
+                        <div class="header-social d-flex align-items-center gap-1">
+                            <a class="btn btn-outline-primary py-2 me-2" href="{{ route('login') }}">Log in</a>
+                            <a class="btn btn-primary py-2" href="{{ route('register.choice') }}">Get Started</a>
+                            <button class="fbs__net-navbar-toggler justify-content-center align-items-center ms-auto" data-bs-toggle="offcanvas" data-bs-target="#fbs__net-navbars" aria-controls="fbs__net-navbars" aria-label="Toggle navigation" aria-expanded="false">
+                                <svg class="fbs__net-icon-menu" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="21" x2="3" y1="6" y2="6"></line>
+                                    <line x1="15" x2="3" y1="12" y2="12"></line>
+                                    <line x1="17" x2="3" y1="18" y2="18"></line>
+                                </svg>
+                                <svg class="fbs__net-icon-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 6 6 18"></path>
+                                    <path d="m6 6 12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    @endauth
+                </div>
+            </div>
+        </header>
+        <!-- End Header-->
+
+        <!-- ======= Main =======-->
+        <main>
+            <section class="section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <h1 class="mb-4">Terms and Conditions</h1>
+                            
+                            <div class="legal-content">
+                                <p class="mb-4"><strong>Effective Date:</strong> September 8, 2025</p>
+                                
+                                <h2>1. Introduction & Acceptance of Terms</h2>
+                                <p>Welcome to Parent Planner ("we," "our," or "us"). These Terms and Conditions govern your access to and use of Parent Planner's website, services, and applications (collectively, the "Service").</p>
+                                <p>By accessing or using our Service, you agree to be bound by these Terms and all applicable laws and regulations. If you do not agree with any part of these Terms, you must not access the Service.</p>
+                                <p>We reserve the right to modify these Terms at any time. We will notify you of any changes by posting the new Terms on this page and updating the "Effective Date." Your continued use of the Service after such changes constitutes your acceptance of the modified Terms.</p>
+                                
+                                <h2>2. Eligibility & Use of Service</h2>
+                                <p>To use our Service, you must be at least 18 years old or have the consent of a parent or guardian. By using our Service, you represent and warrant that you meet these requirements.</p>
+                                <p>You agree to use the Service only for lawful purposes and in accordance with these Terms. You are responsible for all activities that occur under your account.</p>
+                                
+                                <h2>3. Account Registration & Security</h2>
+                                <p>To access certain features of the Service, you may be required to create an account. You agree to provide accurate, current, and complete information during registration and to update such information as necessary.</p>
+                                <p>You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use of your account.</p>
+                                
+                                <h2>4. Payments, Subscriptions & Refunds</h2>
+                                <p>Some features of the Service require payment of fees. All payments are processed through our payment processor [PADDLe/MERCHANT_PROCESSOR_NAME].</p>
+                                <p>Unless otherwise stated, all fees are non-refundable. You may cancel your subscription at any time, and your access will continue until the end of your current billing period. For information on refunds, please refer to our <a href="{{ route('refund') }}">Refund Policy</a>.</p>
+                                <p>We reserve the right to change our fees at any time with prior notice. Your continued use of the Service after such changes constitutes acceptance of the modified fees.</p>
+                                <p>All payments are processed through Paddle, our Merchant of Record. By subscribing to our service, you agree to Paddle's terms and conditions.</p>
+                                
+                                <h2>5. Intellectual Property & Content Ownership</h2>
+                                <p>The Service and its original content, features, and functionality are owned by Parent Planner and are protected by international copyright, trademark, patent, trade secret, and other intellectual property laws.</p>
+                                <p>You retain ownership of any content you submit to the Service ("Your Content"). By submitting content, you grant us a worldwide, non-exclusive, royalty-free license to use, reproduce, adapt, publish, translate, and distribute your content in connection with the Service.</p>
+                                
+                                <h2>6. User Responsibilities & Prohibited Conduct</h2>
+                                <p>You are responsible for your use of the Service and for any content you provide. You agree not to:</p>
+                                <ul>
+                                    <li>Use the Service for any illegal purpose or in violation of any laws</li>
+                                    <li>Upload or transmit viruses or any other type of malicious code</li>
+                                    <li>Attempt to circumvent security measures or access systems not intended for your use</li>
+                                    <li>Interfere with or disrupt the Service or servers connected to the Service</li>
+                                    <li>Attempt to gain unauthorized access to any portion of the Service</li>
+                                    <li>Transmit any viruses or malicious code</li>
+                                    <li>Harass, threaten, or harm other users</li>
+                                    <li>Share false or misleading information</li>
+                                </ul>
+                                
+                                <h2>7. Termination & Suspension of Accounts</h2>
+                                <p>We may terminate or suspend your account and access to the Service immediately, without prior notice, for any reason, including but not limited to breach of these Terms.</p>
+                                <p>Upon termination, your right to use the Service will cease immediately. If you wish to terminate your account, you may simply discontinue using the Service.</p>
+                                
+                                <h2>8. Limitation of Liability & Disclaimer of Warranties</h2>
+                                <p>The Service is provided on an "as is" and "as available" basis. We make no warranties, expressed or implied, regarding the Service.</p>
+                                <p>To the fullest extent permitted by law, we shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues.</p>
+                                <p>In no event shall our total liability to you for all damages exceed the amount paid by you, if any, for accessing the Service during the twelve months immediately preceding the event giving rise to the claim.</p>
+                                
+                                <h2>9. Governing Law & Jurisdiction</h2>
+                                <p>These Terms shall be governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict of law provisions.</p>
+                                <p>Any disputes arising from or relating to these Terms or the Service shall be resolved exclusively in the courts located in Delaware, United States.</p>
+                                
+                                <h2>10. Contact Information</h2>
+                                <p>If you have any questions about these Terms, please contact us at:</p>
+                                <p><strong>Email:</strong> info@parentplanner.site</p>
+                                <p><strong>Address:</strong> 123 Main Street, Suite 100, Anytown, ST 12345</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <!-- End Main-->
+
+        <!-- ======= Footer =======-->
+        <footer class="footer mt-5">
+            <div class="container">
+                <div class="row credits pt-3">
+                    <div class="col-xl-8 text-center text-xl-start mb-3">
+                        © <script>document.write(new Date().getFullYear());</script> Parent Planner. All rights reserved.
+                    </div>
+                    <div class="col-xl-4 text-center text-xl-end mb-3">
+                        <a href="{{ route('terms') }}" class="text-decoration-none me-3">Terms</a>
+                        <a href="{{ route('privacy') }}" class="text-decoration-none me-3">Privacy</a>
+                        <a href="{{ route('refund') }}" class="text-decoration-none">Refund Policy</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- End Footer-->
+
+        <!-- ======= Javascripts =======-->
+        <script src="{{asset('assets/vendors/bootstrap/bootstrap.bundle.min.js')}}"></script>
+        <!-- End JavaScripts-->
+    </div>
+</body>
+</html>

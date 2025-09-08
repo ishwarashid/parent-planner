@@ -753,7 +753,11 @@ License: https://freebootstrap.net/license
                 <script>document.write(new Date().getFullYear());</script> Parent Planner. 
                  All rights reserved.
               </div>
-              
+              <div class="col-xl-4 text-center text-xl-end mb-3">
+                <a href="{{ route('terms') }}" class="text-decoration-none me-3">Terms</a>
+                <a href="{{ route('privacy') }}" class="text-decoration-none me-3">Privacy</a>
+                <a href="{{ route('refund') }}" class="text-decoration-none">Refund Policy</a>
+              </div>
             </div>
           </div>
         </footer>

@@ -36,6 +36,19 @@ Route::get('/', function () {
     return view('landing2', compact('latestBlogs'));
 });
 
+// Legal pages
+Route::get('/terms', function () {
+    return view('legal.terms');
+})->name('terms');
+
+Route::get('/privacy', function () {
+    return view('legal.privacy');
+})->name('privacy');
+
+Route::get('/refund', function () {
+    return view('legal.refund');
+})->name('refund');
+
 // Contact form route
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
