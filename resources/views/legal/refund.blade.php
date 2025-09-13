@@ -133,7 +133,8 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-12 text-center">
-                            <h1 class="mb-4">Refund Policy</h1>
+                            <h1 class="mb-3">Refund Policy</h1>
+                            <span class="badge" style="background-color: var(--bs-primary); color: var(--bs-heading-color); font-size: 1rem; padding: 0.5rem 1rem; border-radius: 7px; font-weight: 600;">Engineeric Trading As Parent Planner</span>
                         </div>
                     </div>
                 </div>
