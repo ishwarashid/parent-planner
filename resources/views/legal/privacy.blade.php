@@ -8,7 +8,7 @@
     <!-- ======= Google Font =======-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <!-- End Google Font-->
     
     <!-- ======= Styles =======-->
@@ -25,14 +25,17 @@
             margin-top: 2rem;
             margin-bottom: 1rem;
             font-size: 1.5rem;
+            color: var(--bs-heading-color);
         }
         .legal-content h3 {
             margin-top: 1.5rem;
             margin-bottom: 0.75rem;
             font-size: 1.25rem;
+            color: var(--bs-heading-color);
         }
         .legal-content p {
             margin-bottom: 1rem;
+            color: var(--bs-body-color);
         }
         .legal-content ul {
             margin-bottom: 1rem;
@@ -40,6 +43,12 @@
         }
         .legal-content li {
             margin-bottom: 0.5rem;
+            color: var(--bs-body-color);
+        }
+        .page-title {
+            padding-top: 100px !important;
+            padding-bottom: 50px !important;
+            background-color: rgba(var(--inverse-color-rgb), 0.03);
         }
     </style>
 </head>
@@ -120,18 +129,27 @@
 
         <!-- ======= Main =======-->
         <main>
+            <section class="section page-title">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <h1 class="mb-4">Privacy Policy</h1>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
             <section class="section">
                 <div class="container">
                     <div class="row">
                         <div class="col-12">
-                            <h1 class="mb-4">Privacy Policy</h1>
-                            
                             <div class="legal-content">
-                                <p class="mb-4"><strong>Effective Date:</strong> September 8, 2025</p>
+                                <p class="mb-4"><strong>Effective Date:</strong> 13 September 2025</p>
+                                <p class="mb-4"><strong>Last Updated:</strong> 13 September 2025</p>
                                 
-                                <p>Parent Planner ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website, services, and applications (collectively, the "Service").</p>
+                                <p>Engineeric Trading As Parent Planner (the "Company", "we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website, services, and applications (collectively, the "Service").</p>
                                 
-                                <h2>1. Information We Collect</h2>
+                                <h2>Information We Collect</h2>
                                 <h3>Personal Information</h3>
                                 <p>We may collect personally identifiable information that you voluntarily provide to us when you register, express an interest in obtaining information about us or our products and services, participate in activities on the Service, or otherwise contact us.</p>
                                 <p>The personal information we collect may include:</p>
@@ -154,7 +172,7 @@
                                     <li>Time spent on pages</li>
                                 </ul>
                                 
-                                <h2>2. How We Use Your Information</h2>
+                                <h2>How We Use Your Information</h2>
                                 <p>We use your information for various purposes, including:</p>
                                 <ul>
                                     <li>To provide and maintain our Service</li>
@@ -166,7 +184,7 @@
                                     <li>To detect, prevent, and address technical issues</li>
                                 </ul>
                                 
-                                <h2>3. Disclosure of Your Information</h2>
+                                <h2>Sharing of Information</h2>
                                 <p>We may share your information in the following situations:</p>
                                 <ul>
                                     <li><strong>With Service Providers:</strong> We may share your information with third-party service providers to monitor and analyze the use of our Service or to process payments.</li>
@@ -176,13 +194,13 @@
                                     <li><strong>With Your Consent:</strong> We may disclose your information for any other purpose with your consent.</li>
                                 </ul>
                                 
-                                <h2>4. Data Security</h2>
+                                <h2>Data Security</h2>
                                 <p>We use administrative, technical, and physical security measures to protect your personal information. However, no method of transmission over the Internet or method of electronic storage is 100% secure.</p>
                                 
-                                <h2>5. Data Retention</h2>
+                                <h2>Data Retention</h2>
                                 <p>We will retain your information for as long as necessary to fulfill the purposes outlined in this Privacy Policy, unless a longer retention period is required or permitted by law.</p>
                                 
-                                <h2>6. Your Data Protection Rights</h2>
+                                <h2>Your Rights</h2>
                                 <p>Depending on your location, you may have certain rights regarding your personal information:</p>
                                 <ul>
                                     <li><strong>Right to Access:</strong> You have the right to request copies of your personal data.</li>
@@ -193,16 +211,15 @@
                                     <li><strong>Right to Data Portability:</strong> You have the right to request that we transfer the data that we have collected to another organization, or directly to you, under certain conditions.</li>
                                 </ul>
                                 
-                                <h2>7. Children's Privacy</h2>
+                                <h2>Children's Privacy</h2>
                                 <p>Our Service does not address anyone under the age of 13. We do not knowingly collect personally identifiable information from anyone under the age of 13. If you are a parent or guardian and you are aware that your child has provided us with personal information, please contact us.</p>
                                 
-                                <h2>8. Changes to This Privacy Policy</h2>
+                                <h2>Changes to This Policy</h2>
                                 <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Effective Date."</p>
                                 
-                                <h2>9. Contact Us</h2>
+                                <h2>Contact Us</h2>
                                 <p>If you have any questions about this Privacy Policy, please contact us at:</p>
                                 <p><strong>Email:</strong> info@parentplanner.site</p>
-                                <p><strong>Address:</strong> 123 Main Street, Suite 100, Anytown, ST 12345</p>
                             </div>
                         </div>
                     </div>
@@ -216,7 +233,7 @@
             <div class="container">
                 <div class="row credits pt-3">
                     <div class="col-xl-8 text-center text-xl-start mb-3">
-                        © <script>document.write(new Date().getFullYear());</script> Parent Planner. All rights reserved.
+                        © <script>document.write(new Date().getFullYear());</script> Engineeric Trading As Parent Planner. All rights reserved.
                     </div>
                     <div class="col-xl-4 text-center text-xl-end mb-3">
                         <a href="{{ route('terms') }}" class="text-decoration-none me-3">Terms</a>

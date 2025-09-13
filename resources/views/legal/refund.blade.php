@@ -8,7 +8,7 @@
     <!-- ======= Google Font =======-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <!-- End Google Font-->
     
     <!-- ======= Styles =======-->
@@ -25,14 +25,17 @@
             margin-top: 2rem;
             margin-bottom: 1rem;
             font-size: 1.5rem;
+            color: var(--bs-heading-color);
         }
         .legal-content h3 {
             margin-top: 1.5rem;
             margin-bottom: 0.75rem;
             font-size: 1.25rem;
+            color: var(--bs-heading-color);
         }
         .legal-content p {
             margin-bottom: 1rem;
+            color: var(--bs-body-color);
         }
         .legal-content ul {
             margin-bottom: 1rem;
@@ -40,6 +43,12 @@
         }
         .legal-content li {
             margin-bottom: 0.5rem;
+            color: var(--bs-body-color);
+        }
+        .page-title {
+            padding-top: 100px !important;
+            padding-bottom: 50px !important;
+            background-color: rgba(var(--inverse-color-rgb), 0.03);
         }
     </style>
 </head>
@@ -120,43 +129,44 @@
 
         <!-- ======= Main =======-->
         <main>
+            <section class="section page-title">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <h1 class="mb-4">Refund Policy</h1>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
             <section class="section">
                 <div class="container">
                     <div class="row">
                         <div class="col-12">
-                            <h1 class="mb-4">Refund Policy</h1>
-                            
                             <div class="legal-content">
-                                <p class="mb-4"><strong>Effective Date:</strong> September 8, 2025</p>
+                                <p class="mb-4"><strong>Effective Date:</strong> 13 September 2025</p>
+                                <p class="mb-4"><strong>Last Updated:</strong> 13 September 2025</p>
                                 
-                                <h2>1. Overview</h2>
-                                <p>Parent Planner ("we," "our," or "us") offers subscription-based services for families and professionals. This Refund Policy outlines the terms under which refunds may be issued for our services.</p>
+                                <h2>Company Information</h2>
+                                <p>This Refund Policy is provided by Engineeric Trading As Parent Planner (the "Company", "we", "our", or "us").</p>
                                 
-                                <h2>2. Subscription Refunds</h2>
+                                <h2>Refund Eligibility</h2>
                                 <p>We offer a 14-day money-back guarantee for new subscriptions. If you are not satisfied with our service within this period, you may request a full refund of your initial subscription payment.</p>
                                 <p>After the initial 14-day period, refunds for prepaid subscriptions will be provided on a prorated basis for the unused portion of your subscription period, minus any applicable processing fees.</p>
                                 
-                                <h2>3. How to Request a Refund</h2>
-                                <p>To request a refund, please contact us at info@parentplanner.site with the following information:</p>
+                                <h2>Refund Request Process</h2>
+                                <p>To request a refund, please contact us via email at info@parentplanner.site with the following information:</p>
                                 <ul>
                                     <li>Your name and email address associated with your account</li>
                                     <li>The date of your subscription purchase</li>
                                     <li>The reason for your refund request</li>
                                 </ul>
                                 
-                                <h2>4. Refund Processing</h2>
+                                <h2>Refund Processing</h2>
                                 <p>Refund requests are typically processed within 5-10 business days. Refunds will be issued to the original payment method used for the purchase.</p>
                                 <p>Please note that depending on your payment provider, it may take an additional 5-10 business days for the refund to appear in your account.</p>
                                 
-                                <h2>5. Non-Refundable Items</h2>
-                                <p>Certain fees and charges are non-refundable, including but not limited to:</p>
-                                <ul>
-                                    <li>Processing fees for payments and refunds</li>
-                                    <li>Fees for services already rendered</li>
-                                    <li>One-time setup fees</li>
-                                </ul>
-                                
-                                <h2>6. Special Circumstances</h2>
+                                <h2>Special Circumstances</h2>
                                 <p>We may issue refunds outside of our standard policy in special circumstances, such as:</p>
                                 <ul>
                                     <li>Service interruptions or technical issues that significantly impact usability</li>
@@ -164,13 +174,20 @@
                                     <li>Unauthorized charges</li>
                                 </ul>
                                 
-                                <h2>7. Changes to This Refund Policy</h2>
+                                <h2>Non-Refundable Items</h2>
+                                <p>Certain fees and charges are non-refundable, including but not limited to:</p>
+                                <ul>
+                                    <li>Processing fees for payments and refunds</li>
+                                    <li>Fees for services already rendered</li>
+                                    <li>One-time setup fees</li>
+                                </ul>
+                                
+                                <h2>Changes to This Policy</h2>
                                 <p>We reserve the right to modify this Refund Policy at any time. Changes will be effective immediately upon posting on our website. Your continued use of our services after any changes constitutes your acceptance of the modified policy.</p>
                                 
-                                <h2>8. Contact Information</h2>
+                                <h2>Contact Us</h2>
                                 <p>If you have any questions about our Refund Policy or would like to request a refund, please contact us at:</p>
                                 <p><strong>Email:</strong> info@parentplanner.site</p>
-                                <p><strong>Address:</strong> 123 Main Street, Suite 100, Anytown, ST 12345</p>
                             </div>
                         </div>
                     </div>
@@ -184,7 +201,7 @@
             <div class="container">
                 <div class="row credits pt-3">
                     <div class="col-xl-8 text-center text-xl-start mb-3">
-                        © <script>document.write(new Date().getFullYear());</script> Parent Planner. All rights reserved.
+                        © <script>document.write(new Date().getFullYear());</script> Engineeric Trading As Parent Planner. All rights reserved.
                     </div>
                     <div class="col-xl-4 text-center text-xl-end mb-3">
                         <a href="{{ route('terms') }}" class="text-decoration-none me-3">Terms</a>
