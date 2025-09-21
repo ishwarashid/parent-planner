@@ -7,6 +7,7 @@
         --theme-text-hover: #FFFFFF;
         --theme-accent-turquoise: #40E0D0;
         --theme-accent-turquoise-rgb: 64, 224, 208;
+        --theme-dark-navy: #001a33;
     }
 
     /* Main Nav Styling */
@@ -65,17 +66,36 @@
     .theme-responsive-bg {
         background-color: var(--theme-bg-navy);
         border-top-color: #1f2937;
+        /* Make mobile menu take full height */
+        height: calc(100vh - 4rem);
+        overflow-y: auto;
     }
 
     .theme-responsive-link {
         color: var(--theme-text-light);
         border-left-width: 2px;
         border-color: transparent;
+        /* Improve mobile link styling */
+        padding: 1rem 1.5rem;
+        display: block;
+        transition: all 0.2s ease;
     }
 
-    .theme-responsive-link.active {
+    .theme-responsive-link:hover {
         color: var(--theme-text-hover);
-        background-color: rgba(var(--theme-accent-turquoise-rgb), 0.1);
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Custom color classes for the component */
+    .text-turquoise {
+        color: var(--theme-accent-turquoise);
+    }
+
+    .bg-dark-navy {
+        background-color: var(--theme-dark-navy);
+    }
+
+    .border-turquoise {
         border-color: var(--theme-accent-turquoise);
     }
 
