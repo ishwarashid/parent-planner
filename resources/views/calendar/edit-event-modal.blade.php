@@ -32,7 +32,7 @@
 
             {{-- Cancel and Save buttons are on the right --}}
             <div>
-                <button type="button" x-on:click="$dispatch('close')"
+                <button type="button" x-on:click="show = false"
                     class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded mr-2">
                     Cancel
                 </button>

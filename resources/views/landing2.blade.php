@@ -59,14 +59,14 @@ License: https://freebootstrap.net/license
           <!-- End Logo-->
           
           <!-- Start offcanvas-->
-          <div class="offcanvas offcanvas-start w-75" id="fbs__net-navbars" tabindex="-1" aria-labelledby="fbs__net-navbarsLabel">
+          <div class="offcanvas offcanvas-start w-75" id="fbs__net-navbars" tabindex="-1" aria-labelledby="fbs__net-navbarsLabel" style="background-color: #000033">
             
             
             <div class="offcanvas-header">
               <div class="offcanvas-header-logo">
                 <!-- If you use a text logo, uncomment this if it is commented-->
                 
-                <h5 id="fbs__net-navbarsLabel" class="offcanvas-title">Parent Planner</h5>
+                <h5 id="fbs__net-navbarsLabel" class="offcanvas-title" style="color: #fff">Parent Planner</h5>
                 
                 <!-- If you plan to use an image logo, uncomment this if it is commented-->
                 <a class="logo-link" id="fbs__net-navbarsLabel" href="index.html">
@@ -90,6 +90,18 @@ License: https://freebootstrap.net/license
                 <li class="nav-item"><a class="nav-link scroll-link" href="#how-it-works">How It Works</a></li>
                 <li class="nav-item"><a class="nav-link scroll-link" href="#services">Services</a></li>
                 <li class="nav-item"><a class="nav-link scroll-link" href="#contact">Contact</a></li>
+                
+                <!-- Auth links for mobile menu -->
+                @auth
+                  <li class="nav-item d-lg-none mt-4 pt-2 border-top">
+                    <a class="btn btn-primary py-2 w-100" href="{{ url('/dashboard') }}">Dashboard</a>
+                  </li>
+                @else
+                  <li class="nav-item d-lg-none mt-4 pt-2 border-top">
+                    <a class="btn btn-outline-primary py-2 w-100 mb-2" href="{{ route('login') }}">Log in</a>
+                    <a class="btn btn-primary py-2 w-100" href="{{ route('register.choice') }}">Get Started</a>
+                  </li>
+                @endauth
               </ul>
               
             </div>
@@ -293,7 +305,7 @@ License: https://freebootstrap.net/license
                       <h3 class="mb-3">Premium</h3>
                       <p>For co-parents who need advanced tools for seamless coordination and financial tracking.</p>
                       <div class="price mb-4"><strong class="me-1">$5.00</strong><span>/ month</span></div>
-                      <div><a class="btn btn-white hover-outline" href="{{ route('pricing') }}">Get Started</a></div>
+                      <div><a class="btn btn-white hover-outline" href="{{ route('pricing') }}" style="margin-bottom: 20px">Get Started</a></div>
                     </div>
                     <div class="col-md-6 pricing-features">
                       <h4 class="text-uppercase fw-bold mb-3">Features</h4>
