@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Terms and Conditions - Parent Planner</title>
+    <title>Terms & Conditions – Parent Planner</title>
     
     <!-- ======= Google Font =======-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -133,8 +133,8 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-12 text-center">
-                            <h1 class="mb-3">Terms and Conditions</h1>
-                            <span class="badge" style="background-color: var(--bs-primary); color: var(--bs-heading-color); font-size: 1rem; padding: 0.5rem 1rem; border-radius: 7px; font-weight: 600;">Engineeric Trading As Parent Planner</span>
+                            <h1 class="mb-3">Terms & Conditions</h1>
+                            <span class="badge" style="background-color: var(--bs-primary); color: var(--bs-heading-color); font-size: 1rem; padding: 0.5rem 1rem; border-radius: 7px; font-weight: 600;">Parent Planner</span>
                         </div>
                     </div>
                 </div>
@@ -145,60 +145,54 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="legal-content">
-                                <p class="mb-4"><strong>Effective Date:</strong> 13 September 2025</p>
-                                <p class="mb-4"><strong>Last Updated:</strong> 13 September 2025</p>
+                                <p class="mb-4"><strong>Effective Date:</strong> 22 September 2025</p>
+                                <p class="mb-4"><strong>Last Updated:</strong> 22 September 2025</p>
                                 
-                                <h2>Acceptance of Terms</h2>
-                                <p>Welcome to Engineeric Trading As Parent Planner (the "Company", "we", "our", or "us"). These Terms and Conditions govern your access to and use of Parent Planner's website, services, and applications (collectively, the "Service").</p>
-                                <p>By accessing or using our Service, you agree to be bound by these Terms and all applicable laws and regulations. If you do not agree with any part of these Terms, you must not access the Service.</p>
-                                <p>We reserve the right to modify these Terms at any time. We will notify you of any changes by posting the new Terms on this page and updating the "Effective Date." Your continued use of the Service after such changes constitutes your acceptance of the modified Terms.</p>
+                                <p>Welcome to Parent Planner! By using our app, you agree to the following terms and conditions. Please read them carefully.</p>
                                 
-                                <h2>Eligibility</h2>
-                                <p>To use our Service, you must be at least 18 years old or have the consent of a parent or guardian. By using our Service, you represent and warrant that you meet these requirements.</p>
-                                <p>You agree to use the Service only for lawful purposes and in accordance with these Terms. You are responsible for all activities that occur under your account.</p>
+                                <h2>1. Acceptance of Terms</h2>
+                                <p>By downloading, registering, or using Parent Planner, you agree to be bound by these Terms & Conditions and our Privacy Policy. If you do not agree, do not use the app.</p>
                                 
-                                <h2>Use of the App</h2>
-                                <p>You are granted a limited, non-exclusive, non-transferable license to access and use the Service for your personal or internal business purposes. You may not:</p>
+                                <h2>2. Eligibility</h2>
+                                <p>You must be at least 18 years old to use this app. By using Parent Planner, you confirm you are legally able to manage child-related data.</p>
+                                
+                                <h2>3. Use of the App</h2>
+                                <p>You agree to use the app solely for lawful purposes and in accordance with these Terms. You may not:</p>
                                 <ul>
-                                    <li>Copy, modify, or create derivative works of the Service</li>
-                                    <li>Reverse engineer, decompile, or disassemble the Service</li>
-                                    <li>Rent, lease, lend, sell, redistribute, or sublicense the Service</li>
-                                    <li>Remove any proprietary notices or labels on the Service</li>
-                                    <li>Use the Service for any illegal purpose or in violation of any laws</li>
+                                    <li>Misuse the app or attempt to gain unauthorised access.</li>
+                                    <li>Post or store offensive, illegal, or harmful content.</li>
+                                    <li>Use the app to harass, stalk, or abuse another person.</li>
                                 </ul>
                                 
-                                <h2>User Content</h2>
-                                <p>You retain ownership of any content you submit to the Service ("Your Content"). By submitting content, you grant us a worldwide, non-exclusive, royalty-free license to use, reproduce, adapt, publish, translate, and distribute your content in connection with the Service.</p>
-                                <p>You are solely responsible for your content and the consequences of posting or publishing it. You represent and warrant that you have all necessary rights to grant the license above and that your content does not infringe any third-party rights.</p>
+                                <h2>4. User Content</h2>
+                                <p>You retain ownership of the content you upload (e.g., schedules, documents, financial info). You grant us a license to use this data solely to provide our services to you.</p>
+                                <p>You are responsible for ensuring your data is accurate and lawful to upload.</p>
                                 
-                                <h2>Payment & Subscriptions</h2>
-                                <p>Some features of the Service require payment of fees. All payments are processed through our payment processor.</p>
-                                <p>Unless otherwise stated, all fees are non-refundable. You may cancel your subscription at any time, and your access will continue until the end of your current billing period. For information on refunds, please refer to our <a href="{{ route('refund') }}">Refund Policy</a>.</p>
-                                <p>We reserve the right to change our fees at any time with prior notice. Your continued use of the Service after such changes constitutes acceptance of the modified fees.</p>
-                                <p>All payments are processed through Paddle, our Merchant of Record. By subscribing to our service, you agree to Paddle's terms and conditions.</p>
+                                <h2>5. Payment & Subscriptions</h2>
+                                <p>Some features may be available through a subscription plan. If applicable, you agree to the pricing and billing terms disclosed at signup.</p>
+                                <p>We reserve the right to modify our pricing at any time, with reasonable notice.</p>
                                 
-                                <h2>Termination</h2>
-                                <p>We may terminate or suspend your account and access to the Service immediately, without prior notice, for any reason, including but not limited to breach of these Terms.</p>
-                                <p>Upon termination, your right to use the Service will cease immediately. If you wish to terminate your account, you may simply discontinue using the Service.</p>
+                                <h2>6. Termination</h2>
+                                <p>You may cancel your account at any time. We reserve the right to suspend or terminate accounts for violations of these Terms or misuse of the platform.</p>
                                 
-                                <h2>Disclaimers</h2>
-                                <p>The Service is provided on an "as is" and "as available" basis. We make no warranties, expressed or implied, regarding the Service.</p>
-                                <p>We do not warrant that the Service will be uninterrupted, timely, secure, or error-free. We do not warrant that the results obtained from the use of the Service will be accurate or reliable.</p>
+                                <h2>7. Disclaimers</h2>
+                                <ul>
+                                    <li>Parent Planner is provided "as is" without warranties of any kind.</li>
+                                    <li>We do not guarantee uninterrupted access or error-free functionality.</li>
+                                    <li>We are not responsible for legal compliance between co-parents or the accuracy of third-party data.</li>
+                                </ul>
                                 
-                                <h2>Limitation of Liability</h2>
-                                <p>To the fullest extent permitted by law, we shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues.</p>
-                                <p>In no event shall our total liability to you for all damages exceed the amount paid by you, if any, for accessing the Service during the twelve months immediately preceding the event giving rise to the claim.</p>
+                                <h2>8. Limitation of Liability</h2>
+                                <p>To the fullest extent permitted by law, Parent Planner is not liable for any indirect, incidental, or consequential damages arising out of your use of the app.</p>
                                 
-                                <h2>Modifications</h2>
-                                <p>We reserve the right to modify, suspend, or discontinue the Service (in whole or in part) at any time without notice. We will not be liable to you or any third party for any modification, suspension, or discontinuation of the Service.</p>
+                                <h2>9. Modifications</h2>
+                                <p>We may update these Terms from time to time. Continued use of the app constitutes acceptance of the revised terms.</p>
                                 
-                                <h2>Governing Law</h2>
-                                <p>These Terms shall be governed by and construed in accordance with the laws of South Africa, without regard to its conflict of law provisions.</p>
-                                <p>Any disputes arising from or relating to these Terms or the Service shall be resolved exclusively in the courts located in South Africa.</p>
+                                <h2>10. Governing Law</h2>
+                                <p>These Terms are governed by the laws of South Africa. Any disputes will be resolved in the courts of South Africa.</p>
                                 
-                                <h2>Contact Us</h2>
-                                <p>If you have any questions about these Terms, please contact us at:</p>
-                                <p><strong>Email:</strong> info@parentplanner.site</p>
+                                <h2>11. Contact Us</h2>
+                                <p>For support or legal questions, contact: info@parentplanner.site</p>
                             </div>
                         </div>
                     </div>
@@ -212,7 +206,7 @@
             <div class="container">
                 <div class="row credits pt-3">
                     <div class="col-xl-8 text-center text-xl-start mb-3">
-                        © <script>document.write(new Date().getFullYear());</script> Engineeric Trading As Parent Planner. All rights reserved.
+                        © <script>document.write(new Date().getFullYear());</script> Parent Planner. All rights reserved.
                     </div>
                     <div class="col-xl-4 text-center text-xl-end mb-3">
                         <a href="{{ route('terms') }}" class="text-decoration-none me-3">Terms</a>

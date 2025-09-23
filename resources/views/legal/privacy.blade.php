@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Privacy Policy - Parent Planner</title>
+    <title>Privacy Policy – Parent Planner</title>
     
     <!-- ======= Google Font =======-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -134,7 +134,7 @@
                     <div class="row">
                         <div class="col-12 text-center">
                             <h1 class="mb-3">Privacy Policy</h1>
-                            <span class="badge" style="background-color: var(--bs-primary); color: var(--bs-heading-color); font-size: 1rem; padding: 0.5rem 1rem; border-radius: 7px; font-weight: 600;">Engineeric Trading As Parent Planner</span>
+                            <span class="badge" style="background-color: var(--bs-primary); color: var(--bs-heading-color); font-size: 1rem; padding: 0.5rem 1rem; border-radius: 7px; font-weight: 600;">Parent Planner</span>
                         </div>
                     </div>
                 </div>
@@ -145,82 +145,62 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="legal-content">
-                                <p class="mb-4"><strong>Effective Date:</strong> 13 September 2025</p>
-                                <p class="mb-4"><strong>Last Updated:</strong> 13 September 2025</p>
+                                <p class="mb-4"><strong>Effective Date:</strong> 22 September 2025</p>
+                                <p class="mb-4"><strong>Last Updated:</strong> 22 September 2025</p>
                                 
-                                <p>Engineeric Trading As Parent Planner (the "Company", "we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website, services, and applications (collectively, the "Service").</p>
+                                <p>At Parent Planner, your privacy is important to us. This Privacy Policy explains how we collect, use, store, and protect your personal information when you use our app and services.</p>
                                 
-                                <h2>Information We Collect</h2>
-                                <h3>Personal Information</h3>
-                                <p>We may collect personally identifiable information that you voluntarily provide to us when you register, express an interest in obtaining information about us or our products and services, participate in activities on the Service, or otherwise contact us.</p>
-                                <p>The personal information we collect may include:</p>
+                                <h2>1. Information We Collect</h2>
+                                <p>We may collect the following information:</p>
                                 <ul>
-                                    <li>Name</li>
-                                    <li>Email address</li>
-                                    <li>Phone number</li>
-                                    <li>Postal address</li>
-                                    <li>Payment information</li>
-                                    <li>Child-related information (as necessary for our services)</li>
+                                    <li>Personal Information: Name, email address, and contact details when you register.</li>
+                                    <li>Child-Related Data: Names, schedules, visitation dates, and financial details related to your child.</li>
+                                    <li>Payment Information: If applicable, financial transactions and payment history (we do not store credit card details directly).</li>
+                                    <li>Documents: Files uploaded by you (e.g., legal agreements, school records, receipts).</li>
+                                    <li>Usage Data: Device info, app usage data, and log files to help improve our services.</li>
                                 </ul>
                                 
-                                <h3>Usage Data</h3>
-                                <p>We may automatically collect information about your device and usage of our Service, including:</p>
+                                <h2>2. How We Use Your Information</h2>
+                                <p>We use your information to:</p>
                                 <ul>
-                                    <li>IP address</li>
-                                    <li>Browser type and version</li>
-                                    <li>Pages visited</li>
-                                    <li>Time and date of visit</li>
-                                    <li>Time spent on pages</li>
+                                    <li>Provide and maintain our app's functionality.</li>
+                                    <li>Facilitate scheduling, financial tracking, and document storage features.</li>
+                                    <li>Send notifications and updates related to your child's schedule or account.</li>
+                                    <li>Improve and personalise your experience.</li>
+                                    <li>Comply with legal obligations.</li>
                                 </ul>
                                 
-                                <h2>How We Use Your Information</h2>
-                                <p>We use your information for various purposes, including:</p>
+                                <h2>3. Sharing of Information</h2>
+                                <p>We do not sell or share your personal data with third parties for marketing purposes. Information may be shared only when:</p>
                                 <ul>
-                                    <li>To provide and maintain our Service</li>
-                                    <li>To notify you about changes to our Service</li>
-                                    <li>To allow you to participate in interactive features of our Service</li>
-                                    <li>To provide customer support</li>
-                                    <li>To gather analysis or valuable information to improve our Service</li>
-                                    <li>To monitor usage of our Service</li>
-                                    <li>To detect, prevent, and address technical issues</li>
+                                    <li>Required by law or legal process.</li>
+                                    <li>Necessary to protect our rights or comply with a court order.</li>
+                                    <li>Shared with a trusted service provider working on our behalf (e.g., secure cloud storage).</li>
                                 </ul>
                                 
-                                <h2>Sharing of Information</h2>
-                                <p>We may share your information in the following situations:</p>
+                                <h2>4. Data Security</h2>
+                                <p>We implement appropriate security measures (including encryption, secure servers, and access controls) to protect your information from unauthorized access or disclosure.</p>
+                                
+                                <h2>5. Data Retention</h2>
+                                <p>We retain your data as long as your account is active or as required by law. You may request deletion of your data at any time by contacting us at info@parentplanner.site</p>
+                                
+                                <h2>6. Your Rights</h2>
+                                <p>Depending on your location, you may have rights to:</p>
                                 <ul>
-                                    <li><strong>With Service Providers:</strong> We may share your information with third-party service providers to monitor and analyze the use of our Service or to process payments.</li>
-                                    <li><strong>For Business Transfers:</strong> We may share or transfer your information in connection with, or during negotiations of, any merger, sale of company assets, financing, or acquisition of all or a portion of our business.</li>
-                                    <li><strong>With Affiliates:</strong> We may share your information with our affiliates, in which case we will require those affiliates to honor this Privacy Policy.</li>
-                                    <li><strong>With Business Partners:</strong> We may share your information with our business partners to offer you certain products, services, or promotions.</li>
-                                    <li><strong>With Your Consent:</strong> We may disclose your information for any other purpose with your consent.</li>
+                                    <li>Access the information we hold about you.</li>
+                                    <li>Request corrections or deletion of your data.</li>
+                                    <li>Object to certain uses of your data.</li>
+                                    <li>Withdraw consent at any time.</li>
                                 </ul>
                                 
-                                <h2>Data Security</h2>
-                                <p>We use administrative, technical, and physical security measures to protect your personal information. However, no method of transmission over the Internet or method of electronic storage is 100% secure.</p>
+                                <h2>7. Children's Privacy</h2>
+                                <p>Parent Planner is intended for use by adults managing children's information. We do not knowingly collect personal information from children under 13.</p>
                                 
-                                <h2>Data Retention</h2>
-                                <p>We will retain your information for as long as necessary to fulfill the purposes outlined in this Privacy Policy, unless a longer retention period is required or permitted by law.</p>
+                                <h2>8. Changes to This Policy</h2>
+                                <p>We may update this Privacy Policy from time to time. You'll be notified of significant changes via email or within the app.</p>
                                 
-                                <h2>Your Rights</h2>
-                                <p>Depending on your location, you may have certain rights regarding your personal information:</p>
-                                <ul>
-                                    <li><strong>Right to Access:</strong> You have the right to request copies of your personal data.</li>
-                                    <li><strong>Right to Rectification:</strong> You have the right to request that we correct any information you believe is inaccurate or complete information you believe is incomplete.</li>
-                                    <li><strong>Right to Erasure:</strong> You have the right to request that we erase your personal data, under certain conditions.</li>
-                                    <li><strong>Right to Restrict Processing:</strong> You have the right to request that we restrict the processing of your personal data, under certain conditions.</li>
-                                    <li><strong>Right to Object:</strong> You have the right to object to our processing of your personal data, under certain conditions.</li>
-                                    <li><strong>Right to Data Portability:</strong> You have the right to request that we transfer the data that we have collected to another organization, or directly to you, under certain conditions.</li>
-                                </ul>
-                                
-                                <h2>Children's Privacy</h2>
-                                <p>Our Service does not address anyone under the age of 13. We do not knowingly collect personally identifiable information from anyone under the age of 13. If you are a parent or guardian and you are aware that your child has provided us with personal information, please contact us.</p>
-                                
-                                <h2>Changes to This Policy</h2>
-                                <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Effective Date."</p>
-                                
-                                <h2>Contact Us</h2>
-                                <p>If you have any questions about this Privacy Policy, please contact us at:</p>
-                                <p><strong>Email:</strong> info@parentplanner.site</p>
+                                <h2>9. Contact Us</h2>
+                                <p>For questions or concerns, please contact: info@parentplanner.site</p>
                             </div>
                         </div>
                     </div>
@@ -234,7 +214,7 @@
             <div class="container">
                 <div class="row credits pt-3">
                     <div class="col-xl-8 text-center text-xl-start mb-3">
-                        © <script>document.write(new Date().getFullYear());</script> Engineeric Trading As Parent Planner. All rights reserved.
+                        © <script>document.write(new Date().getFullYear());</script> Parent Planner. All rights reserved.
                     </div>
                     <div class="col-xl-4 text-center text-xl-end mb-3">
                         <a href="{{ route('terms') }}" class="text-decoration-none me-3">Terms</a>

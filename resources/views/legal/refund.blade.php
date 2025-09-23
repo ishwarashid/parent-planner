@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Refund Policy - Parent Planner</title>
+    <title>Refund Policy – Parent Planner</title>
     
     <!-- ======= Google Font =======-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -134,7 +134,7 @@
                     <div class="row">
                         <div class="col-12 text-center">
                             <h1 class="mb-3">Refund Policy</h1>
-                            <span class="badge" style="background-color: var(--bs-primary); color: var(--bs-heading-color); font-size: 1rem; padding: 0.5rem 1rem; border-radius: 7px; font-weight: 600;">Engineeric Trading As Parent Planner</span>
+                            <span class="badge" style="background-color: var(--bs-primary); color: var(--bs-heading-color); font-size: 1rem; padding: 0.5rem 1rem; border-radius: 7px; font-weight: 600;">Parent Planner</span>
                         </div>
                     </div>
                 </div>
@@ -145,11 +145,11 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="legal-content">
-                                <p class="mb-4"><strong>Effective Date:</strong> 13 September 2025</p>
-                                <p class="mb-4"><strong>Last Updated:</strong> 13 September 2025</p>
+                                <p class="mb-4"><strong>Effective Date:</strong> 22 September 2025</p>
+                                <p class="mb-4"><strong>Last Updated:</strong> 22 September 2025</p>
                                 
                                 <h2>Company Information</h2>
-                                <p>This Refund Policy is provided by Engineeric Trading As Parent Planner (the "Company", "we", "our", or "us").</p>
+                                <p>This Refund Policy is provided by Parent Planner.</p>
                                 
                                 <h2>Refund Eligibility</h2>
                                 <p>We offer a 14-day money-back guarantee for new subscriptions. If you are not satisfied with our service within this period, you may request a full refund of your initial subscription payment.</p>
@@ -202,7 +202,7 @@
             <div class="container">
                 <div class="row credits pt-3">
                     <div class="col-xl-8 text-center text-xl-start mb-3">
-                        © <script>document.write(new Date().getFullYear());</script> Engineeric Trading As Parent Planner. All rights reserved.
+                        © <script>document.write(new Date().getFullYear());</script> Parent Planner. All rights reserved.
                     </div>
                     <div class="col-xl-4 text-center text-xl-end mb-3">
                         <a href="{{ route('terms') }}" class="text-decoration-none me-3">Terms</a>
