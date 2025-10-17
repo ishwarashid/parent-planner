@@ -88,6 +88,13 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
+        // Create a verification attempt when the user registers
+        $user->verificationAttempts()->create([
+            'email' => $user->email,
+            'status' => 'pending',
+            'attempt_count' => 1,
+        ]);
+
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));

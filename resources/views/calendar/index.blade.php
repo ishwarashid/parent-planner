@@ -131,7 +131,7 @@
                 {{ __('Calendar') }}
             </h2>
             @can('create', App\Models\Event::class)
-                <button x-data="{}" @click="$dispatch('open-modal', 'create-event-modal')"
+                <button x-data="{}" @click="$dispatch('open-modal', 'create-event-form')"
                     class="py-2 px-4 rounded-md theme-button">
                     Add New Event
                 </button>

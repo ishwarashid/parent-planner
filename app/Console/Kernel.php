@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('reminders:send')->dailyAt('08:00'); // Run daily at 8:00 AM
+        $schedule->command('verification:retry-failed')->everyTenMinutes(); // Check for failed verifications every 10 minutes
     }
 
     /**

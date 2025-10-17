@@ -20,6 +20,15 @@ class VerifyEmailController extends Controller
 
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
+            
+            // Mark the verification attempt as verified
+            $latestAttempt = $request->user()->verificationAttempts()->latest()->first();
+            if ($latestAttempt) {
+                $latestAttempt->update([
+                    'status' => 'verified',
+                    'verified_at' => now()
+                ]);
+            }
         }
 
         return redirect()->intended(route('dashboard', absolute: false).'?verified=1');

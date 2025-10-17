@@ -62,15 +62,10 @@
     </div>
     
     <script>
-        // Listen for Paddle checkout events
-        window.Paddle.Checkout.loaded(function() {
-            // Add event listener for checkout completion
-            window.Paddle.Checkout.on('checkout.completed', function(data) {
-                // Redirect to dashboard after a short delay
-                setTimeout(function() {
-                    window.location.href = '{{ route('dashboard') }}';
-                }, 2000);
-            });
+        document.addEventListener('paddle-checkout-completed', function(event) {
+            setTimeout(() => {
+                window.location.href = '{{ route('dashboard') }}';
+            }, 2000);
         });
     </script>
 </body>

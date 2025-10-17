@@ -9,7 +9,7 @@ License: https://freebootstrap.net/license
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title> Family Planner </title>
+    <title> Parent Planner </title>
      
     <!-- ======= Google Font =======-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
