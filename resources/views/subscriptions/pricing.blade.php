@@ -86,13 +86,24 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex-shrink-0 flex items-center">
-                        <a href="{{ url('/') }}" class="text-2xl font-bold text-white">Parent Planner</a>
+                        <a href="{{ url('/') }}" class="flex items-center">
+                            <x-application-logo-two class="h-8 w-auto text-white" />
+                            <span class="ml-2 text-xl font-bold text-white">Parent Planner</span>
+                        </a>
                     </div>
                     <div class="flex items-center space-x-4">
                         @if (Route::has('login'))
                             @auth
+                                <a href="{{ url('/') }}"
+                                    class="font-medium text-white hover:text-theme-light-turquoise transition">Home</a>
                                 <a href="{{ url('/dashboard') }}"
                                     class="font-medium text-white hover:text-theme-light-turquoise transition">Dashboard</a>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <a href="{{ route('logout') }}"
+                                        onclick="event.preventDefault(); this.closest('form').submit();"
+                                        class="font-medium text-white hover:text-theme-light-turquoise transition cursor-pointer">Log Out</a>
+                                </form>
                             @else
                                 <a href="{{ route('login') }}"
                                     class="font-medium text-white hover:text-theme-light-turquoise transition">Log in</a>
