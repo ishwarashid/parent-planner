@@ -16,7 +16,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-gray-100 flex flex-col">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
@@ -29,12 +29,12 @@
             @endisset
 
             <!-- Page Content -->
-            <main>
+            <main class="flex-grow">
                 {{ $slot }}
             </main>
             
             <!-- Footer -->
-            <footer class="bg-white border-t border-gray-200 mt-8">
+            <footer class="bg-white border-t border-gray-200">
                 <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
                     <div class="flex flex-col md:flex-row justify-between items-center">
                         <div class="text-center md:text-left mb-4 md:mb-0">
