@@ -237,6 +237,11 @@
                         <div class="p-4 border rounded-lg mb-8 text-center theme-warning-block">
                             <p class="font-semibold theme-warning-text">Please upgrade to Premium Subscription to give
                                 full access to all features, to this user.</p>
+                            <div class="mt-4">
+                                <a href="{{ route('subscription.show') }}" class="theme-button theme-button-primary">
+                                    Change Plan
+                                </a>
+                            </div>
                         </div>
                     @endif
                     <div class="mt-6 flex justify-end space-x-3 border-t pt-6">

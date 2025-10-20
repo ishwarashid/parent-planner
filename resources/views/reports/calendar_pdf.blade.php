@@ -16,7 +16,7 @@
         .header {
             text-align: center;
             margin-bottom: 25px;
-            padding: 20px;
+            padding: 15px 20px;
             background-color: #000033;
             color: white;
         }
@@ -153,6 +153,7 @@
 
 <body>
     <div class="header">
+        <img src="<?php echo public_path('assets/images/light-logo.png'); ?>" alt="Parenting Planner Logo" style="height: 40px; margin-bottom: 10px;">
         <h1>Calendar Report</h1>
         <div class="report-info">
             Generated on {{ now()->format('M d, Y H:i A') }} | Type: {{ ucfirst($type) }}
