@@ -202,7 +202,7 @@
             <tr>
                 <th style="width:12%;">Date</th>
                 <th style="width:38%;">Child & Description</th>
-                <th style="width:18%;">Paid By</th>
+                <th style="width:18%;">Created By</th>
                 <th style="width:12%;" class="amount">Total</th>
                 <th style="width:15%;">Status</th>
             </tr>
