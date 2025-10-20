@@ -151,7 +151,7 @@
 
                         <!-- Payer Information Display -->
                         <div class="mt-4">
-                            <x-input-label class="theme-input-label" :value="__('Paid By')" />
+                            <x-input-label class="theme-input-label" :value="__('Created by')" />
                             <div class="w-full mt-1 p-3 bg-gray-50 border rounded-md">
                                 <p class="text-sm font-semibold theme-info-text">{{ auth()->user()->name }}</p>
                                 <p class="text-xs text-gray-500 mt-1">As the creator of this expense, you are

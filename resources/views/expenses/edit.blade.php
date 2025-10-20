@@ -151,7 +151,7 @@
                         </div> --}}
 
                         <div class="mt-4">
-                            <x-input-label class="theme-input-label" :value="__('Paid By')" />
+                            <x-input-label class="theme-input-label" :value="__('Created by')" />
                             <div class="w-full mt-1 p-3 bg-gray-50 border rounded-md">
                                 {{-- It's important to use the expense's actual payer here --}}
                                 <p class="text-sm font-semibold theme-info-text">{{ $expense->payer->name }}</p>

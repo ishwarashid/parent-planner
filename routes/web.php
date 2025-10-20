@@ -34,7 +34,7 @@ Route::get('/', function () {
         ->get();
         
     return view('landing2', compact('latestBlogs'));
-});
+})->name('home');
 
 // Legal pages
 Route::get('/terms', function () {
