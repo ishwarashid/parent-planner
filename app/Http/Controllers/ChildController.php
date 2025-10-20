@@ -33,7 +33,8 @@ class ChildController extends Controller
      */
     public function create()
     {
-        return view('children.create');
+        $maxPhotoSize = env('MAX_PROFILE_PHOTO_SIZE', 10240);
+        return view('children.create', compact('maxPhotoSize'));
     }
 
     /**
@@ -52,7 +53,7 @@ class ChildController extends Controller
             'school_name' => 'required|string|max:255',
             'school_grade' => 'nullable|string|max:255',
             'color' => 'nullable|string|max:7',
-            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:' . env('MAX_PROFILE_PHOTO_SIZE', 10240),
             'extracurricular_activities' => 'nullable|string',
             'doctor_info' => 'nullable|string',
             'emergency_contact_info' => 'nullable|string',
@@ -89,7 +90,8 @@ class ChildController extends Controller
     public function edit(Child $child)
     {
         $this->authorize('update', $child);
-        return view('children.edit', compact('child'));
+        $maxPhotoSize = env('MAX_PROFILE_PHOTO_SIZE', 10240);
+        return view('children.edit', compact('child', 'maxPhotoSize'));
     }
 
     /**
@@ -109,7 +111,7 @@ class ChildController extends Controller
             'school_name' => 'required|string|max:255',
             'school_grade' => 'nullable|string|max:255',
             'color' => 'nullable|string|max:7',
-            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:' . env('MAX_PROFILE_PHOTO_SIZE', 10240),
             'extracurricular_activities' => 'nullable|string',
             'doctor_info' => 'nullable|string',
             'emergency_contact_info' => 'nullable|string',

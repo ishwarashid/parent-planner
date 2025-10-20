@@ -236,6 +236,7 @@
                                             Photo</label>
                                         <span id="file-name-display" class="ml-4 text-sm theme-info-text italic">No file
                                             chosen</span>
+                                        <p class="mt-1 text-xs text-gray-500">Max file size: {{ number_format($maxPhotoSize / 1024, 1) }}MB. Supported formats: JPEG, PNG, JPG, GIF, SVG.</p>
                                     </div>
                                 </div>
                                 <input id="profile_photo" type="file" name="profile_photo" class="hidden" accept="image/*">
