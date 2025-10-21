@@ -168,6 +168,21 @@
                             style="background-color: #808080;"></span>
                         <span class="ml-2 text-sm theme-legend-text">Cancelled</span>
                     </div>
+                    <div class="flex items-center">
+                        <span class="h-4 w-4 rounded-full inline-block border border-gray-300"
+                            style="background-color: #dc3545;"></span>
+                        <span class="ml-2 text-sm theme-legend-text">Missed</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="h-4 w-4 rounded-full inline-block border border-gray-300"
+                            style="background-color: #ffc107;"></span>
+                        <span class="ml-2 text-sm theme-legend-text">Rescheduled</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="h-4 w-4 rounded-full inline-block border border-gray-300"
+                            style="background-color: #6f42c1;"></span>
+                        <span class="ml-2 text-sm theme-legend-text">Other</span>
+                    </div>
 
                     <!-- Children Section -->
                     <div class="w-full mt-4 mb-2 border-t pt-4">
