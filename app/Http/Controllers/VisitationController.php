@@ -67,7 +67,7 @@ class VisitationController extends Controller
                     'is_recurring' => $visitation->is_recurring,
                     'status' => $visitation->status,
                 ],
-                'backgroundColor' => $visitation->status === 'Cancelled' ? 'grey' : ($visitation->status === 'Completed' ? 'green' : ($visitation->status === 'Missed' ? '#dc3545' : '')), // Added Missed color
+                'backgroundColor' => $visitation->status === 'Cancelled' ? 'grey' : ($visitation->status === 'Completed' ? 'green' : ($visitation->status === 'Missed' ? '#dc3545' : ($visitation->status === 'Rescheduled' ? '#ffc107' : ($visitation->status === 'Other' ? '#6f42c1' : '')))), // Added Missed, Rescheduled, and Other colors
             ];
         }));
     }
@@ -91,8 +91,9 @@ class VisitationController extends Controller
             'parent_id' => ['required', Rule::in($familyMemberIds)],
             'date_start' => 'required|date',
             'date_end' => 'required|date|after_or_equal:date_start',
-            // ADDED "Missed" to the list of allowed statuses
-            'status' => ['required', 'string', Rule::in(['Scheduled', 'Completed', 'Cancelled', 'Missed'])],
+            // ADDED "Missed", "Rescheduled", and "Other" to the list of allowed statuses
+            'status' => ['required', 'string', Rule::in(['Scheduled', 'Completed', 'Cancelled', 'Missed', 'Rescheduled', 'Other'])],
+            'custom_status_description' => ['nullable', 'string', 'max:255', Rule::requiredIf(fn () => $request->status === 'Other')],
             'is_recurring' => 'nullable|boolean',
             'notes' => 'nullable|string',
         ]);
@@ -125,8 +126,9 @@ class VisitationController extends Controller
             'parent_id' => ['sometimes', 'required', Rule::in($familyMemberIds)],
             'date_start' => 'sometimes|required|date',
             'date_end' => 'sometimes|required|date|after_or_equal:date_start',
-            // ADDED "Missed" to the list of allowed statuses
-            'status' => ['sometimes', 'required', 'string', Rule::in(['Scheduled', 'Completed', 'Cancelled', 'Missed'])],
+            // ADDED "Missed", "Rescheduled", and "Other" to the list of allowed statuses
+            'status' => ['sometimes', 'required', 'string', Rule::in(['Scheduled', 'Completed', 'Cancelled', 'Missed', 'Rescheduled', 'Other'])],
+            'custom_status_description' => ['nullable', 'string', 'max:255', Rule::requiredIf(fn () => $request->status === 'Other')],
             'is_recurring' => 'nullable|boolean',
             'notes' => 'nullable|string',
         ]);

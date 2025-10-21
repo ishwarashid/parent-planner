@@ -37,6 +37,15 @@
         --theme-status-cancelled-bg: #6c757d;
         /* Standard Gray */
         --theme-status-cancelled-text: #FFFFFF;
+        --theme-status-missed-bg: #dc3545;
+        /* Red */
+        --theme-status-missed-text: #FFFFFF;
+        --theme-status-rescheduled-bg: #ffc107;
+        /* Yellow */
+        --theme-status-rescheduled-text: #212529;
+        --theme-status-other-bg: #6f42c1;
+        /* Purple */
+        --theme-status-other-text: #FFFFFF;
     }
 
     /* General Styling */
@@ -132,6 +141,21 @@
         background-color: var(--theme-status-cancelled-bg);
         color: var(--theme-status-cancelled-text);
     }
+    
+    .status-missed {
+        background-color: var(--theme-status-missed-bg);
+        color: var(--theme-status-missed-text);
+    }
+    
+    .status-rescheduled {
+        background-color: var(--theme-status-rescheduled-bg);
+        color: var(--theme-status-rescheduled-text);
+    }
+    
+    .status-other {
+        background-color: var(--theme-status-other-bg);
+        color: var(--theme-status-other-text);
+    }
 
     /* Modal Form Inputs */
     .theme-modal-label {
@@ -218,7 +242,19 @@
                                     <option value="Scheduled" selected>Scheduled</option>
                                     <option value="Completed">Completed</option>
                                     <option value="Cancelled">Cancelled</option>
+                                    <option value="Missed">Missed</option>
+                                    <option value="Rescheduled">Rescheduled</option>
+                                    <option value="Other">Other</option>
                                 </select>
+                            </div>
+
+                            <!-- Custom Status Description (shown only when "Other" is selected) -->
+                            <div id="custom-status-description-container" class="mt-4" style="display: none;">
+                                <label for="custom_status_description" class="block text-sm theme-modal-label">Custom Status Description</label>
+                                <input type="text" id="custom_status_description" name="custom_status_description" 
+                                    class="mt-1 block w-full rounded-md shadow-sm theme-modal-input" 
+                                    maxlength="255">
+                                <p class="mt-1 text-sm text-gray-500">Please provide a description for the 'Other' status.</p>
                             </div>
 
                             <div class="flex items-center">
@@ -244,6 +280,29 @@
                             </div>
                         </form>
                     </x-modal>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const statusSelect = document.getElementById('status');
+                            const customDescriptionContainer = document.getElementById('custom-status-description-container');
+                            const customDescriptionField = document.getElementById('custom_status_description');
+                            
+                            function toggleCustomDescriptionVisibility() {
+                                if (statusSelect.value === 'Other') {
+                                    customDescriptionContainer.style.display = 'block';
+                                } else {
+                                    customDescriptionContainer.style.display = 'none';
+                                    customDescriptionField.value = '';
+                                }
+                            }
+                            
+                            // Show/hide custom description based on initial value
+                            toggleCustomDescriptionVisibility();
+                            
+                            // Add event listener to status select
+                            statusSelect.addEventListener('change', toggleCustomDescriptionVisibility);
+                        });
+                    </script>
 
                     @if (session('success'))
                         <div class="border px-4 py-3 rounded relative mb-4 theme-alert-success" role="alert">
@@ -303,7 +362,10 @@
                                                 class="status-badge 
                                                 @if ($visitation->status == 'Scheduled') status-scheduled
                                                 @elseif($visitation->status == 'Completed') status-completed
-                                                @elseif($visitation->status == 'Cancelled') status-cancelled @endif">
+                                                @elseif($visitation->status == 'Cancelled') status-cancelled
+                                                @elseif($visitation->status == 'Missed') status-missed
+                                                @elseif($visitation->status == 'Rescheduled') status-rescheduled
+                                                @elseif($visitation->status == 'Other') status-other @endif">
                                                 {{ $visitation->status }}
                                             </span>
                                         </td>

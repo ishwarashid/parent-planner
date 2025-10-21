@@ -18,6 +18,7 @@ class Visitation extends Model
         'is_recurring',
         'notes',
         'status',
+        'custom_status_description',
     ];
 
     public function child()

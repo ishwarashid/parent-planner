@@ -70,8 +70,20 @@
                                 <option value="Scheduled" selected>Scheduled</option>
                                 <option value="Completed">Completed</option>
                                 <option value="Cancelled">Cancelled</option>
+                                <option value="Missed">Missed</option>
+                                <option value="Rescheduled">Rescheduled</option>
+                                <option value="Other">Other</option>
                             </select>
                             <x-input-error :messages="$errors->get('status')" class="mt-2" />
+                        </div>
+
+                        <!-- Custom Status Description (shown only when "Other" is selected) -->
+                        <div id="custom-status-description-container" class="mt-4" style="display: none;">
+                            <x-input-label for="custom_status_description" :value="__('Custom Status Description')" />
+                            <x-text-input id="custom_status_description" class="block mt-1 w-full" type="text"
+                                name="custom_status_description" :value="old('custom_status_description')" maxlength="255" />
+                            <x-input-error :messages="$errors->get('custom_status_description')" class="mt-2" />
+                            <p class="mt-1 text-sm text-gray-500">Please provide a description for the 'Other' status.</p>
                         </div>
 
                         <!-- Is Recurring -->
@@ -99,4 +111,27 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusSelect = document.getElementById('status');
+            const customDescriptionContainer = document.getElementById('custom-status-description-container');
+            const customDescriptionField = document.getElementById('custom_status_description');
+            
+            function toggleCustomDescriptionVisibility() {
+                if (statusSelect.value === 'Other') {
+                    customDescriptionContainer.style.display = 'block';
+                } else {
+                    customDescriptionContainer.style.display = 'none';
+                    customDescriptionField.value = '';
+                }
+            }
+            
+            // Show/hide custom description based on initial value
+            toggleCustomDescriptionVisibility();
+            
+            // Add event listener to status select
+            statusSelect.addEventListener('change', toggleCustomDescriptionVisibility);
+        });
+    </script>
 </x-app-layout>

@@ -18,6 +18,7 @@ class Event extends Model
         'child_id',
         'assigned_to',
         'status',
+        'custom_status_description',
     ];
 
     public function user()

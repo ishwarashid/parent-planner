@@ -9,6 +9,7 @@ use App\Models\Expense;
 use App\Models\Visitation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class CalendarController extends Controller
 {
@@ -50,6 +51,8 @@ class CalendarController extends Controller
             if ($visitation->status === 'Completed') $color = '#28a745';
             elseif ($visitation->status === 'Cancelled') $color = '#6c757d'; // A better grey
             elseif ($visitation->status === 'Missed') $color = '#dc3545';
+            elseif ($visitation->status === 'Rescheduled') $color = '#ffc107';
+            elseif ($visitation->status === 'Other') $color = '#6f42c1';
 
             $events[] = [
                 'id' => 'visitation-' . $visitation->id, // Prevents ID conflicts with other event types
@@ -59,6 +62,7 @@ class CalendarController extends Controller
                 'allDay' => false,
                 'color' => $color,
                 'url' => route('visitations.show', $visitation), // Makes the event clickable
+                'description' => $visitation->notes ?? 'No notes', // Add description field for tooltip
                 'extendedProps' => [ // Pass custom data to the frontend if needed
                     'type' => 'visitation',
                     'status' => $visitation->status,
@@ -102,8 +106,14 @@ class CalendarController extends Controller
 
         $defaultColors = ['#F87171', '#FBBF24', '#34D399', '#60A5FA', '#A78BFA'];
         foreach ($customEvents as $event) {
-            // Set event color based on the status
-            $color = $event->child->color ?? $defaultColors[array_rand($defaultColors)];
+            // Set event color based on the status, with child color as fallback
+            $color = '#3788d8'; // Default for Scheduled
+            if ($event->status === 'Completed') $color = '#28a745';
+            elseif ($event->status === 'Cancelled') $color = '#6c757d';
+            elseif ($event->status === 'Missed') $color = '#dc3545';
+            elseif ($event->status === 'Rescheduled') $color = '#ffc107';
+            elseif ($event->status === 'Other') $color = '#6f42c1';
+            else $color = $event->child->color ?? $defaultColors[array_rand($defaultColors)];
 
             $events[] = [
                 'id' => $event->id,
@@ -116,6 +126,7 @@ class CalendarController extends Controller
                 'child_id' => $event->child_id,
                 'assigned_to' => $event->assigned_to,
                 'status' => $event->status,
+                'custom_status_description' => $event->custom_status_description,
             ];
         }
 
@@ -149,7 +160,7 @@ class CalendarController extends Controller
             'description' => 'nullable|string',
             'child_id' => 'nullable|exists:children,id',
             'assigned_to' => 'nullable|exists:users,id',
-            'status' => 'nullable|string|in:Scheduled,Completed,Missed,Cancelled',
+            'status' => 'nullable|string|in:Scheduled,Completed,Missed,Cancelled,Rescheduled,Other',
         ]);
 
         $event = Event::create([
@@ -193,10 +204,13 @@ class CalendarController extends Controller
             'description' => 'nullable|string',
             'child_id' => 'nullable|exists:children,id',
             'assigned_to' => 'nullable|exists:users,id',
-            'status' => 'nullable|string|in:Scheduled,Completed,Missed,Cancelled',
+            'status' => 'nullable|string|in:Scheduled,Completed,Missed,Cancelled,Rescheduled,Other',
+            'custom_status_description' => ['nullable', 'string', 'max:255', Rule::requiredIf(fn () => $request->status === 'Other')],
         ]);
 
-        $event->update($request->all());
+        $event->update($request->only([
+            'title', 'description', 'start', 'end', 'child_id', 'assigned_to', 'status', 'custom_status_description'
+        ]));
 
         // return response()->json([
         //     'id' => $event->id,
@@ -230,10 +244,17 @@ class CalendarController extends Controller
 
         $validated = $request->validate([
             // Define the allowed statuses
-            'status' => 'required|string|in:Scheduled,Completed,Missed,Cancelled',
+            'status' => 'required|string|in:Scheduled,Completed,Missed,Cancelled,Rescheduled,Other',
+            'custom_status_description' => ['nullable', 'string', 'max:255', Rule::requiredIf(fn () => $request->status === 'Other')],
         ]);
 
-        $event->update(['status' => $validated['status']]);
+        $updateData = ['status' => $validated['status']];
+        
+        if (isset($validated['custom_status_description'])) {
+            $updateData['custom_status_description'] = $validated['custom_status_description'];
+        }
+
+        $event->update($updateData);
 
         // Return a success response, which is useful for AJAX calls
         return response()->json([

@@ -35,6 +35,7 @@ class EventResource extends JsonResource
             'child_id' => $this->child_id,
             'assigned_to' => $this->assigned_to,
             'status' => $this->status,
+            'custom_status_description' => $this->custom_status_description,
             'color' => $childColor,
 
             // You can even include the full child object if you want!

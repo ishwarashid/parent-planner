@@ -75,7 +75,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 let notes = info.event.extendedProps.notes
                     ? info.event.extendedProps.notes
                     : "No notes";
-                tooltip.innerHTML = `<strong>${info.event.extendedProps.child_name}</strong><br>With: ${info.event.extendedProps.parent_name}<br>Notes: ${notes}`;
+                let status = info.event.extendedProps.status || "No status";
+                let startTime = info.event.start
+                    ? new Date(info.event.start).toLocaleString()
+                    : "N/A";
+                let endTime = info.event.end
+                    ? new Date(info.event.end).toLocaleString()
+                    : "N/A";
+                    
+                tooltip.innerHTML = `<strong>${info.event.extendedProps.child_name} Visitation</strong><br>
+                                    <strong>With:</strong> ${info.event.extendedProps.parent_name}<br>
+                                    <strong>Status:</strong> ${status}<br>
+                                    <strong>Start:</strong> ${startTime}<br>
+                                    <strong>End:</strong> ${endTime}<br>
+                                    <strong>Notes:</strong> ${notes}`;
                 document.body.appendChild(tooltip);
 
                 // Position tooltip
@@ -84,6 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
             },
             eventMouseLeave: function (info) {
+                // Remove all tooltip elements
                 document
                     .querySelectorAll(".fc-tooltip")
                     .forEach((tooltip) => tooltip.remove());
@@ -752,6 +766,39 @@ document.addEventListener("DOMContentLoaded", function () {
                             info.event.extendedProps.status;
                     }
 
+                    // Handle custom status description visibility
+                    const statusSelect = editForm.querySelector("#edit_status");
+                    const customDescContainer = document.getElementById("edit-custom-status-description-container");
+                    const customDescField = document.getElementById("edit_custom_status_description");
+                    const descriptionContainer = document.getElementById("description-field-container");
+                    const descriptionField = editForm.querySelector("#description");
+                    
+                    function toggleCustomDescription() {
+                        if (statusSelect.value === "Other") {
+                            customDescContainer.style.display = "block";
+                            
+                            // Make description field smaller when custom description is shown
+                            descriptionField.setAttribute('rows', '1');
+                            
+                            // Populate the custom description if it exists
+                            if (info.event.extendedProps.custom_status_description) {
+                                customDescField.value = info.event.extendedProps.custom_status_description;
+                            }
+                        } else {
+                            customDescContainer.style.display = "none";
+                            customDescField.value = "";
+                            
+                            // Restore default size for description field
+                            descriptionField.setAttribute('rows', '2');
+                        }
+                    }
+                    
+                    // Show/hide based on initial value
+                    toggleCustomDescription();
+                    
+                    // Add event listener to status select
+                    statusSelect.addEventListener("change", toggleCustomDescription);
+
                     const toLocalISOString = (date) => {
                         const pad = (num) => (num < 10 ? "0" : "") + num;
                         return `${date.getFullYear()}-${pad(
@@ -787,13 +834,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 let endTime = info.event.end
                     ? new Date(info.event.end).toLocaleString()
                     : "N/A";
-                let description =
+                let description = 
                     info.event.extendedProps.description || "No description";
+                let status = info.event.extendedProps.status || "No status";
+                let customDescription = info.event.extendedProps.custom_status_description;
 
                 let content = `<strong>${info.event.title}</strong><br>
+                             <strong>Status:</strong> ${status}<br>
                              <strong>Start:</strong> ${startTime}<br>
                              <strong>End:</strong> ${endTime}<br>
-                             <strong>Details:</strong> ${description}`;
+                             <strong>Description:</strong> ${description}`;
+                
+                // Add custom description if status is 'Other' and custom description exists
+                if (status === 'Other' && customDescription) {
+                    content += `<br><strong>Custom Description:</strong> ${customDescription}`;
+                }
 
                 tippy(info.el, {
                     content: content,
@@ -834,6 +889,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 let eventId = document.getElementById("edit_event_id").value;
                 let formData = new FormData(this);
                 let data = Object.fromEntries(formData.entries());
+
+                // Add custom status description if status is "Other"
+                if (data.status === "Other") {
+                    data.custom_status_description = document.getElementById("edit_custom_status_description").value;
+                }
 
                 fetch("/events/" + eventId, {
                     method: "PUT",

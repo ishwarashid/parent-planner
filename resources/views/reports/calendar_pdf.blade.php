@@ -142,6 +142,21 @@
             background-color: #f8d7da;
             color: #721c24;
         }
+        
+        .status-missed {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+        
+        .status-rescheduled {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-other {
+            background-color: #e2d1f9;
+            color: #5a3d8a;
+        }
 
         .recurring-icon {
             font-family: DejaVu Sans, sans-serif;

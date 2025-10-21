@@ -18,7 +18,18 @@
                 <option value="Completed">Completed</option>
                 <option value="Missed">Missed</option>
                 <option value="Cancelled">Cancelled</option>
+                <option value="Rescheduled">Rescheduled</option>
+                <option value="Other">Other</option>
             </select>
+        </div>
+
+        <!-- Custom Status Description (shown only when "Other" is selected) -->
+        <div id="edit-custom-status-description-container" class="mt-4" style="display: none;">
+            <label for="edit_custom_status_description" class="block text-sm theme-modal-label">Custom Status Description</label>
+            <input type="text" id="edit_custom_status_description" name="custom_status_description" 
+                class="mt-1 block w-full rounded-md shadow-sm theme-modal-input" 
+                maxlength="255">
+            <p class="mt-1 text-sm text-gray-500">Please provide a description for the 'Other' status.</p>
         </div>
 
         <div class="flex items-center justify-between mt-6">

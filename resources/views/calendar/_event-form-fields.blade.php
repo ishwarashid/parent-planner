@@ -35,9 +35,9 @@
 </div>
 
 <!-- Description -->
-<div class="mt-2">
+<div class="mt-2" id="description-field-container">
     <label for="description" class="block text-sm theme-modal-label">Description</label>
-    <textarea id="description" name="description" rows="3"
+    <textarea id="description" name="description" rows="2"
         class="mt-1 block w-full rounded-md shadow-sm theme-modal-input"></textarea>
 </div>
 
