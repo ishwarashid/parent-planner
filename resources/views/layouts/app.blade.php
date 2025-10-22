@@ -14,6 +14,9 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        
+        <!-- Bootstrap Icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 flex flex-col">
@@ -49,6 +52,144 @@
                 </div>
             </footer>
         </div>
+        
+        <!-- Floating Contact/Help Button - Only shown when logged in -->
+        @auth
+        <style>
+            .floating-contact-container {
+                position: fixed;
+                bottom: 2rem;
+                right: 2rem;
+                z-index: 50;
+            }
+            
+            .floating-main-btn {
+                width: 4rem;
+                height: 4rem;
+                border-radius: 50%;
+                background-color: rgb(0, 206, 209); /* Turquoise background */
+                color: rgb(0, 0, 51); /* Dark navy text/icons */
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                border: none;
+                font-size: 1.5rem;
+                font-weight: bold;
+            }
+            
+            .floating-main-btn:hover {
+                transform: scale(1.1);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+                background-color: rgb(0, 180, 183); /* Slightly darker turquoise on hover */
+            }
+            
+            .floating-options-container {
+                position: absolute;
+                bottom: 5rem;
+                right: 0;
+                margin-bottom: 0.5rem;
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(10px) scale(0.8);
+                transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+                transform-origin: bottom right;
+            }
+            
+            .floating-options-container.show {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0) scale(1);
+            }
+            
+            .floating-option-btn {
+                background-color: rgb(0, 206, 209); /* Turquoise background */
+                color: rgb(0, 0, 51); /* Dark navy text/icons */
+                padding: 0.75rem 1.25rem;
+                border-radius: 0.75rem;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                border: 1px solid rgba(0, 0, 51, 0.2); /* Dark navy border */
+                min-width: 140px;
+                font-weight: 600;
+                justify-content: center;
+            }
+            
+            .floating-option-btn:hover {
+                background-color: rgb(0, 180, 183); /* Slightly darker turquoise on hover */
+                transform: translateY(-2px);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                border-color: rgba(0, 0, 51, 0.4);
+            }
+            
+            .floating-option-btn i {
+                font-size: 1.25rem;
+            }
+        </style>
+        
+        <div class="floating-contact-container">
+            <!-- Main floating button -->
+            <div class="relative">
+                <button id="floating-contact-btn" class="floating-main-btn">
+                    <i class="bi bi-question-lg"></i>
+                </button>
+                
+                <!-- Options dropdown -->
+                <div id="floating-options" class="floating-options-container">
+                    <button id="help-option" class="floating-option-btn">
+                        <i class="bi bi-question-circle"></i>
+                        <span>Help</span>
+                    </button>
+                    <button id="contact-option" class="floating-option-btn">
+                        <i class="bi bi-envelope"></i>
+                        <span>Contact</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            // Toggle floating options when main button is clicked
+            document.addEventListener('DOMContentLoaded', function() {
+                const mainButton = document.getElementById('floating-contact-btn');
+                const optionsContainer = document.getElementById('floating-options');
+                
+                mainButton.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    optionsContainer.classList.toggle('show');
+                });
+                
+                // Close options when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!mainButton.contains(e.target) && !optionsContainer.contains(e.target)) {
+                        optionsContainer.classList.remove('show');
+                    }
+                });
+                
+                // Contact Us option: navigate to landing page contact section
+                document.getElementById('contact-option').addEventListener('click', function() {
+                    window.location.href = "{{ route('home') }}#contact";
+                    optionsContainer.classList.remove('show'); // Close options after clicking
+                });
+                
+                // Help option: currently does nothing
+                document.getElementById('help-option').addEventListener('click', function() {
+                    // For now, do nothing as requested
+                    optionsContainer.classList.remove('show'); // Close options after clicking
+                });
+            });
+        </script>
+        @endauth
+        
         @stack('scripts')
         <script>
             // Detect user's timezone and set it in the meta tag
