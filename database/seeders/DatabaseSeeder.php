@@ -61,5 +61,8 @@ class DatabaseSeeder extends Seeder
             'update-expenses',
             'delete-expenses',
         ]);
+        
+        // Seed help videos
+        $this->call(HelpVideoSeeder::class);
     }
 }

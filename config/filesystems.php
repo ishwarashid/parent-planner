@@ -72,6 +72,22 @@ return [
             'report' => false,
             'server_side_encryption' => 'AES256',
             'visibility' => 'private',
+            'cdn_url' => env('DO_SPACES_CDN_URL'), // CDN URL for DO Spaces
+        ],
+
+        'do-public' => [
+            'driver' => 's3',
+            'key' => env('DO_SPACES_KEY'),
+            'secret' => env('DO_SPACES_SECRET'),
+            'region' => env('DO_SPACES_REGION'),
+            'bucket' => env('DO_SPACES_BUCKET'),
+            'endpoint' => env('DO_SPACES_ENDPOINT'),
+            'use_path_style_endpoint' => true,
+            'throw' => false,
+            'report' => false,
+            'server_side_encryption' => 'AES256',
+            'visibility' => 'public',
+            'cdn_url' => env('DO_SPACES_CDN_URL'), // CDN URL for DO Spaces
         ],
 
     ],

@@ -18,6 +18,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\HelpController;
 use App\Models\Blog;
 use Illuminate\Support\Str;
 
@@ -51,6 +52,13 @@ Route::get('/refund', function () {
 
 // Contact form route
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
+
+// Help page route
+Route::get('/help', [HelpController::class, 'index'])->name('help.index');
+Route::get('/help/video/{id}/url', [HelpController::class, 'getVideoUrl'])->name('help.video.url');
+
+// Video proxy route to bypass CORS
+Route::get('/video-proxy/{filename}', [HelpController::class, 'proxyVideo'])->name('video.proxy');
 
 // Blog routes
 Route::get('/blogs', [App\Http\Controllers\BlogController::class, 'index'])->name('blogs.index');
@@ -228,5 +236,16 @@ Route::middleware(['auth', 'verified', 'admin', 'professional'])->prefix('admin'
         'edit' => 'admin.blogs.edit',
         'update' => 'admin.blogs.update',
         'destroy' => 'admin.blogs.destroy',
+    ]);
+    
+    // Help Videos routes
+    Route::resource('help-videos', \App\Http\Controllers\AdminHelpVideoController::class)->names([
+        'index' => 'admin.help-videos.index',
+        'create' => 'admin.help-videos.create',
+        'store' => 'admin.help-videos.store',
+        'show' => 'admin.help-videos.show',
+        'edit' => 'admin.help-videos.edit',
+        'update' => 'admin.help-videos.update',
+        'destroy' => 'admin.help-videos.destroy',
     ]);
 });

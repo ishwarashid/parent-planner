@@ -181,9 +181,9 @@
                     optionsContainer.classList.remove('show'); // Close options after clicking
                 });
                 
-                // Help option: currently does nothing
+                // Help option: navigate to help page
                 document.getElementById('help-option').addEventListener('click', function() {
-                    // For now, do nothing as requested
+                    window.location.href = "{{ route('help.index') }}";
                     optionsContainer.classList.remove('show'); // Close options after clicking
                 });
             });
