@@ -139,11 +139,16 @@ class CalendarController extends Controller
 
         foreach ($expenses as $expense) {
             $events[] = [
+                'id' => 'expense-' . $expense->id, // Add ID with prefix to prevent conflicts
                 'title' => 'Expense: ' . $expense->description,
                 'start' => $expense->created_at->format('Y-m-d'),
                 'allDay' => true,
                 'color' => '#ffc107',
                 'description' => 'Amount: ' . $expense->amount . ' - Category: ' . $expense->category,
+                'extendedProps' => [ // Add extendedProps to distinguish expenses
+                    'type' => 'expense',
+                    'expense_id' => $expense->id,
+                ]
             ];
         }
 

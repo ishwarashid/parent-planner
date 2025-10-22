@@ -744,86 +744,144 @@ document.addEventListener("DOMContentLoaded", function () {
             // *** NEW `eventClick` logic for EDITING events ***
             eventClick: function (info) {
                 if (info.event.id) {
-                    document.getElementById("editEventForm").reset();
-
-                    // Populate the EDIT form
-                    document.getElementById("edit_event_id").value =
-                        info.event.id;
-
-                    // Use querySelector to scope fields to the edit form
-                    const editForm = document.getElementById("editEventForm");
-                    editForm.querySelector("#title").value = info.event.title;
-                    editForm.querySelector("#description").value =
-                        info.event.extendedProps.description || "";
-                    editForm.querySelector("#child_id").value =
-                        info.event.extendedProps.child_id || "";
-                    editForm.querySelector("#assigned_to").value =
-                        info.event.extendedProps.assigned_to || "";
-                    
-                    // Populate status field if it exists in extendedProps
-                    if (info.event.extendedProps.status) {
-                        editForm.querySelector("#edit_status").value =
-                            info.event.extendedProps.status;
-                    }
-
-                    // Handle custom status description visibility
-                    const statusSelect = editForm.querySelector("#edit_status");
-                    const customDescContainer = document.getElementById("edit-custom-status-description-container");
-                    const customDescField = document.getElementById("edit_custom_status_description");
-                    const descriptionContainer = document.getElementById("description-field-container");
-                    const descriptionField = editForm.querySelector("#description");
-                    
-                    function toggleCustomDescription() {
-                        if (statusSelect.value === "Other") {
-                            customDescContainer.style.display = "block";
-                            
-                            // Make description field smaller when custom description is shown
-                            descriptionField.setAttribute('rows', '1');
-                            
-                            // Populate the custom description if it exists
-                            if (info.event.extendedProps.custom_status_description) {
-                                customDescField.value = info.event.extendedProps.custom_status_description;
-                            }
-                        } else {
-                            customDescContainer.style.display = "none";
-                            customDescField.value = "";
-                            
-                            // Restore default size for description field
-                            descriptionField.setAttribute('rows', '2');
+                    // Check if this is a visitation event
+                    if (info.event.extendedProps && info.event.extendedProps.type === 'visitation') {
+                        // This is a visitation, open the visitation form instead
+                        let form = document.getElementById("visitationForm");
+                        form.reset();
+                        document.getElementById("visitation_id").value = info.event.id.replace('visitation-', '');
+                        document.getElementById("child_id").value = info.event.extendedProps.child_id || "";
+                        
+                        // Format dates for datetime-local inputs
+                        if (info.event.start) {
+                            document.getElementById("date_start").value = info.event.start.toISOString().slice(0, 16);
                         }
-                    }
-                    
-                    // Show/hide based on initial value
-                    toggleCustomDescription();
-                    
-                    // Add event listener to status select
-                    statusSelect.addEventListener("change", toggleCustomDescription);
+                        if (info.event.end) {
+                            document.getElementById("date_end").value = info.event.end.toISOString().slice(0, 16);
+                        }
+                        
+                        // Set other visitation-specific fields
+                        document.getElementById("status").value = info.event.extendedProps.status || "Scheduled";
+                        
+                        // Handle "Other" status and custom description
+                        const statusSelect = document.getElementById("status");
+                        const customDescContainer = document.getElementById("custom-status-description-container");
+                        const customDescField = document.getElementById("custom_status_description");
+                        
+                        function toggleCustomDescription() {
+                            if (statusSelect.value === "Other") {
+                                customDescContainer.style.display = "block";
+                                // Populate custom description if available
+                                if (info.event.extendedProps.custom_status_description) {
+                                    customDescField.value = info.event.extendedProps.custom_status_description;
+                                }
+                            } else {
+                                customDescContainer.style.display = "none";
+                                customDescField.value = "";
+                            }
+                        }
+                        
+                        toggleCustomDescription();
+                        statusSelect.addEventListener("change", toggleCustomDescription);
+                        
+                        document.getElementById("notes").value = info.event.extendedProps.notes || "";
+                        
+                        // Dispatch event to open the VISITATION modal
+                        window.dispatchEvent(
+                            new CustomEvent("open-modal", { detail: "visitation-form" })
+                        );
+                    } 
+                    // Check if this is an expense event
+                    else if (info.event.extendedProps && info.event.extendedProps.type === 'expense') {
+                        // This is an expense, redirect to expense details page
+                        const expenseId = info.event.extendedProps.expense_id;
+                        if (expenseId) {
+                            window.location.href = '/expenses/' + expenseId;
+                        }
+                    } 
+                    else {
+                        // This is a regular event, proceed with edit form
+                        document.getElementById("editEventForm").reset();
 
-                    const toLocalISOString = (date) => {
-                        const pad = (num) => (num < 10 ? "0" : "") + num;
-                        return `${date.getFullYear()}-${pad(
-                            date.getMonth() + 1
-                        )}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(
-                            date.getMinutes()
-                        )}`;
-                    };
+                        // Populate the EDIT form
+                        document.getElementById("edit_event_id").value =
+                            info.event.id;
 
-                    if (info.event.start) {
-                        editForm.querySelector("#start").value =
-                            toLocalISOString(new Date(info.event.start));
-                    }
-                    if (info.event.end) {
-                        editForm.querySelector("#end").value = toLocalISOString(
-                            new Date(info.event.end)
+                        // Use querySelector to scope fields to the edit form
+                        const editForm = document.getElementById("editEventForm");
+                        editForm.querySelector("#title").value = info.event.title;
+                        editForm.querySelector("#description").value =
+                            info.event.extendedProps.description || "";
+                        editForm.querySelector("#child_id").value =
+                            info.event.extendedProps.child_id || "";
+                        editForm.querySelector("#assigned_to").value =
+                            info.event.extendedProps.assigned_to || "";
+                        
+                        // Populate status field if it exists in extendedProps
+                        if (info.event.extendedProps.status) {
+                            editForm.querySelector("#edit_status").value =
+                                info.event.extendedProps.status;
+                        }
+
+                        // Handle custom status description visibility
+                        const statusSelect = editForm.querySelector("#edit_status");
+                        const customDescContainer = document.getElementById("edit-custom-status-description-container");
+                        const customDescField = document.getElementById("edit_custom_status_description");
+                        const descriptionContainer = document.getElementById("description-field-container");
+                        const descriptionField = editForm.querySelector("#description");
+                        
+                        function toggleCustomDescription() {
+                            if (statusSelect.value === "Other") {
+                                customDescContainer.style.display = "block";
+                                
+                                // Make description field smaller when custom description is shown
+                                descriptionField.setAttribute('rows', '1');
+                                
+                                // Populate the custom description if it exists
+                                if (info.event.extendedProps.custom_status_description) {
+                                    customDescField.value = info.event.extendedProps.custom_status_description;
+                                }
+                            } else {
+                                customDescContainer.style.display = "none";
+                                customDescField.value = "";
+                                
+                                // Restore default size for description field
+                                descriptionField.setAttribute('rows', '2');
+                            }
+                        }
+                        
+                        // Show/hide based on initial value
+                        toggleCustomDescription();
+                        
+                        // Add event listener to status select
+                        statusSelect.addEventListener("change", toggleCustomDescription);
+
+                        const toLocalISOString = (date) => {
+                            const pad = (num) => (num < 10 ? "0" : "") + num;
+                            return `${date.getFullYear()}-${pad(
+                                date.getMonth() + 1
+                            )}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(
+                                date.getMinutes()
+                            )}`;
+                        };
+
+                        if (info.event.start) {
+                            editForm.querySelector("#start").value =
+                                toLocalISOString(new Date(info.event.start));
+                        }
+                        if (info.event.end) {
+                            editForm.querySelector("#end").value = toLocalISOString(
+                                new Date(info.event.end)
+                            );
+                        }
+
+                        // Dispatch event to open the EDIT modal
+                        window.dispatchEvent(
+                            new CustomEvent("open-modal", {
+                                detail: "edit-event-form",
+                            })
                         );
                     }
-
-                    // Dispatch event to open the EDIT modal
-                    window.dispatchEvent(
-                        new CustomEvent("open-modal", {
-                            detail: "edit-event-form",
-                        })
-                    );
                 }
             },
 
@@ -836,18 +894,32 @@ document.addEventListener("DOMContentLoaded", function () {
                     : "N/A";
                 let description = 
                     info.event.extendedProps.description || "No description";
-                let status = info.event.extendedProps.status || "No status";
-                let customDescription = info.event.extendedProps.custom_status_description;
-
-                let content = `<strong>${info.event.title}</strong><br>
-                             <strong>Status:</strong> ${status}<br>
-                             <strong>Start:</strong> ${startTime}<br>
-                             <strong>End:</strong> ${endTime}<br>
-                             <strong>Description:</strong> ${description}`;
                 
-                // Add custom description if status is 'Other' and custom description exists
-                if (status === 'Other' && customDescription) {
-                    content += `<br><strong>Custom Description:</strong> ${customDescription}`;
+                // For expense events, don't show status
+                let content;
+                if (info.event.extendedProps && info.event.extendedProps.type === 'expense') {
+                    // Expense events don't have a status, so show date instead
+                    let date = info.event.start ? new Date(info.event.start).toLocaleString() : "N/A";
+                    
+                    content = `<strong>${info.event.title}</strong><br>
+                                 <strong>Date:</strong> ${date}<br>
+                                 <strong>Details:</strong> ${description}`;
+                } 
+                else {
+                    // For visitation and regular events, show status
+                    let status = info.event.extendedProps.status || "No status";
+                    let customDescription = info.event.extendedProps.custom_status_description;
+
+                    content = `<strong>${info.event.title}</strong><br>
+                                 <strong>Status:</strong> ${status}<br>
+                                 <strong>Start:</strong> ${startTime}<br>
+                                 <strong>End:</strong> ${endTime}<br>
+                                 <strong>Description:</strong> ${description}`;
+                    
+                    // Add custom description if status is 'Other' and custom description exists
+                    if (status === 'Other' && customDescription) {
+                        content += `<br><strong>Custom Description:</strong> ${customDescription}`;
+                    }
                 }
 
                 tippy(info.el, {
