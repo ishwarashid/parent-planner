@@ -19,6 +19,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HelpController;
+use App\Http\Controllers\ProfessionalProfileController;
 use App\Models\Blog;
 use Illuminate\Support\Str;
 
@@ -193,6 +194,16 @@ Route::middleware(['auth', 'verified', 'professional', 'admin'])->prefix('profes
     Route::get('/billing-portal', function () {
         return redirect()->route('subscription.show');
     })->name('professional.billing.portal');
+});
+
+// Routes for users to add professional profile to existing account
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/professional-profile/create', [ProfessionalProfileController::class, 'create'])->name('professional.profile.create');
+    Route::post('/professional-profile', [ProfessionalProfileController::class, 'store'])->name('professional.profile.store');
+    Route::get('/professional-profile/edit', [ProfessionalProfileController::class, 'edit'])->name('professional.profile.edit');
+    Route::put('/professional-profile', [ProfessionalProfileController::class, 'update'])->name('professional.profile.update');
+    Route::post('/add-parent-capabilities', [ProfessionalProfileController::class, 'addParentCapabilities'])->name('user.add-parent-capabilities');
+    Route::post('/add-professional-subscription', [ProfessionalProfileController::class, 'addProfessionalSubscription'])->name('user.add-professional-subscription');
 });
 
 

@@ -26,14 +26,14 @@ class Professional extends Model
         'approval_status',
     ];
 
+    protected $casts = [
+        'services' => 'array',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-
-    protected $casts = [
-        'services' => 'array',
-    ];
 
     public function scopeApprovedAndSubscribed(Builder $query): Builder
     {
@@ -45,7 +45,7 @@ class Professional extends Model
             });
     }
 
-       public function scopeFilter(Builder $query, array $filters): Builder
+    public function scopeFilter(Builder $query, array $filters): Builder
     {
         // General search term filter
         $query->when($filters['search'] ?? null, function ($q, $search) {

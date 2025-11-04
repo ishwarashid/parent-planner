@@ -16,8 +16,16 @@ class ParentMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && in_array(Auth::user()->role, ['parent', 'co-parent', 'nanny', 'grandparent', 'guardian', 'other'])) {
-            return $next($request);
+        if (Auth::check()) {
+            $user = Auth::user();
+            
+            // Check basic role or Spatie roles for parent capabilities
+            $hasParentRole = in_array($user->role, ['parent', 'co-parent', 'nanny', 'grandparent', 'guardian', 'other']) ||
+                           $user->hasAnyRole(['Main Parent', 'Invited User', 'Co-Parent']);
+            
+            if ($hasParentRole) {
+                return $next($request);
+            }
         }
 
         return redirect('/login')->with('error', 'You do not have permission to access this page.');

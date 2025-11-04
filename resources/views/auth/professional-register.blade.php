@@ -9,6 +9,13 @@
         }
     </style>
 
+    @if(session('errorMessage'))
+        <div class="mb-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg">
+            {{ session('errorMessage') }}
+            <a href="{{ route('login') }}" class="underline ml-2">Log in here</a>
+        </div>
+    @endif
+
     <form id="multiStepForm" method="POST" action="{{ route('professional.register') }}">
         @csrf
 
@@ -64,16 +71,34 @@
                 <x-input-label :value="__('Services (Select at least one)')" />
                 <div class="mt-2 space-y-2">
                     @foreach ($services as $service)
-                        <label for="service_{{ $loop->index }}" class="flex items-center">
-                            <input type="checkbox" id="service_{{ $loop->index }}" name="services[]"
-                                value="{{ $service }}"
-                                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
-                                {{ is_array(old('services')) && in_array($service, old('services')) ? 'checked' : '' }}>
-                            <span class="ml-2 text-sm text-gray-600">{{ $service }}</span>
-                        </label>
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input type="checkbox" id="service_{{ $loop->index }}" name="services[]"
+                                    value="{{ $service }}"
+                                    class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500 service-checkbox"
+                                    {{ is_array(old('services')) && in_array($service, old('services')) ? 'checked' : '' }}
+                                    @if($service === 'Other') data-other-checkbox="true" @endif>
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="service_{{ $loop->index }}" class="text-gray-600">
+                                    {{ $service }}
+                                    @if($service === 'Other')
+                                        <span class="text-gray-500 text-xs italic"> (specify below)</span>
+                                    @endif
+                                </label>
+                            </div>
+                        </div>
                     @endforeach
                 </div>
                 <x-input-error :messages="$errors->get('services')" class="mt-2" />
+                
+                <!-- Custom service input that appears when 'Other' is checked -->
+                <div id="custom-service-container" class="mt-4" style="display: none;">
+                    <x-input-label for="custom_service" :value="__('Please specify your service:')" />
+                    <x-text-input id="custom_service" class="block mt-1 w-full" type="text" name="custom_service"
+                        :value="old('custom_service')" placeholder="Enter your specific service type" />
+                    <x-input-error :messages="$errors->get('custom_service')" class="mt-2" />
+                </div>
             </div>
 
             <!-- Phone Number -->
@@ -263,5 +288,33 @@
 
             return valid;
         }
+    </script>
+    
+    <script>
+        // Add functionality to show custom service field when 'Other' is selected
+        document.addEventListener("DOMContentLoaded", function() {
+            const otherCheckboxes = document.querySelectorAll('input[data-other-checkbox="true"]');
+            const customServiceContainer = document.getElementById('custom-service-container');
+            
+            // Add change event listeners to all 'Other' checkboxes
+            otherCheckboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    // Check if any 'Other' checkbox is checked
+                    const anyOtherChecked = Array.from(otherCheckboxes).some(cb => cb.checked);
+                    
+                    if (anyOtherChecked) {
+                        customServiceContainer.style.display = 'block';
+                    } else {
+                        customServiceContainer.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Initialize state on page load
+            const initialOtherChecked = Array.from(otherCheckboxes).some(cb => cb.checked);
+            if (initialOtherChecked) {
+                customServiceContainer.style.display = 'block';
+            }
+        });
     </script>
 </x-guest-layout>

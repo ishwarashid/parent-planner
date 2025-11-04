@@ -61,5 +61,16 @@ class DatabaseSeeder extends Seeder
             'update-expenses',
             'delete-expenses',
         ]);
+
+        // Professional role with specific permissions
+        $professionalRole = Role::updateOrCreate(['name' => 'Professional']);
+        $professionalRole->givePermissionTo([
+            'view-children',
+            'view-events',
+            'view-visitations',
+            'view-expenses',
+            'create-expenses',
+            'update-expenses',
+        ]);
     }
 }

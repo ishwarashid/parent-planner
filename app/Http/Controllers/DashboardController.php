@@ -75,6 +75,8 @@ class DashboardController extends Controller
                     ->orderBy('date_start')
                     ->first();
 
-        return view('dashboard', compact('upcomingVisitations', 'pendingExpenses', 'childrenWithUpcomingBirthdays', 'nextVisit'));
+        $hasProfessionalProfile = $user->has_professional_profile;
+
+        return view('dashboard', compact('upcomingVisitations', 'pendingExpenses', 'childrenWithUpcomingBirthdays', 'nextVisit', 'hasProfessionalProfile'));
     }
 }

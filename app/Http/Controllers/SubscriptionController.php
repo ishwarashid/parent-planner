@@ -20,70 +20,135 @@ class SubscriptionController extends Controller
     public function show()
     {
         $user = Auth::user();
-        $subscription = $user->subscription();
-
-        // Role-based plan IDs
-        if ($user->role == 'professional') {
-            $priceIds = [
-                'pri_01k4m53g0ddw2pt8wgjwsdpjwr', // Professional Monthly
-                'pri_01k4m54crw11827hzxp3ngms0j'  // Professional Yearly
-            ];
-        } else {
-            $priceIds = [
+        
+        // Determine if user has both professional and parent roles
+        $hasParentRole = $user->hasRole(['Main Parent', 'Invited User', 'Co-Parent']);
+        $hasProfessionalRole = $user->hasRole('Professional');
+        
+        // Get both subscriptions if they exist
+        $parentSubscription = $user->subscribed('default') ? $user->subscription('default') : null;
+        $professionalSubscription = $user->subscribed('professional') ? $user->subscription('professional') : null;
+        
+        // Determine which types of plans to show based on user's roles
+        $priceIds = [];
+        
+        // Always include parent plans if user has parent role or no professional-only role
+        if ($hasParentRole || (!$hasProfessionalRole || $hasProfessionalRole && $hasParentRole)) {
+            $priceIds = array_merge($priceIds, [
                 'pri_01k4m4zrc1w8qjqrdvsj309r9h', // Basic Monthly
                 'pri_01k4m50qe4tspwqzzcb5pj21fs', // Basic Yearly
                 'pri_01k4m51sqtkav7fp4fesrxpjmz', // Premium Monthly
                 'pri_01k4m52mb2br3rj9nfn8pbpez6'  // Premium Yearly
-            ];
+            ]);
+        }
+        
+        // Include professional plans if user has professional role
+        if ($hasProfessionalRole) {
+            $priceIds = array_merge($priceIds, [
+                'pri_01k4m53g0ddw2pt8wgjwsdpjwr', // Professional Monthly
+                'pri_01k4m54crw11827hzxp3ngms0j'  // Professional Yearly
+            ]);
         }
 
-        // Fetch only those prices
+        // Fetch all relevant prices
         $prices = $this->paddleService->fetchPrices($priceIds);
 
-        // Build flat plans array for the view
+        // Build flat plans array for the view with type information
         $plans = [];
         foreach ($prices as $price) {
             $interval = str_contains(strtolower($price['name'] ?? ''), 'year') ? 'yearly' : 'monthly';
+
+            // Determine plan type based on ID or name
+            $planType = 'basic'; // default
+            if (str_contains($price['name'] ?? '', 'Premium')) {
+                $planType = 'premium';
+            } elseif (str_contains($price['name'] ?? '', 'Professional')) {
+                $planType = 'professional';
+            }
 
             $plans[] = [
                 'id'       => $price['id'],
                 'name'     => $price['name'] ?? ($price['description'] ?? 'Unknown Plan'),
                 'price'    => $price['price'] ?? 'N/A',
                 'interval' => $interval,
-                'type'     => $user->role === 'professional'
-                    ? 'professional'
-                    : (str_contains(strtolower($price['name'] ?? ''), 'premium') ? 'premium' : 'basic')
+                'type'     => $planType
             ];
         }
 
-        // Default plan name
-        $planName = 'No Subscription';
+        // Prepare subscription information for the view
+        $subscriptionData = [
+            'parent' => $parentSubscription,
+            'professional' => $professionalSubscription,
+        ];
+        
+        // Get current plan names for each subscription type
+        $parentPlanName = 'No Subscription';
+        $professionalPlanName = 'No Subscription';
 
-        // Resolve current plan name if user has subscription
-        if ($subscription && $subscription->items->count() > 0) {
-            $firstItem = $subscription->items->first();
-
+        // Resolve parent plan name if user has parent subscription
+        if ($parentSubscription && $parentSubscription->items->count() > 0) {
+            $firstItem = $parentSubscription->items->first();
             foreach ($plans as $plan) {
                 if ($plan['id'] === $firstItem->price_id) {
-                    $planName = $plan['name'];
+                    $parentPlanName = $plan['name'];
                     break;
                 }
             }
 
             // Fallback: fetch from Paddle API if not matched
-            if ($planName === 'No Subscription') {
+            if ($parentPlanName === 'No Subscription') {
                 try {
                     $response = Cashier::api('GET', "prices/{$firstItem->price_id}");
                     $price = $response['data'] ?? null;
                     if ($price) {
-                        $planName = $price['description'] ?? $price['name'] ?? 'Unknown Plan';
+                        $parentPlanName = $price['description'] ?? $price['name'] ?? 'Unknown Plan';
                     }
                 } catch (Exception $e) {
-                    $planName = 'Subscription Plan';
+                    $parentPlanName = 'Parent Subscription Plan';
                 }
             }
         }
-        return view('subscription.show', compact('subscription', 'plans', 'planName'));
+        
+        // Resolve professional plan name if user has professional subscription
+        if ($professionalSubscription && $professionalSubscription->items->count() > 0) {
+            $firstItem = $professionalSubscription->items->first();
+            foreach ($plans as $plan) {
+                if ($plan['id'] === $firstItem->price_id) {
+                    $professionalPlanName = $plan['name'];
+                    break;
+                }
+            }
+
+            // Fallback: fetch from Paddle API if not matched
+            if ($professionalPlanName === 'No Subscription') {
+                try {
+                    $response = Cashier::api('GET', "prices/{$firstItem->price_id}");
+                    $price = $response['data'] ?? null;
+                    if ($price) {
+                        $professionalPlanName = $price['description'] ?? $price['name'] ?? 'Unknown Plan';
+                    }
+                } catch (Exception $e) {
+                    $professionalPlanName = 'Professional Subscription Plan';
+                }
+            }
+        }
+        
+        // Determine which subscription to use for the existing variables to maintain backward compatibility
+        $subscription = $parentSubscription ?: $professionalSubscription;
+        $planName = $parentPlanName !== 'No Subscription' ? $parentPlanName : $professionalPlanName;
+        
+        // Also pass all the new data to the view
+        return view('subscription.show', compact(
+            'subscription', 
+            'plans', 
+            'planName',
+            'parentSubscription',
+            'professionalSubscription', 
+            'parentPlanName', 
+            'professionalPlanName',
+            'hasParentRole',
+            'hasProfessionalRole'
+        ));
     }
 
     public function cancel(Request $request)
@@ -91,15 +156,21 @@ class SubscriptionController extends Controller
         $user = Auth::user();
         
         try {
-            // Check if user has a subscription
-            if (!$user->subscription()) {
-                return redirect()->route('subscription.show')->with('error', 'You do not have an active subscription.');
+            // Determine which subscription to cancel based on the form
+            $subscriptionType = $request->input('subscription_type', 'default');
+            
+            // Check if user has the specific subscription
+            if (!$user->subscribed($subscriptionType)) {
+                return redirect()->route('subscription.show')->with('error', "You do not have an active {$subscriptionType} subscription.");
             }
             
-            // Cancel the subscription at period end
-            $user->subscription()->cancel();
+            // Get the subscription instance
+            $subscription = $user->subscription($subscriptionType);
             
-            return redirect()->route('subscription.show')->with('status', 'Your subscription has been canceled and will end at the end of the billing period.');
+            // Cancel the subscription at period end
+            $subscription->cancel();
+            
+            return redirect()->route('subscription.show')->with('status', "Your {$subscriptionType} subscription has been canceled and will end at the end of the billing period.");
         } catch (Exception $e) {
             return redirect()->route('subscription.show')->with('error', 'Failed to cancel subscription: ' . $e->getMessage());
         }
@@ -110,15 +181,21 @@ class SubscriptionController extends Controller
         $user = Auth::user();
         
         try {
-            // Check if user has a subscription
-            if (!$user->subscription()) {
-                return redirect()->route('subscription.show')->with('error', 'You do not have a subscription.');
+            // Determine which subscription to resume based on the form
+            $subscriptionType = $request->input('subscription_type', 'default');
+            
+            // Check if user has the specific subscription
+            if (!$user->subscribed($subscriptionType)) {
+                return redirect()->route('subscription.show')->with('error', "You do not have a {$subscriptionType} subscription.");
             }
             
-            // Resume the subscription
-            $user->subscription()->resume();
+            // Get the subscription instance
+            $subscription = $user->subscription($subscriptionType);
             
-            return redirect()->route('subscription.show')->with('status', 'Your subscription has been resumed.');
+            // Resume the subscription
+            $subscription->resume();
+            
+            return redirect()->route('subscription.show')->with('status', "Your {$subscriptionType} subscription has been resumed.");
         } catch (Exception $e) {
             return redirect()->route('subscription.show')->with('error', 'Failed to resume subscription: ' . $e->getMessage());
         }
@@ -132,15 +209,21 @@ class SubscriptionController extends Controller
         ]);
         
         try {
-            // Check if user has a subscription
-            if (!$user->subscription()) {
-                return redirect()->route('subscription.show')->with('error', 'You do not have a subscription.');
+            // Determine which subscription to update based on the form
+            $subscriptionType = $request->input('subscription_type', 'default');
+            
+            // Check if user has the specific subscription
+            if (!$user->subscribed($subscriptionType)) {
+                return redirect()->route('subscription.show')->with('error', "You do not have a {$subscriptionType} subscription.");
             }
             
-            // Swap the plan
-            $user->subscription()->swapAndInvoice($request->plan);
+            // Get the subscription instance
+            $subscription = $user->subscription($subscriptionType);
             
-            return redirect()->route('subscription.show')->with('status', 'Your subscription has been updated.');
+            // Swap the plan
+            $subscription->swapAndInvoice($request->plan);
+            
+            return redirect()->route('subscription.show')->with('status', "Your {$subscriptionType} subscription has been updated.");
         } catch (Exception $e) {
             return redirect()->route('subscription.show')->with('error', 'Failed to update subscription: ' . $e->getMessage());
         }
@@ -265,11 +348,24 @@ class SubscriptionController extends Controller
         }
         
         try {
-            // Get the subscription
-            $subscription = $user->subscription();
+            // Get the default subscription (or any active subscription) to get the update URL
+            // For users with multiple subscriptions, Paddle typically uses the customer's main subscription for payment updates
+            $subscription = $user->subscription('default') ?: $user->subscription('professional');
             
             if (!$subscription) {
-                return redirect()->route('subscription.show')->with('error', 'You do not have an active subscription.');
+                // If no active subscriptions exist, we can still allow payment method update as user is a customer
+                // We'll redirect to customer update payment method URL instead of subscription-specific
+                $response = \Laravel\Paddle\Cashier::api('GET', "customers/{$user->customer->paddle_id}");
+                $customerData = $response['data'] ?? null;
+                
+                if (!$customerData || !isset($customerData['management_urls']['update_payment_method'])) {
+                    return redirect()->route('subscription.show')->with('error', 'Unable to update payment method.');
+                }
+                
+                $updatePaymentMethodUrl = $customerData['management_urls']['update_payment_method'];
+                
+                // Redirect to the update payment method URL
+                return redirect($updatePaymentMethodUrl);
             }
             
             // Get the update payment method URL from Paddle

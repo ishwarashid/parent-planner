@@ -68,19 +68,52 @@
                             <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                                 @php
                                     $selectedServices = old('services', $professional->services ?? []);
+                                    // Identify any custom service that's not in the predefined list
+                                    $customService = null;
+                                    foreach ($selectedServices as $service) {
+                                        if (!in_array($service, $services)) {
+                                            $customService = $service;
+                                            break;
+                                        }
+                                    }
+                                    // If there's a custom service, replace 'Other' in the predefined services with the custom one
+                                    if ($customService) {
+                                        $selectedServices = array_map(function($item) use ($customService) {
+                                            return $item === 'Other' ? $customService : $item;
+                                        }, $selectedServices);
+                                    }
                                 @endphp
                                 @foreach ($services as $service)
-                                    <label for="service_{{ $loop->index }}" class="flex items-center">
-                                        <input type="checkbox" id="service_{{ $loop->index }}" name="services[]"
-                                            value="{{ $service }}"
-                                            class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
-                                            {{ in_array($service, $selectedServices) ? 'checked' : '' }}>
-                                        <span class="ml-2 text-sm text-gray-600">{{ $service }}</span>
-                                    </label>
+                                    <div class="flex items-start">
+                                        <div class="flex items-center h-5">
+                                            <input type="checkbox" id="service_{{ $loop->index }}" name="services[]"
+                                                value="{{ $service }}"
+                                                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500 service-checkbox"
+                                                {{ in_array($service, $selectedServices) ? 'checked' : '' }}
+                                                @if($service === 'Other') data-other-checkbox="true" @endif>
+                                        </div>
+                                        <div class="ml-2 text-sm">
+                                            <label for="service_{{ $loop->index }}" class="text-gray-600">
+                                                {{ $service }}
+                                                @if($service === 'Other')
+                                                    <span class="text-gray-500 text-xs italic"> (specify below)</span>
+                                                @endif
+                                            </label>
+                                        </div>
+                                    </div>
                                 @endforeach
                             </div>
                             <x-input-error :messages="$errors->get('services')" class="mt-2" />
                             <x-input-error :messages="$errors->get('services.*')" class="mt-2" />
+                            
+                            <!-- Custom service input that appears when 'Other' is checked -->
+                            <div id="custom-service-container" class="mt-4" 
+                                 style="{{ (in_array('Other', old('services', $professional->services ?? [])) || $customService) ? 'display: block;' : 'display: none;' }}">
+                                <x-input-label for="custom_service" :value="__('Please specify your service:')" />
+                                <x-text-input id="custom_service" class="block mt-1 w-full" type="text" name="custom_service"
+                                    :value="old('custom_service', $customService)" placeholder="Enter your specific service type" />
+                                <x-input-error :messages="$errors->get('custom_service')" class="mt-2" />
+                            </div>
                         </div>
                         <!-- FIX END -->
 
@@ -137,4 +170,32 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const otherCheckboxes = document.querySelectorAll('input[data-other-checkbox="true"]');
+            const customServiceContainer = document.getElementById('custom-service-container');
+            
+            // Add change event listeners to all 'Other' checkboxes
+            otherCheckboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    // Check if any 'Other' checkbox is checked
+                    const anyOtherChecked = Array.from(otherCheckboxes).some(cb => cb.checked);
+                    
+                    if (anyOtherChecked) {
+                        customServiceContainer.style.display = 'block';
+                    } else {
+                        customServiceContainer.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Initialize state on page load
+            const initialOtherChecked = Array.from(otherCheckboxes).some(cb => cb.checked);
+            const hasCustomService = "{{ $customService }}".length > 0;
+            if (initialOtherChecked || hasCustomService) {
+                customServiceContainer.style.display = 'block';
+            }
+        });
+    </script>
 </x-app-layout>

@@ -106,13 +106,22 @@
     .theme-responsive-user-info .email {
         color: var(--theme-text-light);
     }
+
+    .theme-nav-dropdown {
+        display: flex;
+        align-items: center;
+        padding-top: 1.4rem;
+        padding-bottom: 1rem;
+        font-size: 15px;
+    }
+
 </style>
 
 <nav x-data="{ open: false }" class="theme-nav">
     <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
-            <div class="flex">
+            <div class="flex w-full">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
@@ -121,7 +130,7 @@
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex justify-center flex-1">
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')" class="theme-nav-link">
                         {{ __('Home') }}
                     </x-nav-link>
@@ -160,11 +169,29 @@
                             {{ __('Documents') }}
                         </x-nav-link>
                     @endcan
-                    @if (auth()->user()->role != 'professional')
-                        <x-nav-link :href="route('professionals.public.index')" :active="request()->routeIs('professionals.*')" class="theme-nav-link">
-                            {{ __('Professionals') }}
-                        </x-nav-link>
-                    @endif
+                    <x-dropdown align="left" width="48">
+                        <x-slot name="trigger">
+                            <button class="theme-nav-link theme-nav-dropdown">
+                                <span>{{ __('Professionals') }}</span>
+                                <div class="ms-1">
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            @if (auth()->user()->hasRole('Professional'))
+                                <x-dropdown-link :href="route('professional.dashboard')" :active="request()->routeIs('professional.*')">
+                                    {{ __('Professional Dashboard') }}
+                                </x-dropdown-link>
+                            @endif
+                            <x-dropdown-link :href="route('professionals.public.index')" :active="request()->routeIs('professionals.*')">
+                                {{ __('Browse Professionals') }}
+                            </x-dropdown-link>
+                        </x-slot>
+                    </x-dropdown>
                     @can('view-invitations')
                         <x-nav-link :href="route('invitations.index')" :active="request()->routeIs('invitations.*')" class="theme-nav-link">
                             {{ __('Invitations') }}
@@ -201,6 +228,38 @@
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
+
+                        @if (Auth::user()->has_professional_profile)
+                            <x-dropdown-link :href="route('professional.profile.edit')">
+                                {{ __('Professional Profile') }}
+                            </x-dropdown-link>
+                        @elseif (!Auth::user()->hasRole('Professional'))
+                            <x-dropdown-link :href="route('professional.profile.create')">
+                                {{ __('Become Professional') }}
+                            </x-dropdown-link>
+                        @endif
+                        
+                        @if (!Auth::user()->hasRole('Main Parent') && !Auth::user()->hasRole('Invited User') && !Auth::user()->hasRole('Co-Parent'))
+                            <x-dropdown-link :href="route('user.add-parent-capabilities')" 
+                                onclick="event.preventDefault(); document.getElementById('add-parent-capabilities-form').submit();">
+                                {{ __('Add Parent Capabilities') }}
+                            </x-dropdown-link>
+                            
+                            <form id="add-parent-capabilities-form" action="{{ route('user.add-parent-capabilities') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                        @endif
+                        
+                        @if (!Auth::user()->hasRole('Professional') && (Auth::user()->hasRole('Main Parent') || Auth::user()->hasRole('Invited User') || Auth::user()->hasRole('Co-Parent')))
+                            <x-dropdown-link :href="route('user.add-professional-subscription')" 
+                                onclick="event.preventDefault(); document.getElementById('add-professional-subscription-form').submit();">
+                                {{ __('Add Professional Capabilities') }}
+                            </x-dropdown-link>
+                            
+                            <form id="add-professional-subscription-form" action="{{ route('user.add-professional-subscription') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                        @endif
 
                         @if (Auth::user()->isAccountOwner() && Auth::user()->role !== 'professional')
                             <x-dropdown-link :href="route('billing')">
@@ -279,9 +338,21 @@
                     {{ __('Documents') }}
                 </x-responsive-nav-link>
             @endcan
-            <x-responsive-nav-link :href="route('professionals.public.index')" :active="request()->routeIs('professionals.public.index')" class="theme-responsive-link">
-                {{ __('Professionals') }}
-            </x-responsive-nav-link>
+            @php
+                $hasProfessionalRole = auth()->user()->hasRole('Professional');
+            @endphp
+            @if ($hasProfessionalRole)
+                <x-responsive-nav-link :href="route('professional.dashboard')" :active="request()->routeIs('professional.dashboard')" class="theme-responsive-link">
+                    {{ __('Professional Dashboard') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('professionals.public.index')" :active="request()->routeIs('professionals.public.index')" class="theme-responsive-link">
+                    {{ __('Browse Professionals') }}
+                </x-responsive-nav-link>
+            @else
+                <x-responsive-nav-link :href="route('professionals.public.index')" :active="request()->routeIs('professionals.public.index')" class="theme-responsive-link">
+                    {{ __('Professionals') }}
+                </x-responsive-nav-link>
+            @endif
             @if (auth()->user()->isAccountOwner())
             @endif
             @can('view-invitations')
@@ -307,6 +378,38 @@
                 <x-responsive-nav-link :href="route('profile.edit')" class="theme-responsive-link">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
+
+                @if (Auth::user()->has_professional_profile)
+                    <x-responsive-nav-link :href="route('professional.profile.edit')" class="theme-responsive-link">
+                        {{ __('Professional Profile') }}
+                    </x-responsive-nav-link>
+                @elseif (!Auth::user()->hasRole('Professional'))
+                    <x-responsive-nav-link :href="route('professional.profile.create')" class="theme-responsive-link">
+                        {{ __('Create Professional Profile') }}
+                    </x-responsive-nav-link>
+                @endif
+                
+                @if (!Auth::user()->hasRole('Main Parent') && !Auth::user()->hasRole('Invited User') && !Auth::user()->hasRole('Co-Parent'))
+                    <x-responsive-nav-link :href="route('user.add-parent-capabilities')" 
+                        onclick="event.preventDefault(); document.getElementById('add-parent-capabilities-mobile-form').submit();" class="theme-responsive-link">
+                        {{ __('Add Parent Capabilities') }}
+                    </x-responsive-nav-link>
+                    
+                    <form id="add-parent-capabilities-mobile-form" action="{{ route('user.add-parent-capabilities') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                @endif
+                
+                @if (!Auth::user()->hasRole('Professional') && (Auth::user()->hasRole('Main Parent') || Auth::user()->hasRole('Invited User') || Auth::user()->hasRole('Co-Parent')))
+                    <x-responsive-nav-link :href="route('user.add-professional-subscription')" 
+                        onclick="event.preventDefault(); document.getElementById('add-professional-mobile-form').submit();" class="theme-responsive-link">
+                        {{ __('Add Professional Capabilities') }}
+                    </x-responsive-nav-link>
+                    
+                    <form id="add-professional-mobile-form" action="{{ route('user.add-professional-subscription') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                @endif
 
                 @if (Auth::user()->isAccountOwner())
                     <x-responsive-nav-link :href="route('billing')" class="theme-responsive-link">
