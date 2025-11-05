@@ -199,62 +199,131 @@
 
     <table>
         <thead>
-            <tr>
-                <th style="width:12%;">Date</th>
-                <th style="width:38%;">Child & Description</th>
-                <th style="width:18%;">Created By</th>
-                <th style="width:12%;" class="amount">Total</th>
-                <th style="width:15%;">Status</th>
-            </tr>
+            @if (isset($request) && $request->include_receipts)
+                <tr>
+                    <th style="width:10%;">Date</th>
+                    <th style="width:28%;">Child & Description</th>
+                    <th style="width:14%;">Created By</th>
+                    <th style="width:10%;" class="amount">Total</th>
+                    <th style="width:12%;">Status</th>
+                    <th style="width:26%;">Receipt</th>
+                </tr>
+            @else
+                <tr>
+                    <th style="width:12%;">Date</th>
+                    <th style="width:38%;">Child & Description</th>
+                    <th style="width:18%;">Created By</th>
+                    <th style="width:12%;" class="amount">Total</th>
+                    <th style="width:20%;">Status</th>
+                </tr>
+            @endif
         </thead>
         <tbody>
             @forelse ($expenses as $expense)
                 {{-- THE MASTER ROW for each expense --}}
-                <tr class="expense-master-row">
-                    <td>{{ $expense->created_at->format('M d, Y') }}</td>
-                    <td>
-                        <strong>{{ $expense->child->name ?? 'N/A' }}</strong><br>
-                        {{ $expense->description }}
-                    </td>
-                    <td>{{ $expense->payer->name ?? 'N/A' }}</td>
-                    <td class="amount">${{ number_format($expense->amount, 2) }}</td>
-                    <td>
-                        <span class="status-badge status-{{ strtolower($expense->status) }}">
-                            {{ ucfirst($expense->status) }}
-                        </span>
-                    </td>
-                </tr>
-
-                {{-- THE SUB-ROWS for each person's share (the split) --}}
-                @foreach ($expense->splits as $split)
-                    <tr class="split-detail-row">
-                        <td></td> {{-- Indent --}}
-                        <td colspan="4">
-                            <strong>↳ Responsible:</strong> {{ $split->user->name ?? 'N/A' }} |
-                            <strong>Share:</strong>
-                            ${{ number_format($expense->amount * ($split->percentage / 100), 2) }}
-                            ({{ $split->percentage }}%) |
-                            <strong>Confirmed:</strong>
-                            @if ($split->user_id === $expense->payer_id)
-                                N/A (Payer)
+                @if (isset($request) && $request->include_receipts)
+                    <tr class="expense-master-row">
+                        <td>{{ $expense->created_at->format('M d, Y') }}</td>
+                        <td>
+                            <strong>{{ $expense->child->name ?? 'N/A' }}</strong><br>
+                            {{ $expense->description }}
+                        </td>
+                        <td>{{ $expense->payer->name ?? 'N/A' }}</td>
+                        <td class="amount">${{ number_format($expense->amount, 2) }}</td>
+                        <td>
+                            <span class="status-badge status-{{ strtolower($expense->status) }}">
+                                {{ ucfirst($expense->status) }}
+                            </span>
+                        </td>
+                        <td>
+                            @if ($expense->receipt_url)
+                                <a href="{{ $expense->receipt_url }}" target="_blank">View Receipt</a>
                             @else
-                                {{ $expense->confirmations->contains('user_id', $split->user_id) ? 'Yes' : 'No' }}
+                                N/A
                             @endif
                         </td>
                     </tr>
-                @endforeach
+                @else
+                    <tr class="expense-master-row">
+                        <td>{{ $expense->created_at->format('M d, Y') }}</td>
+                        <td>
+                            <strong>{{ $expense->child->name ?? 'N/A' }}</strong><br>
+                            {{ $expense->description }}
+                        </td>
+                        <td>{{ $expense->payer->name ?? 'N/A' }}</td>
+                        <td class="amount">${{ number_format($expense->amount, 2) }}</td>
+                        <td>
+                            <span class="status-badge status-{{ strtolower($expense->status) }}">
+                                {{ ucfirst($expense->status) }}
+                            </span>
+                        </td>
+                    </tr>
+                @endif
+
+                {{-- THE SUB-ROWS for each person's share (the split) --}}
+                @if (isset($request) && $request->include_receipts)
+                    @foreach ($expense->splits as $split)
+                        <tr class="split-detail-row">
+                            <td></td> {{-- Indent --}}
+                            <td colspan="5">
+                                <strong>↳ Responsible:</strong> {{ $split->user->name ?? 'N/A' }} |
+                                <strong>Share:</strong>
+                                ${{ number_format($expense->amount * ($split->percentage / 100), 2) }}
+                                ({{ $split->percentage }}%) |
+                                <strong>Confirmed:</strong>
+                                @if ($split->user_id === $expense->payer_id)
+                                    N/A (Payer)
+                                @else
+                                    {{ $expense->confirmations->contains('user_id', $split->user_id) ? 'Yes' : 'No' }}
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                @else
+                    @foreach ($expense->splits as $split)
+                        <tr class="split-detail-row">
+                            <td></td> {{-- Indent --}}
+                            <td colspan="4">
+                                <strong>↳ Responsible:</strong> {{ $split->user->name ?? 'N/A' }} |
+                                <strong>Share:</strong>
+                                ${{ number_format($expense->amount * ($split->percentage / 100), 2) }}
+                                ({{ $split->percentage }}%) |
+                                <strong>Confirmed:</strong>
+                                @if ($split->user_id === $expense->payer_id)
+                                    N/A (Payer)
+                                @else
+                                    {{ $expense->confirmations->contains('user_id', $split->user_id) ? 'Yes' : 'No' }}
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
             @empty
-                <tr>
-                    <td colspan="5" class="no-data">No expenses found for the selected criteria.</td>
-                </tr>
+                @if (isset($request) && $request->include_receipts)
+                    <tr>
+                        <td colspan="6" class="no-data">No expenses found for the selected criteria.</td>
+                    </tr>
+                @else
+                    <tr>
+                        <td colspan="5" class="no-data">No expenses found for the selected criteria.</td>
+                    </tr>
+                @endif
             @endforelse
         </tbody>
         <tfoot>
-            <tr>
-                <td colspan="3" style="text-align: right;"><strong>Grand Total:</strong></td>
-                <td class="amount">${{ number_format($totalAmount, 2) }}</td>
-                <td></td>
-            </tr>
+            @if (isset($request) && $request->include_receipts)
+                <tr>
+                    <td colspan="4" style="text-align: right;"><strong>Grand Total:</strong></td>
+                    <td class="amount">${{ number_format($totalAmount, 2) }}</td>
+                    <td></td>
+                </tr>
+            @else
+                <tr>
+                    <td colspan="3" style="text-align: right;"><strong>Grand Total:</strong></td>
+                    <td class="amount">${{ number_format($totalAmount, 2) }}</td>
+                    <td></td>
+                </tr>
+            @endif
         </tfoot>
     </table>
 

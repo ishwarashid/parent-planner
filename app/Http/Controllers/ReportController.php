@@ -39,6 +39,7 @@ class ReportController extends Controller
             'category' => 'nullable|string',
             'status' => 'nullable|string|in:pending,paid,disputed',
             'format' => 'required|in:pdf,csv',
+            'include_receipts' => 'nullable|boolean',
         ]);
 
         // Step 2: Revert to the original logic to get ALL family expenses.
@@ -73,11 +74,15 @@ class ReportController extends Controller
         // Step 4: Generate the report in the requested format
         if ($request->format === 'pdf') {
             // The PDF can remain as is, as it can handle nested loops for splits easily.
-            $pdf = Pdf::loadView('reports.expenses_pdf', compact('expenses'));
+            $pdf = Pdf::loadView('reports.expenses_pdf', compact('expenses', 'request'));
             return $pdf->download('expense_report_' . now()->format('Ymd_His') . '.pdf');
         } else {
             // For CSV, we pass the collection to our updated export class.
-            return Excel::download(new ExpensesExport($expenses), 'expense_report_' . now()->format('Ymd_His') . '.csv');
+            if ($request->include_receipts) {
+                return Excel::download(new ExpensesExportWithReceipts($expenses), 'expense_report_with_receipts_' . now()->format('Ymd_His') . '.csv');
+            } else {
+                return Excel::download(new ExpensesExport($expenses), 'expense_report_' . now()->format('Ymd_His') . '.csv');
+            }
         }
     }
 
