@@ -21,11 +21,12 @@ class Subscribed
 
         if ($user) {
             // Check if user has both parent and professional roles
-            $hasParentRole = $user->hasRole(['Main Parent', 'Invited User', 'Co-Parent']);
+            $hasMainParentRole = $user->hasRole('Main Parent'); // Only main parent requires subscription
             $hasProfessionalRole = $user->hasRole('Professional');
             
-            // For users with parent roles, check for the default subscription.
-            if ($hasParentRole && $user->role !== 'professional' && !$user->subscribed('default')) {
+            // For users with main parent role, check for the default subscription.
+            // Co-parents and invited users do not need subscriptions (per README: Only Parent requires subscription)
+            if ($hasMainParentRole && $user->role !== 'professional' && !$user->subscribed('default')) {
                 // Fallback check: Check if user has an active subscription in Paddle
                 try {
                     if ($user->customer) {
@@ -54,14 +55,17 @@ class Subscribed
             }
             
             // For users who have both parent and professional roles, check for both subscriptions
-            if ($hasParentRole && $hasProfessionalRole && $user->professional?->approval_status === 'approved') {
+            // Note: Only Main Parents require the default subscription, not Co-Parents or Invited Users
+            $hasAnyParentRole = $user->hasRole(['Main Parent', 'Invited User', 'Co-Parent']);
+            if ($hasAnyParentRole && $hasProfessionalRole && $user->professional?->approval_status === 'approved') {
                 // Check if user has a default (parent) subscription
                 $hasParentSubscription = $user->subscribed('default');
                 // Check if user has a professional subscription
                 $hasProfessionalSubscription = $user->subscribed('professional');
                 
                 // If user has neither subscription, redirect to parent pricing first
-                if (!$hasParentSubscription && !$hasProfessionalSubscription) {
+                // But only if they are a Main Parent (as they require the default subscription)
+                if ($user->hasRole('Main Parent') && !$hasParentSubscription && !$hasProfessionalSubscription) {
                     return redirect()->route('pricing');
                 }
                 
@@ -70,8 +74,9 @@ class Subscribed
                     return redirect()->route('professional.pricing');
                 }
                 
-                // If user has professional subscription but no parent subscription, redirect to parent pricing
-                if (!$hasParentSubscription && $hasProfessionalSubscription) {
+                // If user has professional subscription but no parent subscription
+                // Only redirect Main Parents (as they require the default subscription)
+                if (!$hasParentSubscription && $hasProfessionalSubscription && $user->hasRole('Main Parent')) {
                     return redirect()->route('pricing');
                 }
             }
