@@ -178,6 +178,17 @@ class ExpenseController extends Controller
     {
         $this->authorize('update', $expense);
 
+        \Log::info('Expense Update Request Data:', $request->all());
+        \Log::info('Expense Update Has File receipt_url:', [$request->hasFile('receipt_url')]);
+        if ($request->hasFile('receipt_url')) {
+            \Log::info('Expense Update Receipt File Info:', [
+                'file_name' => $request->file('receipt_url')->getClientOriginalName(),
+                'file_size' => $request->file('receipt_url')->getSize(),
+                'file_mime' => $request->file('receipt_url')->getMimeType()
+            ]);
+        }
+
+        \Log::info('About to validate request data');
         $validatedData = $request->validate([
             'child_id' => 'required|exists:children,id',
             'description' => 'required|string|max:255',
@@ -191,11 +202,21 @@ class ExpenseController extends Controller
             // REMOVED: Payer ID is not updatable.
             'splits' => 'required|array',
             'splits.*.user_id' => 'required|exists:users,id',
-            'splits.*.percentage' => 'required|numeric|min:0|max:100',
+            'splits.*.percentage' => 'nullable|numeric|min:0|max:100',
         ]);
+        \Log::info('Validation passed, splits data:', ['splits' => $validatedData['splits'] ?? 'not set']);
 
-        $totalPercentage = collect($validatedData['splits'])->sum('percentage');
+        // Filter out splits with null or zero percentages
+        $splits = collect($validatedData['splits'])->filter(function ($split) {
+            return !is_null($split['percentage']) && $split['percentage'] > 0;
+        })->toArray();
+
+        $validatedData['splits'] = $splits;
+
+        $totalPercentage = collect($splits)->sum('percentage');
+        \Log::info('Calculated total percentage:', ['total' => $totalPercentage]);
         if (abs($totalPercentage - 100.00) > 0.01) {
+            \Log::info('Percentage validation failed');
             return back()->withErrors(['splits' => 'The percentages must add up to 100%.'])->withInput();
         }
 
@@ -208,10 +229,14 @@ class ExpenseController extends Controller
 
         DB::transaction(function () use ($validatedData, $request, $expense) {
             if ($request->hasFile('receipt_url')) {
+                \Log::info('About to delete existing receipt if exists');
                 if ($expense->receipt_url) {
+                    \Log::info('Deleting existing receipt: ' . $expense->receipt_url);
                     Storage::disk('do')->delete($expense->receipt_url);
                 }
+                \Log::info('About to store new receipt');
                 $validatedData['receipt_url'] = $request->file('receipt_url')->store('receipts', 'do');
+                \Log::info('Receipt stored with path: ' . ($validatedData['receipt_url'] ?? 'NULL'));
             }
 
             $expense->update($validatedData);

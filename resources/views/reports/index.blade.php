@@ -34,6 +34,51 @@
         .theme-header-text {
             color: var(--theme-header);
         }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #d1d5db; /* gray-300 */
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--theme-button-primary-bg);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
 
         .theme-info-text {
             color: var(--theme-label);
@@ -300,14 +345,32 @@
                                 </div>
                             </div>
 
-                            <div class="mt-4">
-                                <label for="format_expense" class="theme-input-label">{{ __('Format') }}</label>
-                                <select id="format_expense" name="format" class="theme-select" required>
-                                    <option value="pdf" {{ request('format') == 'pdf' ? 'selected' : '' }}>PDF
-                                    </option>
-                                    <option value="csv" {{ request('format') == 'csv' ? 'selected' : '' }}>CSV
-                                    </option>
-                                </select>
+                            <div class="theme-grid theme-grid-cols-1 md:theme-grid-cols-2 gap-4 mt-4">
+                                <div>
+                                    <label for="format_expense" class="theme-input-label">{{ __('Format') }}</label>
+                                    <select id="format_expense" name="format" class="theme-select" required>
+                                        <option value="pdf" {{ request('format') == 'pdf' ? 'selected' : '' }}>PDF
+                                        </option>
+                                        <option value="csv" {{ request('format') == 'csv' ? 'selected' : '' }}>CSV
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label for="include_receipts" class="flex items-center theme-input-label cursor-pointer">
+                                        <div class="toggle-switch">
+                                            <input 
+                                                id="include_receipts" 
+                                                type="checkbox" 
+                                                name="include_receipts" 
+                                                value="1" 
+                                                {{ request('include_receipts') ? 'checked' : '' }}
+                                            >
+                                            <span class="toggle-slider"></span>
+                                        </div>
+                                        <span class="ml-3">{{ __('Include Receipts') }}</span>
+                                    </label>
+                                </div>
                             </div>
 
                             <div class="flex items-center justify-end mt-6">
