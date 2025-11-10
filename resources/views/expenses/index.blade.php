@@ -126,12 +126,71 @@
                             @endif
                         </form>
 
-                        {{-- Add Expense Button --}}
-                        <a href="{{ route('expenses.create') }}"
-                            class="py-2 px-4 rounded theme-button w-full sm:w-auto text-center">
-                            Add New Expense
-                        </a>
+                        {{-- Add Expense Button and Balance Summary Link --}}
+                        <div class="flex flex-wrap gap-2 w-full sm:w-auto justify-center sm:justify-end">
+                            <a href="{{ route('expenses.balances') }}"
+                                class="py-2 px-4 rounded theme-button w-full sm:w-auto text-center">
+                                View Balances
+                            </a>
+                            <a href="{{ route('expenses.create') }}"
+                                class="py-2 px-4 rounded theme-button w-full sm:w-auto text-center">
+                                Add New Expense
+                            </a>
+                        </div>
                     </div>
+
+                    @if(session('success'))
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    {{-- Balance Summary Section --}}
+                    @php
+                        $user = auth()->user();
+                        $familyMemberIds = $user->getFamilyMemberIds();
+                        if (!in_array($user->id, $familyMemberIds)) {
+                            $familyMemberIds[] = $user->id;
+                        }
+                        $balanceService = new \App\Services\ExpenseBalanceService();
+                        $balances = $balanceService->calculateBalances($familyMemberIds);
+                        $currentUserBalance = collect($balances)->firstWhere('user.id', $user->id);
+                    @endphp
+
+                    @if($currentUserBalance)
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                        <h3 class="text-md font-semibold theme-header-text mb-2">Your Balance Summary</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="text-center">
+                                <p class="text-sm text-gray-600">Total Paid</p>
+                                <p class="font-bold text-lg">${{ number_format($currentUserBalance['total_paid'], 2) }}</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-sm text-gray-600">Total Owed</p>
+                                <p class="font-bold text-lg">${{ number_format($currentUserBalance['total_owed'], 2) }}</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-sm text-gray-600">Opening Balance</p>
+                                <p class="font-bold text-lg">${{ number_format($currentUserBalance['opening_balance'], 2) }}</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-sm text-gray-600">Net Balance</p>
+                                <p class="font-bold text-lg @if($currentUserBalance['net_balance'] > 0) text-green-600 @elseif($currentUserBalance['net_balance'] < 0) text-red-600 @else text-gray-600 @endif">
+                                    ${{ number_format($currentUserBalance['net_balance'], 2) }}
+                                </p>
+                            </div>
+                        </div>
+                        @if($currentUserBalance['net_balance'] != 0)
+                            <div class="mt-3 text-sm">
+                                @if($currentUserBalance['net_balance'] > 0)
+                                    <span class="text-green-600">Others owe you money.</span>
+                                @else
+                                    <span class="text-red-600">You owe money to others.</span>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                    @endif
 
                     @if (session('success'))
                         {{-- ... your success message div ... --}}

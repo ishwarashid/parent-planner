@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Expense;
+use App\Models\ExpenseOpeningBalance;
 use App\Models\User;
+use App\Services\ExpenseBalanceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -239,5 +241,54 @@ class ExpenseController extends Controller
 
         $expense->delete();
         return redirect()->route('expenses.index')->with('success', 'Expense deleted successfully.');
+    }
+
+    /**
+     * Display a balance summary for all family members.
+     */
+    public function balanceSummary()
+    {
+        $this->authorize('viewAny', Expense::class);
+
+        $user = auth()->user();
+        $familyMemberIds = $user->getFamilyMemberIds();
+        
+        if (!in_array($user->id, $familyMemberIds)) {
+            $familyMemberIds[] = $user->id;
+        }
+
+        $balanceService = new ExpenseBalanceService();
+        $balances = $balanceService->calculateBalances($familyMemberIds);
+
+        return view('expenses.balance', compact('balances'));
+    }
+
+    /**
+     * Store an opening balance for a user.
+     */
+    public function storeOpeningBalance(Request $request)
+    {
+        $user = auth()->user();
+        $familyMemberIds = $user->getFamilyMemberIds();
+        
+        $request->validate([
+            'user_id' => 'required|in:' . implode(',', $familyMemberIds),
+            'amount' => 'required|numeric',
+            'date' => 'required|date',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        ExpenseOpeningBalance::updateOrCreate(
+            [
+                'user_id' => $request->user_id,
+                'date' => $request->date,
+            ],
+            [
+                'amount' => $request->amount,
+                'description' => $request->description,
+            ]
+        );
+
+        return redirect()->back()->with('success', 'Opening balance saved successfully.');
     }
 }
