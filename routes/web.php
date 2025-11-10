@@ -133,9 +133,11 @@ Route::middleware([
 ])->group(function () {
     Route::resource('children', ChildController::class);
     Route::resource('visitations', VisitationController::class)->except(['index', 'show']);
-    Route::resource('expenses', ExpenseController::class);
+    Route::get('/expenses/balances', [ExpenseController::class, 'balanceSummary'])->name('expenses.balances');
+    Route::post('/expenses/opening-balance', [ExpenseController::class, 'storeOpeningBalance'])->name('expenses.opening-balance.store');
     Route::post('/expenses/{expense}/confirm', [App\Http\Controllers\PaymentConfirmationController::class, 'store'])
         ->name('payments.confirm');
+    Route::resource('expenses', ExpenseController::class);
     Route::resource('documents', DocumentController::class);
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('reports/expenses', [ReportController::class, 'generateExpenseReport'])->name('reports.expenses');
