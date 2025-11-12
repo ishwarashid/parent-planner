@@ -64,6 +64,20 @@
                                     {{ $visitation->is_recurring ? 'Yes' : 'No' }}</dd>
                             </div>
 
+                            @if($visitation->is_recurring)
+                            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                <dt class="text-sm font-medium leading-6 text-gray-900">Recurrence Pattern</dt>
+                                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                    {{ ucfirst($visitation->recurrence_pattern) ?? 'N/A' }}</dd>
+                            </div>
+
+                            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                <dt class="text-sm font-medium leading-6 text-gray-900">Recurrence End Date</dt>
+                                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                    {{ $visitation->recurrence_end_date ? \Carbon\Carbon::parse($visitation->recurrence_end_date)->format('M d, Y') : 'N/A' }}</dd>
+                            </div>
+                            @endif
+
                             <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                 <dt class="text-sm font-medium leading-6 text-gray-900">Notes</dt>
                                 <dd

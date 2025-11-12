@@ -198,78 +198,110 @@
 
                     {{-- MODAL FORM --}}
                     <x-modal name="visitation-form" title="Visitation Details">
-                        <form id="visitationForm" method="POST" action="{{ route('visitations.store') }}"
-                            class="space-y-2">
+                        <form id="visitationForm" method="POST" action="{{ route('visitations.store') }}" class="space-y-2">
                             @csrf
 
-                            <div>
-                                <label for="parent_id" class="block text-sm theme-modal-label">Assign To</label>
-                                <select id="parent_id" name="parent_id"
-                                    class="mt-1 block w-full rounded-md shadow-sm theme-modal-input" required>
-                                    <option value="">Select a Family Member</option>
-                                    @foreach ($familyMembers as $member)
-                                        <option value="{{ $member->id }}">{{ $member->name }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="max-h-[70vh] overflow-y-auto pr-2">  <!-- Scrollable container -->
+                                <!-- Basic Info Section -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="parent_id" class="block text-sm theme-modal-label">Assign To</label>
+                                        <select id="parent_id" name="parent_id" class="mt-1 block w-full rounded-md shadow-sm theme-modal-input" required>
+                                            <option value="">Select a Family Member</option>
+                                            @foreach ($familyMembers as $member)
+                                                <option value="{{ $member->id }}">{{ $member->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="child_id" class="block text-sm theme-modal-label">Child</label>
+                                        <select id="child_id" name="child_id" class="mt-1 block w-full rounded-md shadow-sm theme-modal-input" required>
+                                            @foreach ($children as $child)
+                                                <option value="{{ $child->id }}">{{ $child->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                    <div>
+                                        <label for="date_start" class="block text-sm theme-modal-label">Start Time</label>
+                                        <input type="datetime-local" id="date_start" name="date_start"
+                                            class="mt-1 block w-full rounded-md shadow-sm theme-modal-input" required>
+                                    </div>
+
+                                    <div>
+                                        <label for="date_end" class="block text-sm theme-modal-label">End Time</label>
+                                        <input type="datetime-local" id="date_end" name="date_end"
+                                            class="mt-1 block w-full rounded-md shadow-sm theme-modal-input" required>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="status" class="block text-sm theme-modal-label">Status</label>
+                                    <select id="status" name="status"
+                                        class="mt-1 block w-full rounded-md shadow-sm theme-modal-input" required>
+                                        <option value="Scheduled" selected>Scheduled</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                        <option value="Missed">Missed</option>
+                                        <option value="Rescheduled">Rescheduled</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+
+                                <!-- Custom Status Description -->
+                                <div id="custom-status-description-container" class="mt-4" style="display: none;">
+                                    <label for="custom_status_description" class="block text-sm theme-modal-label">Custom Status Description</label>
+                                    <input type="text" id="custom_status_description" name="custom_status_description"
+                                        class="mt-1 block w-full rounded-md shadow-sm theme-modal-input"
+                                        maxlength="255">
+                                    <p class="mt-1 text-sm text-gray-500">Please provide a description for the 'Other' status.</p>
+                                </div>
+
+                                <!-- Recurring Section -->
+                                <div class="mt-4 border-t pt-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <input id="is_recurring" name="is_recurring" type="checkbox" value="1"
+                                                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                                            <label for="is_recurring" class="ml-2 block text-sm theme-modal-label">Is Recurring?</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Recurrence Options (shown when recurring is checked) -->
+                                    <div id="recurrence-fields" class="mt-4 space-y-4" style="display: none;">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label for="recurrence_pattern" class="block text-sm theme-modal-label">Recurrence Pattern</label>
+                                                <select id="recurrence_pattern" name="recurrence_pattern"
+                                                    class="mt-1 block w-full rounded-md shadow-sm theme-modal-input">
+                                                    <option value="">Select Pattern</option>
+                                                    <option value="daily">Daily</option>
+                                                    <option value="weekly">Weekly</option>
+                                                    <option value="monthly">Monthly</option>
+                                                    <option value="yearly">Yearly</option>
+                                                </select>
+                                            </div>
+
+                                            <div>
+                                                <label for="recurrence_end_date" class="block text-sm theme-modal-label">End Date</label>
+                                                <input type="date" id="recurrence_end_date" name="recurrence_end_date"
+                                                    class="mt-1 block w-full rounded-md shadow-sm theme-modal-input">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="notes" class="block text-sm theme-modal-label">Notes</label>
+                                    <textarea id="notes" name="notes" rows="3" class="mt-1 block w-full rounded-md shadow-sm theme-modal-input"></textarea>
+                                </div>
                             </div>
 
-                            <div>
-                                <label for="child_id" class="block text-sm theme-modal-label">Child</label>
-                                <select id="child_id" name="child_id"
-                                    class="mt-1 block w-full rounded-md shadow-sm theme-modal-input" required>
-                                    @foreach ($children as $child)
-                                        <option value="{{ $child->id }}">{{ $child->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div>
-                                <label for="date_start" class="block text-sm theme-modal-label">Start Time</label>
-                                <input type="datetime-local" id="date_start" name="date_start"
-                                    class="mt-1 block w-full rounded-md shadow-sm theme-modal-input" required>
-                            </div>
-
-                            <div>
-                                <label for="date_end" class="block text-sm theme-modal-label">End Time</label>
-                                <input type="datetime-local" id="date_end" name="date_end"
-                                    class="mt-1 block w-full rounded-md shadow-sm theme-modal-input" required>
-                            </div>
-
-                            <div>
-                                <label for="status" class="block text-sm theme-modal-label">Status</label>
-                                <select id="status" name="status"
-                                    class="mt-1 block w-full rounded-md shadow-sm theme-modal-input" required>
-                                    <option value="Scheduled" selected>Scheduled</option>
-                                    <option value="Completed">Completed</option>
-                                    <option value="Cancelled">Cancelled</option>
-                                    <option value="Missed">Missed</option>
-                                    <option value="Rescheduled">Rescheduled</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-
-                            <!-- Custom Status Description (shown only when "Other" is selected) -->
-                            <div id="custom-status-description-container" class="mt-4" style="display: none;">
-                                <label for="custom_status_description" class="block text-sm theme-modal-label">Custom Status Description</label>
-                                <input type="text" id="custom_status_description" name="custom_status_description" 
-                                    class="mt-1 block w-full rounded-md shadow-sm theme-modal-input" 
-                                    maxlength="255">
-                                <p class="mt-1 text-sm text-gray-500">Please provide a description for the 'Other' status.</p>
-                            </div>
-
-                            <div class="flex items-center">
-                                <input id="is_recurring" name="is_recurring" type="checkbox" value="1"
-                                    class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
-                                <label for="is_recurring" class="ml-2 block text-sm theme-modal-label">Is
-                                    Recurring?</label>
-                            </div>
-
-                            <div>
-                                <label for="notes" class="block text-sm theme-modal-label">Notes</label>
-                                <textarea id="notes" name="notes" rows="3" class="mt-1 block w-full rounded-md shadow-sm theme-modal-input"></textarea>
-                            </div>
-
-                            <div class="flex items-center justify-end mt-6 space-x-4">
+                            <!-- Buttons stay outside scrollable area -->
+                            <div class="flex items-center justify-end mt-6 space-x-4 pt-4 border-t">
                                 <button type="button" x-on:click="$dispatch('close-modal')"
                                     class="py-2 px-4 rounded theme-button theme-button-secondary">
                                     Cancel
@@ -283,24 +315,68 @@
 
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {
+                            // Safely get elements, handling cases where they might not exist
                             const statusSelect = document.getElementById('status');
                             const customDescriptionContainer = document.getElementById('custom-status-description-container');
                             const customDescriptionField = document.getElementById('custom_status_description');
+                            const recurringCheckbox = document.getElementById('is_recurring');
                             
+                            // Make sure to get the correct elements for recurrence
+                            const recurrenceFields = document.getElementById('recurrence-fields');
+                            const recurrenceEndDateField = document.querySelector('#recurrence-end-date-field') || document.getElementById('recurrence-end-date-field');
+
                             function toggleCustomDescriptionVisibility() {
-                                if (statusSelect.value === 'Other') {
-                                    customDescriptionContainer.style.display = 'block';
-                                } else {
-                                    customDescriptionContainer.style.display = 'none';
-                                    customDescriptionField.value = '';
+                                if (statusSelect && customDescriptionContainer && customDescriptionField) {
+                                    if (statusSelect.value === 'Other') {
+                                        customDescriptionContainer.style.display = 'block';
+                                    } else {
+                                        customDescriptionContainer.style.display = 'none';
+                                        customDescriptionField.value = '';
+                                    }
                                 }
                             }
-                            
+
+                            // Toggle recurrence fields visibility based on checkbox
+                            function toggleRecurrenceFieldsVisibility() {
+                                if (recurringCheckbox && recurrenceFields) {
+                                    if (recurringCheckbox.checked) {
+                                        recurrenceFields.style.display = 'block';
+                                        if (recurrenceEndDateField) {
+                                            recurrenceEndDateField.style.display = 'block';
+                                        }
+                                    } else {
+                                        recurrenceFields.style.display = 'none';
+                                        if (recurrenceEndDateField) {
+                                            recurrenceEndDateField.style.display = 'none';
+                                        }
+                                        // Clear the values when unchecked
+                                        const patternField = document.getElementById('recurrence_pattern');
+                                        const endDateField = document.getElementById('recurrence_end_date');
+                                        if (patternField) patternField.value = '';
+                                        if (endDateField) endDateField.value = '';
+                                    }
+                                }
+                            }
+
                             // Show/hide custom description based on initial value
-                            toggleCustomDescriptionVisibility();
-                            
+                            if (statusSelect && customDescriptionContainer && customDescriptionField) {
+                                toggleCustomDescriptionVisibility();
+                            }
+
+                            // Show/hide recurrence fields based on initial value
+                            if (recurringCheckbox) {
+                                toggleRecurrenceFieldsVisibility();
+                            }
+
                             // Add event listener to status select
-                            statusSelect.addEventListener('change', toggleCustomDescriptionVisibility);
+                            if (statusSelect && customDescriptionContainer && customDescriptionField) {
+                                statusSelect.addEventListener('change', toggleCustomDescriptionVisibility);
+                            }
+
+                            // Add event listener to recurring checkbox
+                            if (recurringCheckbox) {
+                                recurringCheckbox.addEventListener('change', toggleRecurrenceFieldsVisibility);
+                            }
                         });
                     </script>
 

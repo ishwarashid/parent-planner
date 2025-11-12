@@ -17,6 +17,9 @@ class Expense extends Model
         'category',
         'status',
         'receipt_url',
+        'is_recurring',
+        'recurrence_pattern',
+        'recurrence_end_date',
     ];
 
     public function child()

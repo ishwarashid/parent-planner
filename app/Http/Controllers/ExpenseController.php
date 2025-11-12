@@ -87,6 +87,9 @@ class ExpenseController extends Controller
             'category' => 'required|string|max:255',
             'status' => 'required|string|in:pending,paid,disputed',
             'receipt_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
+            'is_recurring' => 'nullable|boolean',
+            'recurrence_pattern' => 'nullable|required_if:is_recurring,1|in:daily,weekly,monthly,yearly',
+            'recurrence_end_date' => 'nullable|required_if:is_recurring,1|date|after_or_equal:today',
             // REMOVED: Validation for payer_id is no longer needed from the form.
             'splits' => 'required|array',
             'splits.*.user_id' => 'required|exists:users,id',
@@ -101,6 +104,13 @@ class ExpenseController extends Controller
 
         // SET PAYER: The authenticated user is always the payer.
         $validatedData['payer_id'] = auth()->id();
+
+        // Handle recurring fields
+        if ($request->has('is_recurring')) {
+            $validatedData['is_recurring'] = true;
+        } else {
+            $validatedData['is_recurring'] = false;
+        }
 
         DB::transaction(function () use ($validatedData, $request) {
             if ($request->hasFile('receipt_url')) {
@@ -186,6 +196,9 @@ class ExpenseController extends Controller
             'category' => 'required|string|max:255',
             'status' => 'required|string|in:pending,paid,disputed',
             'receipt_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
+            'is_recurring' => 'nullable|boolean',
+            'recurrence_pattern' => 'nullable|required_if:is_recurring,1|in:daily,weekly,monthly,yearly',
+            'recurrence_end_date' => 'nullable|required_if:is_recurring,1|date|after_or_equal:today',
             // REMOVED: Payer ID is not updatable.
             'splits' => 'required|array',
             'splits.*.user_id' => 'required|exists:users,id',
@@ -205,6 +218,13 @@ class ExpenseController extends Controller
         if (abs($totalPercentage - 100.00) > 0.01) {
             \Log::info('Percentage validation failed');
             return back()->withErrors(['splits' => 'The percentages must add up to 100%.'])->withInput();
+        }
+
+        // Handle recurring fields
+        if ($request->has('is_recurring')) {
+            $validatedData['is_recurring'] = true;
+        } else {
+            $validatedData['is_recurring'] = false;
         }
 
         DB::transaction(function () use ($validatedData, $request, $expense) {

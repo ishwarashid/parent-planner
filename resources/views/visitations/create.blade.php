@@ -94,6 +94,36 @@
                             <x-input-label for="is_recurring" :value="__('Is Recurring?')" class="ml-2" />
                         </div>
 
+                        <!-- Recurrence Pattern -->
+                        <div id="recurrence-fields" class="mt-4" style="{{ old('is_recurring') ? '' : 'display: none;' }}">
+                            <x-input-label for="recurrence_pattern" :value="__('Recurrence Pattern')" />
+                            <select id="recurrence_pattern" name="recurrence_pattern"
+                                class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                                <option value="">Select Pattern</option>
+                                <option value="daily" {{ old('recurrence_pattern') == 'daily' ? 'selected' : '' }}>
+                                    Daily
+                                </option>
+                                <option value="weekly" {{ old('recurrence_pattern') == 'weekly' ? 'selected' : '' }}>
+                                    Weekly
+                                </option>
+                                <option value="monthly" {{ old('recurrence_pattern') == 'monthly' ? 'selected' : '' }}>
+                                    Monthly
+                                </option>
+                                <option value="yearly" {{ old('recurrence_pattern') == 'yearly' ? 'selected' : '' }}>
+                                    Yearly
+                                </option>
+                            </select>
+                            <x-input-error :messages="$errors->get('recurrence_pattern')" class="mt-2" />
+                        </div>
+
+                        <!-- Recurrence End Date -->
+                        <div id="recurrence-end-date-field" class="mt-4" style="{{ old('is_recurring') ? '' : 'display: none;' }}">
+                            <x-input-label for="recurrence_end_date" :value="__('Recurrence End Date')" />
+                            <x-text-input id="recurrence_end_date" class="block mt-1 w-full" type="date"
+                                name="recurrence_end_date" :value="old('recurrence_end_date')" />
+                            <x-input-error :messages="$errors->get('recurrence_end_date')" class="mt-2" />
+                        </div>
+
                         <!-- Notes -->
                         <div class="mt-4">
                             <x-input-label for="notes" :value="__('Notes')" />
@@ -117,7 +147,10 @@
             const statusSelect = document.getElementById('status');
             const customDescriptionContainer = document.getElementById('custom-status-description-container');
             const customDescriptionField = document.getElementById('custom_status_description');
-            
+            const recurringCheckbox = document.getElementById('is_recurring');
+            const recurrenceFields = document.getElementById('recurrence-fields');
+            const recurrenceEndDateField = document.getElementById('recurrence-end-date-field');
+
             function toggleCustomDescriptionVisibility() {
                 if (statusSelect.value === 'Other') {
                     customDescriptionContainer.style.display = 'block';
@@ -126,12 +159,29 @@
                     customDescriptionField.value = '';
                 }
             }
-            
+
+            // Toggle recurrence fields visibility based on checkbox
+            function toggleRecurrenceFieldsVisibility() {
+                if (recurringCheckbox.checked) {
+                    recurrenceFields.style.display = 'block';
+                    recurrenceEndDateField.style.display = 'block';
+                } else {
+                    recurrenceFields.style.display = 'none';
+                    recurrenceEndDateField.style.display = 'none';
+                }
+            }
+
             // Show/hide custom description based on initial value
             toggleCustomDescriptionVisibility();
-            
+
+            // Show/hide recurrence fields based on initial value
+            toggleRecurrenceFieldsVisibility();
+
             // Add event listener to status select
             statusSelect.addEventListener('change', toggleCustomDescriptionVisibility);
+
+            // Add event listener to recurring checkbox
+            recurringCheckbox.addEventListener('change', toggleRecurrenceFieldsVisibility);
         });
     </script>
 </x-app-layout>
