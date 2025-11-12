@@ -261,6 +261,50 @@
                             <x-input-error :messages="$errors->get('receipt_url')" class="mt-2 theme-error" />
                         </div>
 
+                        <!-- Is Recurring -->
+                        <div class="mt-4">
+                            <div class="flex items-center">
+                                <input id="is_recurring" name="is_recurring" type="checkbox" value="1"
+                                    class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500 theme-input"
+                                    {{ old('is_recurring', $expense->is_recurring) ? 'checked' : '' }}>
+                                <x-input-label for="is_recurring" :value="__('Is Recurring?')" class="ml-2 block text-sm theme-input-label" />
+                            </div>
+                        </div>
+
+                        <!-- Recurrence Pattern -->
+                        <div id="recurrence-fields" class="mt-4" style="{{ old('is_recurring', $expense->is_recurring) ? '' : 'display: none;' }}">
+                            <x-input-label for="recurrence_pattern" class="theme-input-label">
+                                {{ __('Recurrence Pattern') }}
+                            </x-input-label>
+                            <select id="recurrence_pattern" name="recurrence_pattern"
+                                class="block mt-1 w-full rounded-md shadow-sm theme-select">
+                                <option value="">Select Pattern</option>
+                                <option value="daily" {{ old('recurrence_pattern', $expense->recurrence_pattern) == 'daily' ? 'selected' : '' }}>
+                                    Daily
+                                </option>
+                                <option value="weekly" {{ old('recurrence_pattern', $expense->recurrence_pattern) == 'weekly' ? 'selected' : '' }}>
+                                    Weekly
+                                </option>
+                                <option value="monthly" {{ old('recurrence_pattern', $expense->recurrence_pattern) == 'monthly' ? 'selected' : '' }}>
+                                    Monthly
+                                </option>
+                                <option value="yearly" {{ old('recurrence_pattern', $expense->recurrence_pattern) == 'yearly' ? 'selected' : '' }}>
+                                    Yearly
+                                </option>
+                            </select>
+                            <x-input-error :messages="$errors->get('recurrence_pattern')" class="mt-2 theme-error" />
+                        </div>
+
+                        <!-- Recurrence End Date -->
+                        <div id="recurrence-end-date-field" class="mt-4" style="{{ old('is_recurring', $expense->is_recurring) ? '' : 'display: none;' }}">
+                            <x-input-label for="recurrence_end_date" class="theme-input-label">
+                                {{ __('Recurrence End Date') }}
+                            </x-input-label>
+                            <x-text-input id="recurrence_end_date" class="block mt-1 w-full theme-input" type="date"
+                                name="recurrence_end_date" :value="old('recurrence_end_date', $expense->recurrence_end_date)" />
+                            <x-input-error :messages="$errors->get('recurrence_end_date')" class="mt-2 theme-error" />
+                        </div>
+
                         <div class="flex items-center justify-end mt-6 pt-6 border-t">
                             <a href="{{ route('expenses.index') }}"
                                 class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 transition ease-in-out duration-150 theme-button theme-button-secondary">
@@ -282,6 +326,9 @@
             const totalDisplay = document.getElementById('split-total');
             const errorDisplay = document.getElementById('split-error');
             const inputs = container.querySelectorAll('.split-percentage-input');
+            const recurringCheckbox = document.getElementById('is_recurring');
+            const recurrenceFields = document.getElementById('recurrence-fields');
+            const recurrenceEndDateField = document.getElementById('recurrence-end-date-field');
 
             function calculateTotal() {
                 let total = 0;
@@ -305,6 +352,17 @@
 
             inputs.forEach(input => {
                 input.addEventListener('input', calculateTotal);
+            });
+
+            // Toggle recurrence fields visibility based on checkbox
+            recurringCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    recurrenceFields.style.display = 'block';
+                    recurrenceEndDateField.style.display = 'block';
+                } else {
+                    recurrenceFields.style.display = 'none';
+                    recurrenceEndDateField.style.display = 'none';
+                }
             });
 
             // Initial calculation on page load to show the current total

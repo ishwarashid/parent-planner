@@ -663,7 +663,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var generalCalendarEl = document.getElementById("general-calendar");
     if (generalCalendarEl) {
-        var events = JSON.parse(generalCalendarEl.dataset.events);
         var generalCalendar = new Calendar(generalCalendarEl, {
             plugins: [
                 dayGridPlugin,
@@ -680,7 +679,13 @@ document.addEventListener("DOMContentLoaded", function () {
             editable: true,
             selectable: true,
             displayEventTime: false,
-            events: events,
+            events: function(info, successCallback, failureCallback) {
+                // Fetch events including recurring expenses for the current date range
+                fetch(`/calendar/events?start=${info.startStr}&end=${info.endStr}`)
+                    .then(response => response.json())
+                    .then(events => successCallback(events))
+                    .catch(error => failureCallback(error));
+            },
 
             // *** NEW `select` logic for CREATING events ***
             select: function (info) {

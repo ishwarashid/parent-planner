@@ -7,6 +7,7 @@ use App\Models\Child;
 use App\Models\Event;
 use App\Models\Expense;
 use App\Models\Visitation;
+use App\Services\RecurringExpenseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -30,8 +31,8 @@ class CalendarController extends Controller
         // ** MODIFIED VISITATION LOGIC **
         // ==========================================================
 
-        // 1. Build the base query
-        $visitationsQuery = Visitation::with('child', 'parent');
+        // 1. Build the base query - only fetch non-recurring visitations here, recurring ones will be generated separately
+        $visitationsQuery = Visitation::with('child', 'parent')->where('is_recurring', false);
 
         // 2. Apply role-based authorization to the query
         if ($user->hasRole(['Main Parent', 'Admin Co-Parent'])) {
@@ -67,8 +68,24 @@ class CalendarController extends Controller
                     'type' => 'visitation',
                     'status' => $visitation->status,
                     'notes' => $visitation->notes,
+                    'is_recurring' => $visitation->is_recurring,
                 ]
             ];
+        }
+
+        // 4. Get recurring visitations for the calendar
+        $recurringVisitationService = new \App\Services\RecurringVisitationService();
+        $currentDate = now();
+        $endDate = now()->addMonths(6); // Look ahead 6 months for recurring visitations
+        
+        $recurringVisitations = $recurringVisitationService->getRecurringVisitationsForCalendar(
+            $user->id,
+            $currentDate->format('Y-m-d'),
+            $endDate->format('Y-m-d')
+        );
+        
+        foreach ($recurringVisitations as $recurringVisitation) {
+            $events[] = $recurringVisitation;
         }
 
         // ==========================================================
@@ -148,11 +165,167 @@ class CalendarController extends Controller
                 'extendedProps' => [ // Add extendedProps to distinguish expenses
                     'type' => 'expense',
                     'expense_id' => $expense->id,
+                    'is_recurring' => $expense->is_recurring,
                 ]
             ];
         }
 
-        return view('calendar.index', compact('events', 'children'));
+        // Get recurring expenses for the calendar
+        $recurringExpenseService = new RecurringExpenseService();
+        $currentDate = now();
+        $endDate = now()->addMonths(6); // Look ahead 6 months for recurring expenses
+        
+        $recurringExpenses = $recurringExpenseService->getRecurringExpensesForCalendar(
+            $user->id,
+            $currentDate->format('Y-m-d'),
+            $endDate->format('Y-m-d')
+        );
+        
+        foreach ($recurringExpenses as $recurringExpense) {
+            $events[] = $recurringExpense;
+        }
+
+        // Get family members for visitation assignments
+        $user = Auth::user();
+        $familyMemberIds = $user->getFamilyMemberIds();
+        $familyMembers = \App\Models\User::whereIn('id', $familyMemberIds)->get();
+        
+        return view('calendar.index', compact('events', 'children', 'familyMembers'));
+    }
+    
+    public function getEventsForDateRange(Request $request)
+    {
+        $user = Auth::user();
+        $familyMemberIds = $user->getFamilyMemberIds();
+        $events = [];
+
+        // Get date range from request, default to current month
+        $startDate = $request->input('start', now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->input('end', now()->endOfMonth()->format('Y-m-d'));
+
+        // Get Visitations (only non-recurring ones, recurring ones will be generated separately)
+        $visitationsQuery = Visitation::with('child', 'parent')->where('is_recurring', false);
+
+        if ($user->hasRole(['Main Parent', 'Admin Co-Parent'])) {
+            $visitationsQuery->whereIn('parent_id', $familyMemberIds);
+        } else {
+            $visitationsQuery->where('parent_id', $user->id);
+        }
+
+        $visitations = $visitationsQuery->get();
+
+        foreach ($visitations as $visitation) {
+            $color = '#3788d8'; // Default for Scheduled
+            if ($visitation->status === 'Completed') $color = '#28a745';
+            elseif ($visitation->status === 'Cancelled') $color = '#6c757d';
+            elseif ($visitation->status === 'Missed') $color = '#dc3545';
+            elseif ($visitation->status === 'Rescheduled') $color = '#ffc107';
+            elseif ($visitation->status === 'Other') $color = '#6f42c1';
+
+            $events[] = [
+                'id' => 'visitation-' . $visitation->id,
+                'title' => 'Visitation: ' . $visitation->child->name . ' (' . $visitation->parent->name . ')',
+                'start' => $visitation->date_start,
+                'end' => $visitation->date_end,
+                'allDay' => false,
+                'color' => $color,
+                'url' => route('visitations.show', $visitation),
+                'description' => $visitation->notes ?? 'No notes',
+                'extendedProps' => [
+                    'type' => 'visitation',
+                    'status' => $visitation->status,
+                    'notes' => $visitation->notes,
+                    'is_recurring' => $visitation->is_recurring,
+                ]
+            ];
+        }
+
+        // Get recurring visitations for the specified date range
+        $recurringVisitationService = new \App\Services\RecurringVisitationService();
+        
+        $recurringVisitations = $recurringVisitationService->getRecurringVisitationsForCalendar(
+            $user->id,
+            $startDate,
+            $endDate
+        );
+        
+        foreach ($recurringVisitations as $recurringVisitation) {
+            $events[] = $recurringVisitation;
+        }
+
+        // Get Custom Events
+        $customEvents = Event::with('child')
+                        ->whereIn('user_id', $familyMemberIds)
+                        ->when($user->role !== 'parent', fn($q) =>
+                            $q->where(fn($q2) =>
+                                $q2->whereNull('assigned_to')
+                                ->orWhere('assigned_to', $user->id)
+                            )
+                        )
+                        ->get();
+
+        $defaultColors = ['#F87171', '#FBBF24', '#34D399', '#60A5FA', '#A78BFA'];
+        foreach ($customEvents as $event) {
+            $color = '#3788d8'; // Default for Scheduled
+            if ($event->status === 'Completed') $color = '#28a745';
+            elseif ($event->status === 'Cancelled') $color = '#6c757d';
+            elseif ($event->status === 'Missed') $color = '#dc3545';
+            elseif ($event->status === 'Rescheduled') $color = '#ffc107';
+            elseif ($event->status === 'Other') $color = '#6f42c1';
+            else $color = $event->child->color ?? $defaultColors[array_rand($defaultColors)];
+
+            $events[] = [
+                'id' => $event->id,
+                'title' => $event->title,
+                'start' => $event->start,
+                'end' => $event->end,
+                'allDay' => false,
+                'color' => $color,
+                'description' => $event->description,
+                'child_id' => $event->child_id,
+                'assigned_to' => $event->assigned_to,
+                'status' => $event->status,
+                'custom_status_description' => $event->custom_status_description,
+            ];
+        }
+
+        // Get Expenses
+        $expenses = Expense::when(
+                    in_array($user->role, ['parent', 'co-parent']),
+                    fn($q) => $q->whereIn('payer_id', $familyMemberIds),
+                    fn($q) => $q->whereRaw('0 = 1')
+                    )->get();
+
+        foreach ($expenses as $expense) {
+            $events[] = [
+                'id' => 'expense-' . $expense->id,
+                'title' => 'Expense: ' . $expense->description,
+                'start' => $expense->created_at->format('Y-m-d'),
+                'allDay' => true,
+                'color' => '#ffc107',
+                'description' => 'Amount: ' . $expense->amount . ' - Category: ' . $expense->category,
+                'extendedProps' => [
+                    'type' => 'expense',
+                    'expense_id' => $expense->id,
+                    'is_recurring' => $expense->is_recurring,
+                ]
+            ];
+        }
+
+        // Get recurring expenses for the specified date range
+        $recurringExpenseService = new RecurringExpenseService();
+        
+        $recurringExpenses = $recurringExpenseService->getRecurringExpensesForCalendar(
+            $user->id,
+            $startDate,
+            $endDate
+        );
+        
+        foreach ($recurringExpenses as $recurringExpense) {
+            $events[] = $recurringExpense;
+        }
+
+        return response()->json($events);
     }
 
     public function store(Request $request)

@@ -113,6 +113,7 @@ Route::middleware([
     Route::get('visitations/api', [VisitationController::class, 'apiIndex'])->name('visitations.api');
     Route::resource('visitations', VisitationController::class)->only(['index', 'show']);
     Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('calendar/events', [CalendarController::class, 'getEventsForDateRange'])->name('calendar.events');
     Route::post('events', [CalendarController::class, 'store'])->name('events.store');
     Route::put('events/{event}', [CalendarController::class, 'update'])->name('events.update');
     Route::delete('events/{event}', [CalendarController::class, 'destroy'])->name('events.destroy');

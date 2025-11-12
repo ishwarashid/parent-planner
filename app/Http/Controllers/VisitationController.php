@@ -65,7 +65,10 @@ class VisitationController extends Controller
                     'child_name' => $visitation->child->name,
                     'notes' => $visitation->notes,
                     'is_recurring' => $visitation->is_recurring,
+                    'recurrence_pattern' => $visitation->recurrence_pattern,
+                    'recurrence_end_date' => $visitation->recurrence_end_date,
                     'status' => $visitation->status,
+                    'custom_status_description' => $visitation->custom_status_description,
                 ],
                 'backgroundColor' => $visitation->status === 'Cancelled' ? 'grey' : ($visitation->status === 'Completed' ? 'green' : ($visitation->status === 'Missed' ? '#dc3545' : ($visitation->status === 'Rescheduled' ? '#ffc107' : ($visitation->status === 'Other' ? '#6f42c1' : '')))), // Added Missed, Rescheduled, and Other colors
             ];
@@ -86,6 +89,14 @@ class VisitationController extends Controller
     {
         $familyMemberIds = auth()->user()->getFamilyMemberIds();
 
+        // Modify request to remove recurrence fields if is_recurring is not checked
+        $requestData = $request->all();
+        if (!$request->boolean('is_recurring')) {
+            unset($requestData['recurrence_pattern']);
+            unset($requestData['recurrence_end_date']);
+            $request->replace($requestData);
+        }
+
         $validatedData = $request->validate([
             'child_id' => 'required|exists:children,id',
             'parent_id' => ['required', Rule::in($familyMemberIds)],
@@ -94,12 +105,14 @@ class VisitationController extends Controller
             // ADDED "Missed", "Rescheduled", and "Other" to the list of allowed statuses
             'status' => ['required', 'string', Rule::in(['Scheduled', 'Completed', 'Cancelled', 'Missed', 'Rescheduled', 'Other'])],
             'custom_status_description' => ['nullable', 'string', 'max:255', Rule::requiredIf(fn () => $request->status === 'Other')],
-            'is_recurring' => 'nullable|boolean',
+            'is_recurring' => 'boolean',
+            'recurrence_pattern' => 'required_if:is_recurring,1|in:daily,weekly,monthly,yearly',
+            'recurrence_end_date' => 'required_if:is_recurring,1|date|after_or_equal:today',
             'notes' => 'nullable|string',
         ]);
 
         $validatedData['created_by'] = auth()->id();
-        $validatedData['is_recurring'] = $request->has('is_recurring');
+        $validatedData['is_recurring'] = $request->boolean('is_recurring');
 
         Visitation::create($validatedData);
 
@@ -121,6 +134,14 @@ class VisitationController extends Controller
         $this->authorize('update', $visitation);
         $familyMemberIds = auth()->user()->getFamilyMemberIds();
 
+        // Modify request to remove recurrence fields if is_recurring is not checked
+        $requestData = $request->all();
+        if (!$request->boolean('is_recurring')) {
+            unset($requestData['recurrence_pattern']);
+            unset($requestData['recurrence_end_date']);
+            $request->replace($requestData);
+        }
+
         $validatedData = $request->validate([
             'child_id' => 'sometimes|required|exists:children,id',
             'parent_id' => ['sometimes', 'required', Rule::in($familyMemberIds)],
@@ -129,15 +150,13 @@ class VisitationController extends Controller
             // ADDED "Missed", "Rescheduled", and "Other" to the list of allowed statuses
             'status' => ['sometimes', 'required', 'string', Rule::in(['Scheduled', 'Completed', 'Cancelled', 'Missed', 'Rescheduled', 'Other'])],
             'custom_status_description' => ['nullable', 'string', 'max:255', Rule::requiredIf(fn () => $request->status === 'Other')],
-            'is_recurring' => 'nullable|boolean',
+            'is_recurring' => 'boolean',
+            'recurrence_pattern' => 'required_if:is_recurring,1|in:daily,weekly,monthly,yearly',
+            'recurrence_end_date' => 'required_if:is_recurring,1|date|after_or_equal:today',
             'notes' => 'nullable|string',
         ]);
 
-        if ($request->has('is_recurring')) {
-            $validatedData['is_recurring'] = true;
-        } else {
-            $validatedData['is_recurring'] = false;
-        }
+        $validatedData['is_recurring'] = $request->boolean('is_recurring');
 
         $visitation->update($validatedData);
 

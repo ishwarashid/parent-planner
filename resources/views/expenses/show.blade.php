@@ -210,6 +210,26 @@
                                 </dd>
                             </div>
                             <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                <dt class="text-sm font-medium leading-6 theme-dt-text">Recurring</dt>
+                                <dd class="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0 theme-dd-text">
+                                    {{ $expense->is_recurring ? 'Yes' : 'No' }}</dd>
+                            </div>
+                            
+                            @if($expense->is_recurring)
+                            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                <dt class="text-sm font-medium leading-6 theme-dt-text">Recurrence Pattern</dt>
+                                <dd class="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0 theme-dd-text">
+                                    {{ ucfirst($expense->recurrence_pattern) ?? 'N/A' }}</dd>
+                            </div>
+                            
+                            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                <dt class="text-sm font-medium leading-6 theme-dt-text">Recurrence End Date</dt>
+                                <dd class="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0 theme-dd-text">
+                                    {{ $expense->recurrence_end_date ? \Carbon\Carbon::parse($expense->recurrence_end_date)->format('M d, Y') : 'N/A' }}</dd>
+                            </div>
+                            @endif
+                            
+                            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                 <dt class="text-sm font-medium leading-6 theme-dt-text">Date Added</dt>
                                 <dd class="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0 theme-dd-text">
                                     {{ \Carbon\Carbon::parse($expense->created_at)->format('M d, Y') }}</dd>

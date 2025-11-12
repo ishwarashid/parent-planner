@@ -16,6 +16,8 @@ class Visitation extends Model
         'date_start',
         'date_end',
         'is_recurring',
+        'recurrence_pattern',
+        'recurrence_end_date',
         'notes',
         'status',
         'custom_status_description',
