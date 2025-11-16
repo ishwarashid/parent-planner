@@ -5,10 +5,16 @@ namespace App\Models;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Paddle\Billable;
 
 class Professional extends Model
 {
-    use HasFactory;
+    use HasFactory, Billable;
+
+    const PRO_PLAN_IDS = [
+            'pri_01k4m53g0ddw2pt8wgjwsdpjwr', // Professional Monthly
+            'pri_01k4m54crw11827hzxp3ngms0j', // Professional Yearly
+    ];
 
     protected $fillable = [
         'user_id',
@@ -24,6 +30,7 @@ class Professional extends Model
         'country', // Add country here
         'city',
         'approval_status',
+        'paddle_id'
     ];
 
     public function user()
@@ -38,10 +45,8 @@ class Professional extends Model
     public function scopeApprovedAndSubscribed(Builder $query): Builder
     {
         return $query->where('approval_status', 'approved')
-            ->whereHas('user', function ($q) {
-                $q->whereHas('subscriptions', function ($sub) {
-                    $sub->where('status', 'active');
-                });
+            ->whereHas('subscriptions', function ($sub) {
+                $sub->where('status', 'active');
             });
     }
 
@@ -69,5 +74,34 @@ class Professional extends Model
         });
 
         return $query;
+    }
+
+     /**
+     * Get the email address for Paddle.
+     * A professional's billing email is their user's email.
+     */
+    public function paddleEmail(): ?string
+    {
+        return $this->user->email;
+    }
+
+    /**
+     * Check if the professional profile has an active subscription.
+     */
+    public function hasActiveSubscription(): bool
+    {
+        // We will name the professional subscription 'professional'
+        $subscription = $this->subscription('professional');
+
+        if (!$subscription || !$subscription->valid()) {
+            return false;
+        }
+
+        $firstItem = $subscription->items->first();
+        if (!$firstItem) {
+            return false;
+        }
+        
+        return in_array($firstItem->price_id, this::PRO_PLAN_IDS);
     }
 }

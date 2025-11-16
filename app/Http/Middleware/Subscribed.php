@@ -44,7 +44,7 @@ class Subscribed
             }
 
             // For professionals, check for the professional subscription.
-            if ($user->role === 'professional' && $user->professional?->approval_status === 'approved' && !$user->subscribed('professional')) {
+            if ($user->role === 'professional' && $user->professional?->approval_status === 'approved' && !$user->professional?->hasActiveSubscription()) {
                 // Redirect to the professional pricing page to subscribe.
                 return redirect()->route('professional.pricing');
             }

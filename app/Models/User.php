@@ -35,6 +35,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'invited_by',
         'role',
+        'paddle_id'
     ];
 
     /**
@@ -231,5 +232,58 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendEmailVerificationNotification()
     {
         $this->notify(new \App\Notifications\VerifyEmailNotification);
+    }
+
+    public function isProfessionalSubscribed(): bool
+    {
+        // Check if the professional profile exists and is subscribed
+        return $this->professional && $this->professional->subscribed('professional');
+    }
+
+    /**
+     * Ensures a Paddle customer exists and syncs the ID across the user and their professional profile.
+     * This prevents "customer already exists" errors.
+     *
+     * @return Customer
+     */
+    public function syncPaddleCustomer(): \Laravel\Paddle\Customer
+    {
+        // 1. Determine the one true Paddle ID from the user or professional profile.
+        $paddleId = $this->paddle_id ?? $this->professional?->paddle_id;
+
+        // 2. If no ID exists, create one on the primary (User) model.
+        if (! $paddleId) {
+            $this->createAsCustomer();
+            $paddleId = $this->paddle_id;
+        }
+
+        // 3. THE CRITICAL FIX: Ensure a local customer record exists for the User.
+        // This uses `updateOrCreate` to be safe.
+        \Laravel\Paddle\Customer::updateOrCreate(
+            ['billable_id' => $this->id, 'billable_type' => self::class],
+            ['id' => $paddleId, 'email' => $this->email]
+        );
+
+        // 4. ALSO CRITICAL: Ensure a local customer record exists for the Professional.
+        if ($this->professional) {
+            \Laravel\Paddle\Customer::updateOrCreate(
+                ['billable_id' => $this->professional->id, 'billable_type' => \App\Models\Professional::class],
+                ['id' => $paddleId, 'email' => $this->email]
+            );
+        }
+        
+        // 5. Ensure the models themselves have the correct ID.
+        if ($this->paddle_id !== $paddleId) {
+            $this->update(['paddle_id' => $paddleId]);
+        }
+        if ($this->professional && $this->professional->paddle_id !== $paddleId) {
+            $this->professional->update(['paddle_id' => $paddleId]);
+        }
+        
+        // 6. Refresh the in-memory model to reflect all changes.
+        $this->refresh();
+
+        // Return the customer record for the User, which acts as the primary.
+        return $this->customer;
     }
 }

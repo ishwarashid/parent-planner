@@ -185,11 +185,11 @@
                                     </svg>Report generation</li>
                             </ul>
                             <div class="mt-auto">
-                                <a href="{{ route('checkout', ['plan' => 'pri_01k4m4zrc1w8qjqrdvsj309r9h']) }}"
+                                <a href="{{ route('checkout', ['plan' => 'pri_01k4m4zrc1w8qjqrdvsj309r9h', 'type' => 'parent']) }}"
                                     x-show="billingCycle === 'monthly'"
                                     class="w-full text-center bg-theme-turquoise text-theme-dark-navy hover:bg-theme-light-turquoise transition px-8 py-3 rounded-md text-lg font-bold shadow-lg block">Subscribe
                                     Monthly</a>
-                                <a href="{{ route('checkout', ['plan' => 'pri_01k4m50qe4tspwqzzcb5pj21fs']) }}"
+                                <a href="{{ route('checkout', ['plan' => 'pri_01k4m50qe4tspwqzzcb5pj21fs', 'type' => 'parent']) }}"
                                     x-show="billingCycle === 'yearly'" style="display: none;"
                                     class="w-full text-center bg-theme-turquoise text-theme-dark-navy hover:bg-theme-light-turquoise transition px-8 py-3 rounded-md text-lg font-bold shadow-lg block">Subscribe
                                     Yearly</a>
@@ -239,11 +239,11 @@
                                     </svg>Report generation</li>
                             </ul>
                             <div class="mt-auto">
-                                <a href="{{ route('checkout', ['plan' => 'pri_01k4m51sqtkav7fp4fesrxpjmz']) }}"
+                                <a href="{{ route('checkout', ['plan' => 'pri_01k4m51sqtkav7fp4fesrxpjmz', 'type' => 'parent']) }}"
                                     x-show="billingCycle === 'monthly'"
                                     class="w-full text-center bg-theme-turquoise text-theme-dark-navy hover:bg-theme-light-turquoise transition px-8 py-3 rounded-md text-lg font-bold shadow-lg block">Subscribe
                                     Monthly</a>
-                                <a href="{{ route('checkout', ['plan' => 'pri_01k4m52mb2br3rj9nfn8pbpez6']) }}"
+                                <a href="{{ route('checkout', ['plan' => 'pri_01k4m52mb2br3rj9nfn8pbpez6', 'type' => 'parent']) }}"
                                     x-show="billingCycle === 'yearly'" style="display: none;"
                                     class="w-full text-center bg-theme-turquoise text-theme-dark-navy hover:bg-theme-light-turquoise transition px-8 py-3 rounded-md text-lg font-bold shadow-lg block">Subscribe
                                     Yearly</a>

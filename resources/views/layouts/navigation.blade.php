@@ -202,6 +202,12 @@
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
+                        @if (Auth::user()->professional()->exists())
+                            <x-dropdown-link :href="route('professional.dashboard')">
+                                {{ __('Professional Profile') }}
+                            </x-dropdown-link>
+                        @endif
+
                         @if (Auth::user()->isAccountOwner() && Auth::user()->role !== 'professional')
                             <x-dropdown-link :href="route('billing')">
                                 {{ __('Billing') }}
@@ -307,6 +313,12 @@
                 <x-responsive-nav-link :href="route('profile.edit')" class="theme-responsive-link">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
+
+                @if (Auth::user()->professional()->exists())
+                    <x-responsive-nav-link :href="route('professional.dashboard')" class="theme-responsive-link">
+                        {{ __('Professional Profile') }}
+                    </x-responsive-nav-link>
+                @endif
 
                 @if (Auth::user()->isAccountOwner())
                     <x-responsive-nav-link :href="route('billing')" class="theme-responsive-link">

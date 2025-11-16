@@ -42,7 +42,7 @@ class PublicProfessionalsController extends Controller
 
         // IMPORTANT: Prevent direct access to profiles that are not approved or subscribed
         abort_if(
-            $professional->approval_status !== 'approved' || !$professional->user->subscribed('default'),
+            $professional->approval_status !== 'approved' || !$professional->hasActiveSubscription(),
             404
         );
 

@@ -19,14 +19,14 @@ class ProfessionalMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (Auth::check()) {
-            if (Auth::user()->role === 'professional') {
+            if (Auth::user()->role === 'professional' || Auth::user()->professional()->exists()) {
 
                 // Allow Paddle checkout and webhook URLs to pass through
                 if ($request->is('checkout') || $request->is('paddle/*') || $request->is('billing*')) {
                     return $next($request);
                 }
                 // If user is professional, and the route is not a professional route, redirect to professional dashboard
-                if (!Str::startsWith($request->path(), 'professional')) {
+                if (!Str::startsWith($request->path(), 'professional') && Auth::user()->role === 'professional') {
                     return redirect('/professional/dashboard');
                 }
             } else {

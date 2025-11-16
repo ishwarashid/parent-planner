@@ -42,7 +42,7 @@ class ProfessionalRegistrationController extends Controller
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['required', 'string', 'confirmed', 'min:8'],
             'business_name' => ['required', 'string', 'max:255'],
             'services' => ['required', 'array'],
@@ -53,12 +53,22 @@ class ProfessionalRegistrationController extends Controller
             'city' => ['string', 'max:255'],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'professional',
-        ]);
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            if ($user->professional()->exists()) {
+                throw ValidationException::withMessages([
+                    'email' => 'A professional profile for this email address already exists.',
+                ]);
+            }
+        } else {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => 'professional',
+            ]);
+        }
 
         $professional = Professional::create([
             'user_id' => $user->id,
@@ -73,6 +83,7 @@ class ProfessionalRegistrationController extends Controller
             'linkedin' => $request->linkedin,
             'twitter' => $request->twitter,
             'instagram' => $request->instagram,
+            'paddle_id' => $user->paddle_id,
         ]);
 
         // event(new Registered($user));

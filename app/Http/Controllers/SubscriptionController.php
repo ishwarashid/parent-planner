@@ -17,13 +17,38 @@ class SubscriptionController extends Controller
         $this->paddleService = $paddleService;
     }
 
+    private function getBillableContext(Request $request)
+    {
+        $user = Auth::user();
+        // We determine the context by checking the request path. This is more reliable than role.
+        if ($request->is('professional/*')) {
+            $professional = $user->professional;
+            if (!$professional) {
+                abort(403, 'Professional profile not found.');
+            }
+            return (object)[
+                'entity' => $professional,
+                'name' => 'professional',
+            ];
+        }
+
+        // Default to the parent (User) context
+        return (object)[
+            'entity' => $user,
+            'name' => 'default',
+        ];
+    }
+
     public function show()
     {
         $user = Auth::user();
-        $subscription = $user->subscription();
+        $context = $this->getBillableContext($request); // ADDED: Get the context
+
+        // CHANGED: Get the subscription from the correct entity and with the correct name.
+        $subscription = $context->entity->subscription($context->name);
 
         // Role-based plan IDs
-        if ($user->role == 'professional') {
+        if ($context->name === 'professional') { // CHANGED: Check context name
             $priceIds = [
                 'pri_01k4m53g0ddw2pt8wgjwsdpjwr', // Professional Monthly
                 'pri_01k4m54crw11827hzxp3ngms0j'  // Professional Yearly
@@ -83,67 +108,49 @@ class SubscriptionController extends Controller
                 }
             }
         }
-        return view('subscription.show', compact('subscription', 'plans', 'planName'));
+        return view('subscription.show', compact('subscription', 'plans', 'planName', 'context'));
     }
 
     public function cancel(Request $request)
     {
-        $user = Auth::user();
-        
-        try {
-            // Check if user has a subscription
-            if (!$user->subscription()) {
-                return redirect()->route('subscription.show')->with('error', 'You do not have an active subscription.');
-            }
-            
-            // Cancel the subscription at period end
-            $user->subscription()->cancel();
-            
-            return redirect()->route('subscription.show')->with('status', 'Your subscription has been canceled and will end at the end of the billing period.');
-        } catch (Exception $e) {
-            return redirect()->route('subscription.show')->with('error', 'Failed to cancel subscription: ' . $e->getMessage());
+        $context = $this->getBillableContext($request);
+        $subscription = $context->entity->subscription($context->name);
+
+        if (!$subscription) {
+            return back()->with('error', 'You do not have an active subscription.');
         }
+
+        $subscription->cancel();
+        return back()->with('status', 'Your subscription has been canceled.');
     }
 
     public function resume(Request $request)
     {
-        $user = Auth::user();
-        
-        try {
-            // Check if user has a subscription
-            if (!$user->subscription()) {
-                return redirect()->route('subscription.show')->with('error', 'You do not have a subscription.');
-            }
-            
-            // Resume the subscription
-            $user->subscription()->resume();
-            
-            return redirect()->route('subscription.show')->with('status', 'Your subscription has been resumed.');
-        } catch (Exception $e) {
-            return redirect()->route('subscription.show')->with('error', 'Failed to resume subscription: ' . $e->getMessage());
+        $context = $this->getBillableContext($request);
+        $subscription = $context->entity->subscription($context->name);
+
+        if (!$subscription) {
+            return back()->with('error', 'You do not have a subscription.');
         }
+
+        $subscription->resume();
+        return back()->with('status', 'Your subscription has been resumed.');
     }
 
     public function swap(Request $request)
     {
-        $user = Auth::user();
-        $request->validate([
-            'plan' => 'required'
-        ]);
+        $request->validate(['plan' => 'required']);
         
-        try {
-            // Check if user has a subscription
-            if (!$user->subscription()) {
-                return redirect()->route('subscription.show')->with('error', 'You do not have a subscription.');
-            }
-            
-            // Swap the plan
-            $user->subscription()->swapAndInvoice($request->plan);
-            
-            return redirect()->route('subscription.show')->with('status', 'Your subscription has been updated.');
-        } catch (Exception $e) {
-            return redirect()->route('subscription.show')->with('error', 'Failed to update subscription: ' . $e->getMessage());
+        // CHANGED: Whole method updated to use context
+        $context = $this->getBillableContext($request);
+        $subscription = $context->entity->subscription($context->name);
+
+        if (!$subscription) {
+            return back()->with('error', 'You do not have a subscription.');
         }
+
+        $subscription->swapAndInvoice($request->plan);
+        return back()->with('status', 'Your subscription has been updated.');
     }
 
     public function pricing()
@@ -238,14 +245,31 @@ class SubscriptionController extends Controller
 
     public function checkout(Request $request)
     {
-        if (auth()->user()->subscribed('default')) {
-            return redirect()->route('dashboard')->with('error', 'You are already subscribed.');
-        }
         $plan = $request->input('plan');
         $user = Auth::user();
 
-        $checkout = $user->checkout($plan)
-            ->returnTo(route('dashboard'));
+        $user->syncPaddleCustomer();
+
+        $type = $request->input('type');
+
+        if ($type === 'professional') {
+            $billableEntity = $user->professional;
+            if (!$billableEntity) {
+                abort(403, 'Professional profile not found.');
+            }
+            $subscriptionName = 'professional';
+            $returnRoute = route('professional.dashboard');
+        } else {
+            $billableEntity = $user;
+            $subscriptionName = 'default';
+            $returnRoute = route('dashboard');
+        }
+
+        if ($billableEntity->subscribed($subscriptionName)) {
+            return redirect($returnRoute)->with('error', 'You are already subscribed.');
+        }
+
+        $checkout = $billableEntity->checkout($plan)->returnTo($returnRoute);
 
         return view('subscriptions.checkout', ['checkout' => $checkout]);
     }
@@ -257,37 +281,22 @@ class SubscriptionController extends Controller
 
     public function updatePaymentMethod()
     {
-        $user = Auth::user();
-        
-        // Check if the user has a Paddle customer ID
-        if (!$user->customer) {
-            return redirect()->route('subscription.show')->with('error', 'Unable to update payment method.');
+        $context = $this->getBillableContext($request);
+        $subscription = $context->entity->subscription($context->name);
+
+        if (!$subscription) {
+            return back()->with('error', 'You do not have an active subscription.');
         }
         
-        try {
-            // Get the subscription
-            $subscription = $user->subscription();
-            
-            if (!$subscription) {
-                return redirect()->route('subscription.show')->with('error', 'You do not have an active subscription.');
-            }
-            
-            // Get the update payment method URL from Paddle
-            $response = \Laravel\Paddle\Cashier::api('GET', "subscriptions/{$subscription->paddle_id}");
-            $subscriptionData = $response['data'] ?? null;
-            
-            if (!$subscriptionData || !isset($subscriptionData['management_urls']['update_payment_method'])) {
-                return redirect()->route('subscription.show')->with('error', 'Unable to update payment method.');
-            }
-            
-            $updatePaymentMethodUrl = $subscriptionData['management_urls']['update_payment_method'];
-            
-            // Redirect to the update payment method URL
-            return redirect($updatePaymentMethodUrl);
-        } catch (\Exception $e) {
-            \Log::error('Error updating payment method: ' . $e->getMessage());
-            return redirect()->route('subscription.show')->with('error', 'Failed to update payment method: ' . $e->getMessage());
+        // The API call is generic and works fine
+        $response = Cashier::api('GET', "subscriptions/{$subscription->paddle_id}");
+        $subscriptionData = $response['data'] ?? null;
+        
+        if (!$subscriptionData || !isset($subscriptionData['management_urls']['update_payment_method'])) {
+            return back()->with('error', 'Unable to update payment method.');
         }
+        
+        return redirect($subscriptionData['management_urls']['update_payment_method']);
     }
 
     public function professionalPricing()
