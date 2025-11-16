@@ -104,4 +104,25 @@ class Professional extends Model
         
         return in_array($firstItem->price_id, this::PRO_PLAN_IDS);
     }
+
+       /**
+     * Get the customer instance for the professional.
+     *
+     * This overrides the default Billable behavior. It defines a relationship
+     * where a Professional has one Customer THROUGH their associated User.
+     * This establishes the User's customer record as the single source of truth.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
+     */
+    public function customer()
+    {
+        return $this->hasOneThrough(
+            \Laravel\Paddle\Customer::class,   // The final model we want to access
+            \App\Models\User::class,           // The intermediate model
+            'id',                            // Foreign key on users table...
+            'billable_id',                   // Foreign key on customers table...
+            'user_id',                       // Local key on professionals table...
+            'id'                             // Local key on users table.
+        )->where('customers.billable_type', \App\Models\User::class);
+    }
 }

@@ -247,8 +247,8 @@ class SubscriptionController extends Controller
     {
         $plan = $request->input('plan');
         $user = Auth::user();
-
-        $user->syncPaddleCustomer();
+        
+        $user->load('professional');
 
         $type = $request->input('type');
 
