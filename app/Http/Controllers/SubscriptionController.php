@@ -39,13 +39,14 @@ class SubscriptionController extends Controller
         ];
     }
 
-    public function show()
+    public function show(Request $request)
     {
         $user = Auth::user();
         $context = $this->getBillableContext($request); // ADDED: Get the context
 
         // CHANGED: Get the subscription from the correct entity and with the correct name.
         $subscription = $context->entity->subscription($context->name);
+        \Log::info($subscription);
 
         // Role-based plan IDs
         if ($context->name === 'professional') { // CHANGED: Check context name
@@ -247,8 +248,6 @@ class SubscriptionController extends Controller
     {
         $plan = $request->input('plan');
         $user = Auth::user();
-        
-        $user->load('professional');
 
         $type = $request->input('type');
 

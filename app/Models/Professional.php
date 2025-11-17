@@ -91,18 +91,21 @@ class Professional extends Model
     public function hasActiveSubscription(): bool
     {
         // We will name the professional subscription 'professional'
-        $subscription = $this->subscription('professional');
+        $subscriptionPaddleId = $this->paddle_id;
+    
+        $subscription = $this->user->subscriptions()->where('paddle_id', $subscriptionPaddleId)->first();
 
         if (!$subscription || !$subscription->valid()) {
             return false;
         }
 
         $firstItem = $subscription->items->first();
+        
         if (!$firstItem) {
             return false;
         }
         
-        return in_array($firstItem->price_id, this::PRO_PLAN_IDS);
+        return in_array($firstItem->price_id, self::PRO_PLAN_IDS);
     }
 
        /**

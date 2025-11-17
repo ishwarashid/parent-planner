@@ -27,11 +27,10 @@ class Subscribed
                     if ($user->customer) {
                         $response = Cashier::api('GET', "subscriptions?customer_id={$user->customer->paddle_id}&status=active");
                         $subscriptions = $response->json()['data'] ?? [];
-                        
+
                         if (!empty($subscriptions)) {
-                            // User has an active subscription in Paddle
-                            // Redirect to pricing page which will handle the redirect to dashboard
-                            return redirect()->route('pricing');
+                            // User has an active subscription in Paddle, allow access
+                            return $next($request);
                         }
                     }
                 } catch (\Exception $e) {
