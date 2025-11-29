@@ -20,6 +20,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HelpController;
 use App\Models\Blog;
+use App\Models\LandingPageVideo;
 use Illuminate\Support\Str;
 
 /*
@@ -34,7 +35,8 @@ Route::get('/', function () {
         ->take(3)
         ->get();
         
-    return view('landing2', compact('latestBlogs'));
+	$landingPageVideo = LandingPageVideo::active()->first();
+    return view('landing2', compact('latestBlogs', 'landingPageVideo'));
 })->name('home');
 
 // Legal pages
@@ -250,5 +252,16 @@ Route::middleware(['auth', 'verified', 'admin', 'professional'])->prefix('admin'
         'edit' => 'admin.help-videos.edit',
         'update' => 'admin.help-videos.update',
         'destroy' => 'admin.help-videos.destroy',
+    ]);
+
+    // Landing Page Videos routes
+    Route::resource('landing-page-videos', \App\Http\Controllers\AdminLandingPageVideoController::class)->names([
+        'index' => 'admin.landing-page-videos.index',
+        'create' => 'admin.landing-page-videos.create',
+        'store' => 'admin.landing-page-videos.store',
+        'show' => 'admin.landing-page-videos.show',
+        'edit' => 'admin.landing-page-videos.edit',
+        'update' => 'admin.landing-page-videos.update',
+        'destroy' => 'admin.landing-page-videos.destroy',
     ]);
 });

@@ -239,7 +239,19 @@ License: https://freebootstrap.net/license
                               <h2 class="mb-4">Key Features</h2>
                               <p class="mb-5">Parent Planner offers a range of features to simplify parenting, from smart scheduling and visitation calendars to expense management and detailed reporting. Our goal is to provide a seamless and organized experience for all parents.</p>
                             </div>
-                            <div class="align-self-start"><a class="glightbox btn btn-play d-inline-flex align-items-center gap-2" href="https://www.youtube.com/watch?v=DQx96G4yHd8" data-gallery="video"><i class="bi bi-play-fill"></i> Watch the Video</a></div>
+                            <div class="align-self-start">
+                                @if(isset($landingPageVideo) && $landingPageVideo && $landingPageVideo->hasValidVideo())
+                                    <!-- Use uploaded video -->
+                                    <a class="glightbox btn btn-play d-inline-flex align-items-center gap-2" href="{{ $landingPageVideo->video_url }}" data-gallery="video">
+                                        <i class="bi bi-play-fill"></i> Watch the Video
+                                    </a>
+                                @else
+                                    <!-- Use YouTube video as fallback -->
+                                    <a class="glightbox btn btn-play d-inline-flex align-items-center gap-2" href="https://www.youtube.com/watch?v=DQx96G4yHd8" data-gallery="video">
+                                        <i class="bi bi-play-fill"></i> Watch the Video
+                                    </a>
+                                @endif
+                            </div>
                           </div>
                         </div>
                       </div>
